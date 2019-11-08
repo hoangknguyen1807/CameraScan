@@ -22,15 +22,24 @@
            android:layout_gravity="center"
            android:background="@android:color/holo_orange_light" />
 
+       <Button
+           android:id="@+id/btnUpload"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="Upload file to Web server"
+           android:layout_gravity="center"
+           android:background="@android:color/holo_orange_light" />
+
 
         <ImageView
 
-            android:id="@+id/imgPhoto"
+            android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="20dp"
             android:scaleType="fitCenter"
-            
+            android:src="@drawable/kimyen"
+
             />
 
    </LinearLayout>

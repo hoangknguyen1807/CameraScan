@@ -14,11 +14,13 @@ import android.widget.TextView;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Random;
 
 import okhttp3.MediaType;
@@ -53,23 +55,35 @@ public class MainActivity extends Activity {
         });
     }
 
-    private void CreatePdf() {
+    private void CreatePdf(){
         Document doc = new Document();
 
         try {
-            File file = new File(Environment.getExternalStorageDirectory() + "/PDFdemo/",
+            File file = new File(Environment.getExternalStorageDirectory()+ "/PDFdemo/",
                     "demo.pdf");
 
             FileOutputStream fOut = new FileOutputStream(file);
 
-            PdfWriter.getInstance(doc, fOut);
+            PdfWriter.getInstance(doc,fOut);
 
             doc.open();
 
+            String filename = Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+"PDFdemo/demo.jpg";
+
+            Image image = Image.getInstance(filename);
+
+            int indentation = 0;
+            float scaler = ((doc.getPageSize().getWidth() - doc.leftMargin()
+                    - doc.rightMargin() - indentation) / image.getWidth()) * 100;
+
+            image.scalePercent(scaler);
+            doc.add(image);
         } catch (FileNotFoundException e) {
-            Log.e("File Not Found", "File Not Found");
+            Log.e("File Failed", "File Not Found");
         } catch (DocumentException de) {
-            Log.e("File Not Found", "File Not Found");
+            Log.e("File Failed", "File Not Found");
+        } catch (IOException ioe){
+            Log.e("Instance Failed", "Failed Get Instance");
         } finally {
             doc.close();
             Log.e("OK", "OK");

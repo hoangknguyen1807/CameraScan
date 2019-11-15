@@ -14,33 +14,48 @@
 
        >
 
-       <Button
-           android:id="@+id/btnCamera"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:text="Connect Camera"
-           android:layout_gravity="center"
-           android:background="@android:color/holo_orange_light" />
-
-       <Button
-           android:id="@+id/btnUpload"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:text="Upload file to Web server"
-           android:layout_gravity="center"
-           android:background="@android:color/holo_orange_light" />
-
-
         <ImageView
 
             android:id="@+id/imageView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:scaleType="fitCenter"
             android:src="@drawable/demo"
+            android:scaleType="matrix"
 
             />
+
+       <TableLayout
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:stretchColumns="*"
+           android:layout_marginTop="30dp"
+           >
+
+           <TableRow>
+
+               <Button
+                   android:id="@+id/btnCamera"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="Connect Camera"
+                   android:layout_gravity="center"
+                   android:background="@android:color/holo_orange_light" />
+
+               <Button
+                   android:id="@+id/btnUpload"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="Upload file to Web server"
+                   android:layout_gravity="center"
+                   android:background="@android:color/holo_orange_light" />
+
+
+           </TableRow>
+
+
+       </TableLayout>
+
 
    </LinearLayout>
 

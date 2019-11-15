@@ -1,14 +1,26 @@
 package com.example.camerascan;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.PointF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 
 import java.io.File;
 
@@ -21,12 +33,10 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 
-public class MainActivity extends Activity implements View.OnTouchListener
-
-{
+public class MainActivity extends Activity implements View.OnTouchListener {
     private static final String TAG = "Touch";
     @SuppressWarnings("unused")
-    private static final float MIN_ZOOM = 1f,MAX_ZOOM = 1f;
+    private static final float MIN_ZOOM = 1f, MAX_ZOOM = 1f;
 
     // These matrices will be used to scale points of the image
     Matrix matrix = new Matrix();
@@ -43,15 +53,23 @@ public class MainActivity extends Activity implements View.OnTouchListener
     PointF mid = new PointF();
     float oldDist = 1f;
 
-    /** Called when the activity is first created. */
+    /**
+     * Called when the activity is first created.
+     */
+
+    int REQUEST_CODE_CAMERA=100;
+    ImageView view;
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ImageView view = (ImageView) findViewById(R.id.imageView);
+        // ZOOM IMAGE
+        view = findViewById(R.id.imageView);
         view.setOnTouchListener(this);
+
+       // CropImage.activity().start(this);
+
         Button btnUpload = findViewById(R.id.btnUpload);
         btnUpload.setOnClickListener(new View.OnClickListener() {
 
@@ -59,22 +77,120 @@ public class MainActivity extends Activity implements View.OnTouchListener
             @Override
             public void onClick(View view) {
 
-                uploadToServer();
+                setContentView(R.layout.login_form);
+                final EditText edtEmail = findViewById(R.id.edtEmail);
+                final EditText edtPassword = findViewById(R.id.edtPassword);
+                Button btnLogin = findViewById(R.id.btnLogin);
+
+
+                edtEmail.setText("admin@gmail.com");
+                edtPassword.setText("123456");
+
+                btnLogin.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(getApplication(), "EMAIL: " + edtEmail.getText().toString() + ", PASSWORD: " + edtPassword.getText().toString(), Toast.LENGTH_LONG).show();
+                        if (edtEmail.getText().toString().equals("admin@gmail.com") && edtPassword.getText().toString().equals("123456")) {
+                            uploadToServer();
+                            setContentView(R.layout.activity_main);
+
+                        }
+                    }
+                });
 
             }
         });
 
+        // CONNECT CAMERA
         Button btnConnectCamera = findViewById(R.id.btnCamera);
         btnConnectCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA},REQUEST_CODE_CAMERA);
 
             }
         });
     }
 
-    public void uploadToServer(){
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode==REQUEST_CODE_CAMERA && grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intent,REQUEST_CODE_CAMERA);
+
+        }else {
+
+            Toast.makeText(this,"YOU DO NOT HAVE ROLE CONNECT CAMERA",Toast.LENGTH_LONG).show();
+
+
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode==REQUEST_CODE_CAMERA && resultCode==RESULT_OK && data!=null){
+            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+            System.out.println("HEIGHT: " + bitmap.getHeight());
+
+            System.out.println("WIDTH: " + bitmap.getWidth());
+            int height = bitmap.getHeight();
+            int width = bitmap.getWidth();
+            int bounding = dpToPx(300);
+            float xScale = ((float) bounding) / width;
+            float yScale = ((float) bounding) / height;
+            //Bitmap  resized = Bitmap.createScaledBitmap(bitmap,(int)(bitmap.getWidth()*2), (int)(bitmap.getHeight()*2), true);
+
+            //Drawable drawable = ConvertBitmapToDrawable(bitmap);
+
+            //view.setImageDrawable(drawable);
+            float scale = (xScale <= yScale) ? xScale : yScale;
+
+
+            // Create a matrix for the scaling and add the scaling data
+            Matrix matrix = new Matrix();
+            matrix.postScale(scale, scale);
+
+            // Create a new bitmap and convert it to a format understood by the ImageView
+            Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+
+
+            Drawable result = ConvertBitmapToDrawable(scaledBitmap);
+
+            // Apply the scaled bitmap
+            view.setImageDrawable(result);
+
+            //view.setImageBitmap(resized);
+        }
+
+//        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+//            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+//            if (resultCode == RESULT_OK) {
+//                Uri resultUri = result.getUri();
+//            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+//                Exception error = result.getError();
+//            }
+//        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private int dpToPx(int dp) {
+        float density = getApplicationContext().getResources().getDisplayMetrics().density;
+        return Math.round((float)dp * density);
+    }
+
+    public Drawable ConvertBitmapToDrawable(Bitmap bitmap)
+    {
+
+        Drawable drawable = new BitmapDrawable(getResources(),bitmap);
+        return drawable;
+    }
+
+    public void uploadToServer() {
         String filePath = "drawable://" + R.drawable.demo;
+
+
         Retrofit retrofit = NetworkClient.getRetrofitClient(this);
         UploadAPIs uploadAPIs = retrofit.create(UploadAPIs.class);
         //Create a file object using file path
@@ -91,6 +207,7 @@ public class MainActivity extends Activity implements View.OnTouchListener
             @Override
             public void onResponse(Call call, Response response) {
             }
+
             @Override
             public void onFailure(Call call, Throwable t) {
             }
@@ -118,18 +235,20 @@ public class MainActivity extends Activity implements View.OnTouchListener
 //            }
 //        });
     }
+
     @Override
-    public boolean onTouch(View v, MotionEvent event)
-    {
-        ImageView view = (ImageView) v;
+    public boolean onTouch(View v, MotionEvent event) {
+        //view = (ImageView) v;
+
         view.setScaleType(ImageView.ScaleType.MATRIX);
         float scale;
+
+
 
         dumpEvent(event);
         // Handle touch events here...
 
-        switch (event.getAction() & MotionEvent.ACTION_MASK)
-        {
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:   // first finger down only
                 savedMatrix.set(matrix);
                 start.set(event.getX(), event.getY());
@@ -159,18 +278,14 @@ public class MainActivity extends Activity implements View.OnTouchListener
 
             case MotionEvent.ACTION_MOVE:
 
-                if (mode == DRAG)
-                {
+                if (mode == DRAG) {
                     matrix.set(savedMatrix);
                     matrix.postTranslate(event.getX() - start.x, event.getY() - start.y); // create the transformation in the matrix  of points
-                }
-                else if (mode == ZOOM)
-                {
+                } else if (mode == ZOOM) {
                     // pinch zooming
                     float newDist = spacing(event);
                     Log.d(TAG, "newDist=" + newDist);
-                    if (newDist > 5f)
-                    {
+                    if (newDist > 5f) {
                         matrix.set(savedMatrix);
                         scale = newDist / oldDist; // setting the scaling of the
                         // matrix...if scale > 1 means
@@ -194,8 +309,7 @@ public class MainActivity extends Activity implements View.OnTouchListener
      * ----------------------------------------------------
      */
 
-    private float spacing(MotionEvent event)
-    {
+    private float spacing(MotionEvent event) {
         float x = event.getX(0) - event.getX(1);
         float y = event.getY(0) - event.getY(1);
         return (float) Math.sqrt(x * x + y * y);
@@ -208,31 +322,29 @@ public class MainActivity extends Activity implements View.OnTouchListener
      * ------------------------------------------------------------
      */
 
-    private void midPoint(PointF point, MotionEvent event)
-    {
+    private void midPoint(PointF point, MotionEvent event) {
         float x = event.getX(0) + event.getX(1);
         float y = event.getY(0) + event.getY(1);
         point.set(x / 2, y / 2);
     }
 
-    /** Show an event in the LogCat view, for debugging */
-    private void dumpEvent(MotionEvent event)
-    {
-        String names[] = { "DOWN", "UP", "MOVE", "CANCEL", "OUTSIDE","POINTER_DOWN", "POINTER_UP", "7?", "8?", "9?" };
+    /**
+     * Show an event in the LogCat view, for debugging
+     */
+    private void dumpEvent(MotionEvent event) {
+        String names[] = {"DOWN", "UP", "MOVE", "CANCEL", "OUTSIDE", "POINTER_DOWN", "POINTER_UP", "7?", "8?", "9?"};
         StringBuilder sb = new StringBuilder();
         int action = event.getAction();
         int actionCode = action & MotionEvent.ACTION_MASK;
         sb.append("event ACTION_").append(names[actionCode]);
 
-        if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_POINTER_UP)
-        {
+        if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_POINTER_UP) {
             sb.append("(pid ").append(action >> MotionEvent.ACTION_POINTER_ID_SHIFT);
             sb.append(")");
         }
 
         sb.append("[");
-        for (int i = 0; i < event.getPointerCount(); i++)
-        {
+        for (int i = 0; i < event.getPointerCount(); i++) {
             sb.append("#").append(i);
             sb.append("(pid ").append(event.getPointerId(i));
             sb.append(")=").append((int) event.getX(i));
@@ -244,6 +356,7 @@ public class MainActivity extends Activity implements View.OnTouchListener
         sb.append("]");
         Log.d("Touch Events ---------", sb.toString());
     }
+
 
 
 }

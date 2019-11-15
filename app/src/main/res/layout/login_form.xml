@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="LOGIN FORM"
+        android:layout_gravity="center"
+        android:textSize="30dp"
+        android:layout_marginTop="30dp"
+
+        />
+
+   <TableLayout
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:stretchColumns="2"
+       >
+       <TableRow>
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="EMAIL: "
+               android:textSize="10dp"
+               />
+
+           <EditText
+               android:id="@+id/edtEmail"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:textSize="10dp"
+               android:layout_span="2"
+
+               />
+
+
+       </TableRow>
+
+       <TableRow>
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="PASSWORD: "
+               android:textSize="10dp"
+               />
+
+           <EditText
+               android:id="@+id/edtPassword"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:textSize="10dp"
+               android:layout_span="2"
+               />
+
+
+       </TableRow>
+
+   </TableLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        >
+        <Button
+
+            android:id="@+id/btnLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="LOGIN"
+            android:layout_gravity="center"
+            android:textSize="20dp"
+            android:layout_marginTop="10dp"
+
+            />
+
+        <Button
+
+            android:id="@+id/btnRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="REGISTER"
+            android:layout_gravity="center"
+            android:textSize="20dp"
+            android:layout_marginTop="10dp"
+
+            />
+
+
+    </LinearLayout>
+
+</LinearLayout>

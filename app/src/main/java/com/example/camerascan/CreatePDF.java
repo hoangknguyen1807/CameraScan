@@ -1,6 +1,5 @@
 package com.example.camerascan;
 
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;

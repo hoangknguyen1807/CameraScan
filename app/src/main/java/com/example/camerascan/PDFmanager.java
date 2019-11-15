@@ -2,22 +2,14 @@ package com.example.camerascan;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Image;
-
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 public class PDFmanager extends Activity {
 
@@ -68,20 +60,8 @@ public class PDFmanager extends Activity {
         if (resultCode == Activity.RESULT_OK)
             switch (requestCode) {
                 case GALLERY_REQUEST_CODE:
-                    //data.getData returns the content URI for the selected Image
-                    Uri selectedImage = data.getData();
-                    try {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
-                        ByteArrayOutputStream stream3 = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream3);
-                        img = Image.getInstance(stream3.toByteArray());
-                    } catch (FileNotFoundException e){
-
-                    } catch (IOException ioe) {
-
-                    } catch (BadElementException bee) {
-
-                    }
+                    ImageLoading imageLoading = new ImageLoading(PDFmanager.this);
+                    imageLoading.execute(data);//, dir, name);
                     break;
             }
     }

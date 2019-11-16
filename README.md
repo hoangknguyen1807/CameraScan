@@ -8,7 +8,7 @@ wonderful land to be in as an IT student.
 # About this repository
 ## CameraScan
   TO-DOs
-    1. Open Image from Storage : **DONE**
-    2. Edit Image, Draw on Image : **DONE**
-    3. Save Image as PDF
-    4. Share PDF file through a third-party app
+  1. Open Image from Storage : **DONE**
+  2. Edit Image, Draw on Image : **DONE**
+  3. Save Image as PDF
+  4. Share PDF file through a third-party app

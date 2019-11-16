@@ -19,33 +19,15 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        text = findViewById(R.id.textView);
-
-        dir = findViewById(R.id.dir);
-        dir.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-        content = findViewById(R.id.content);
-
-        confirm = findViewById(R.id.confirm);
-
-        save = findViewById(R.id.save);
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SaveTXT write = new SaveTXT(MainActivity.this);
-                write.execute(content.getText().toString());
-            }
-        });
     }
 
     public void toPDF(View view){
         Intent PDF = new Intent(this, PDFmanager.class);
         startActivity(PDF);
+    }
+
+    public void toTXT(View view){
+        Intent TXT = new Intent(this, TXTmanager.class);
+        startActivity(TXT);
     }
 }

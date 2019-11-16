@@ -1,116 +1,67 @@
 package com.example.camerascan;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.InputType;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-
-import com.itextpdf.text.Image;
 
 import java.io.File;
 
 import lib.folderpicker.FolderPicker;
 
-public class PDFmanager extends Activity {
+public class TXTmanager extends Activity {
 
-    private static final int GALLERY_REQUEST_CODE = 1555;
     private static final int FOLDERPICKER_CODE = 1666;
 
-    Image img;
-    Button gallery, convert, cdir;
-    ImageView preview;
+    Button cdir, save;
     String filename;
-    String path = Environment.getExternalStorageDirectory() + "/PDF_Converter/";
+    String path = Environment.getExternalStorageDirectory()+ "/PDF_Converter/";;
     TextView pathtxt;
+    EditText content;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pdf_manager);
-
-        preview = findViewById(R.id.preview);
+        setContentView(R.layout.save_text_manager);
 
         pathtxt = findViewById(R.id.pathtxt);
         pathtxt.setText(path);
 
-        gallery = findViewById(R.id.gallery);
-        gallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pickFromGallery();
-            }
-        });
+        content = findViewById(R.id.content);
 
-        convert = findViewById(R.id.convert);
-        convert.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                convert();
-            }
-        });
-
-        cdir = findViewById(R.id.cd);
+        cdir = findViewById(R.id.cdir);
         cdir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(PDFmanager.this, FolderPicker.class);
+                Intent intent = new Intent(TXTmanager.this, FolderPicker.class);
                 intent.putExtra("title", "Chọn đường dẫn");
                 startActivityForResult(intent, FOLDERPICKER_CODE);
             }
         });
-    }
 
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        SharedPreferences stored = PDFmanager.this.getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = stored.edit();
-        editor.putString("path", path);
-        editor.commit();
-    }
-
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        SharedPreferences stored = PDFmanager.this.getPreferences(Context.MODE_PRIVATE);
-        path = stored.getString("path", null);
-    }
-
-    private void pickFromGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        String[] mimeTypes = {"image/jpeg", "image/png"};
-        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
-        startActivityForResult(intent, GALLERY_REQUEST_CODE);
+        save = findViewById(R.id.save);
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveTXT();
+            }
+        });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        // Result code is RESULT_OK only if the user selects an Image
         if (resultCode == Activity.RESULT_OK)
             switch (requestCode) {
-                case GALLERY_REQUEST_CODE:
-                    ImageLoading imageLoading = new ImageLoading(PDFmanager.this);
-                    imageLoading.execute(data);//, dir, name);
-                    break;
                 case FOLDERPICKER_CODE:
                     path = data.getExtras().getString("data") + "/";
                     pathtxt.setText(path);
@@ -118,13 +69,9 @@ public class PDFmanager extends Activity {
             }
     }
 
-    public void convert() {
-        dirNotExist();
-    }
-
-    public void dirNotExist() {
+    public void saveTXT(){
         File dir = new File(path);
-        if (!dir.exists()) {
+        if (!dir.exists()){
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Đường dẫn không tồn tại.\nTạo thư mục?");
             builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
@@ -141,7 +88,8 @@ public class PDFmanager extends Activity {
             });
 
             builder.show();
-        } else
+        }
+        else
             NameDialog();
     }
 
@@ -171,21 +119,21 @@ public class PDFmanager extends Activity {
         builder.show();
     }
 
-    public void fileExist() {
-        if (filename.indexOf(".pdf") == -1)
-            filename += ".pdf";
+    public void fileExist(){
+        if (filename.indexOf(".txt")==-1)
+            filename+=".txt";
         File file = new File(path + filename);
-        if (!file.exists()) {
-            CreatePDF createPDF = new CreatePDF(PDFmanager.this);
-            createPDF.execute(img);
+        if (!file.exists()){
+            SaveTXT write = new SaveTXT(TXTmanager.this);
+            write.execute(path, filename, content.getText().toString());
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Tập tin đã tồn tại.\nGhi đè?");
             builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    CreatePDF createPDF = new CreatePDF(PDFmanager.this);
-                    createPDF.execute(img);//, dir, name);
+                    SaveTXT write = new SaveTXT(TXTmanager.this);
+                    write.execute(path, filename, content.getText().toString());
                 }
             });
             builder.setNegativeButton("Từ chối", new DialogInterface.OnClickListener() {
@@ -196,21 +144,6 @@ public class PDFmanager extends Activity {
             });
 
             builder.show();
-        }
-    }
-
-    public void previewPDF() {
-        File file = new File(path + filename);
-        if (file.exists()) {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            Uri uri = Uri.fromFile(file);
-            intent.setDataAndType(uri, "application/pdf");
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            try {
-                startActivity(intent);
-            } catch (ActivityNotFoundException e) {
-                Log.e("Instance Failed", "Failed Get Instance");
-            }
         }
     }
 }

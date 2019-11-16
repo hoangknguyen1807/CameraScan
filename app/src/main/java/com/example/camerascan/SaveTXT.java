@@ -12,12 +12,11 @@ import java.io.FileOutputStream;
 public class SaveTXT extends
         AsyncTask<String, Void, Void> {
 
-    MainActivity callerContext;
+    TXTmanager callerContext;
     ProgressDialog dialog = null;
-    String filename = "NEW_TXT.txt";
 
     public SaveTXT(Context callerContext){
-        this.callerContext = (MainActivity) callerContext;
+        this.callerContext = (TXTmanager) callerContext;
         dialog = new ProgressDialog(callerContext);
     }
 
@@ -32,7 +31,9 @@ public class SaveTXT extends
     @Override
     protected Void doInBackground(String... strings) {
         //Text of the Document
-        String textToWrite = strings[0];
+        String path= strings[0];
+        String filename = strings[1];
+        String textToWrite = strings[2];
 
         //Checking the availability state of the External Storage.
         String state = Environment.getExternalStorageState();
@@ -43,7 +44,7 @@ public class SaveTXT extends
         }
 
         //Create a new file that points to the root directory, with the given name:
-        File file = new File(Environment.getExternalStorageDirectory()+ "/PDFdemo/", filename);
+        File file = new File(path, filename);
 
         //This point and below is responsible for the write operation
         FileOutputStream outputStream = null;
@@ -51,7 +52,7 @@ public class SaveTXT extends
             file.createNewFile();
             //second argument of FileOutputStream constructor indicates whether
             //to append or create new file if one exists
-            outputStream = new FileOutputStream(file, true);
+            outputStream = new FileOutputStream(file, false);
 
             outputStream.write(textToWrite.getBytes());
             outputStream.flush();

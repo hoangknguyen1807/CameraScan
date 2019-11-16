@@ -27,6 +27,12 @@
             android:text="Chọn đường dẫn" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/pathtxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="" />
+
     <ImageView
         android:id="@+id/preview"
         android:layout_width="match_parent"

@@ -57,8 +57,8 @@ public class CreatePDF extends
                 dir.mkdir();
             }
 
-            File file = new File(callerContext.path,
-                    callerContext.filename + ".pdf");
+            File file = new File(callerContext.path,callerContext.filename);
+
 
             FileOutputStream fOut = new FileOutputStream(file);
 
@@ -90,5 +90,6 @@ public class CreatePDF extends
         super.onPostExecute(s);
         dialog.dismiss();
         Toast.makeText(callerContext, "File PDF đã được lưu", Toast.LENGTH_LONG).show();
+        callerContext.previewPDF();
     }
 }

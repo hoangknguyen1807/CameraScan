@@ -29,6 +29,32 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.example.camerascan.BaseActivity;
+import com.example.camerascan.R;
+import com.example.camerascan.imageeditor.fragment.AddTextFragment;
+import com.example.camerascan.imageeditor.fragment.BeautyFragment;
+import com.example.camerascan.imageeditor.fragment.BrightnessFragment;
+import com.example.camerascan.imageeditor.fragment.FilterListFragment;
+import com.example.camerascan.imageeditor.fragment.MainMenuFragment;
+import com.example.camerascan.imageeditor.fragment.paint.PaintFragment;
+import com.example.camerascan.imageeditor.fragment.RotateFragment;
+import com.example.camerascan.imageeditor.fragment.SaturationFragment;
+import com.example.camerascan.imageeditor.fragment.StickerFragment;
+import com.example.camerascan.imageeditor.fragment.crop.CropFragment;
+import com.example.camerascan.imageeditor.interfaces.OnLoadingDialogListener;
+import com.example.camerascan.imageeditor.interfaces.OnMainBitmapChangeListener;
+import com.example.camerascan.imageeditor.utils.BitmapUtils;
+import com.example.camerascan.imageeditor.utils.PermissionUtils;
+import com.example.camerascan.imageeditor.view.BrightnessView;
+import com.example.camerascan.imageeditor.view.CustomPaintView;
+import com.example.camerascan.imageeditor.view.CustomViewPager;
+import com.example.camerascan.imageeditor.view.RotateImageView;
+import com.example.camerascan.imageeditor.view.SaturationView;
+import com.example.camerascan.imageeditor.view.StickerView;
+import com.example.camerascan.imageeditor.view.TextStickerView;
+import com.example.camerascan.imageeditor.view.imagezoom.ImageViewTouch;
+import com.example.camerascan.imageeditor.view.imagezoom.ImageViewTouchBase;
+import com.example.camerascan.imageeditor.widget.RedoUndoController;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -88,7 +114,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
 
     public static void start(Activity activity, Intent intent, int requestCode) {
         if (TextUtils.isEmpty(intent.getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH))) {
-            Toast.makeText(activity, R.string.iamutkarshtiwari_github_io_ananas_not_selected, Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, R.string.not_selected, Toast.LENGTH_SHORT).show();
             return;
         }
         activity.startActivityForResult(intent, requestCode);
@@ -126,7 +152,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     }
 
     private void initView() {
-        loadingDialog = BaseActivity.getLoadingDialog(this, R.string.iamutkarshtiwari_github_io_ananas_loading,
+        loadingDialog = BaseActivity.getLoadingDialog(this, R.string.loading,
                 false);
 
         DisplayMetrics metrics = getResources().getDisplayMetrics();
@@ -261,8 +287,8 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
                     onSaveTaskDone();
                 } else {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-                    alertDialogBuilder.setMessage(R.string.iamutkarshtiwari_github_io_ananas_exit_without_save)
-                            .setCancelable(false).setPositiveButton(R.string.iamutkarshtiwari_github_io_ananas_confirm, (dialog, id) -> finish()).setNegativeButton(R.string.iamutkarshtiwari_github_io_ananas_cancel, (dialog, id) -> dialog.cancel());
+                    alertDialogBuilder.setMessage(R.string.exit_without_save)
+                            .setCancelable(false).setPositiveButton(R.string.confirm, (dialog, id) -> finish()).setNegativeButton(R.string.cancel, (dialog, id) -> dialog.cancel());
 
                     AlertDialog alertDialog = alertDialogBuilder.create();
                     alertDialog.show();
@@ -316,9 +342,9 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
                         resetOpTimes();
                         onSaveTaskDone();
                     } else {
-                        showToast(R.string.iamutkarshtiwari_github_io_ananas_save_error);
+                        showToast(R.string.save_error);
                     }
-                }, e -> showToast(R.string.iamutkarshtiwari_github_io_ananas_save_error));
+                }, e -> showToast(R.string.save_error));
 
         compositeDisposable.add(saveImageDisposable);
     }
@@ -340,7 +366,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(subscriber -> loadingDialog.show())
                 .doFinally(() -> loadingDialog.dismiss())
-                .subscribe(processedBitmap -> changeMainBitmap(processedBitmap, false), e -> showToast(R.string.iamutkarshtiwari_github_io_ananas_load_error));
+                .subscribe(processedBitmap -> changeMainBitmap(processedBitmap, false), e -> showToast(R.string.load_error));
 
         compositeDisposable.add(loadImageDisposable);
     }

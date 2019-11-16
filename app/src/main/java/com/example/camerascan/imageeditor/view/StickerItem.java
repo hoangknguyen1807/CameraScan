@@ -14,7 +14,7 @@ import android.view.View;
 
 import com.example.camerascan.R;
 
-import iamutkarshtiwari.github.io.ananas.editimage.utils.RectUtil;
+import com.example.camerascan.imageeditor.utils.RectUtil;
 
 public class StickerItem {
     private static final float MIN_SCALE = 0.15f;

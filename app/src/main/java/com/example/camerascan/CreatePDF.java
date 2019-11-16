@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
+
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
@@ -51,7 +52,12 @@ public class CreatePDF extends
         }
 
         try {
-            File file = new File(Environment.getExternalStorageDirectory()+ "/PDFdemo/",
+            File dir = new File(callerContext.path);
+            if (!dir.exists()){
+                dir.mkdir();
+            }
+
+            File file = new File(callerContext.path,
                     callerContext.filename + ".pdf");
 
             FileOutputStream fOut = new FileOutputStream(file);

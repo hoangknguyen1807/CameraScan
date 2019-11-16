@@ -12,7 +12,7 @@
         android:orientation="vertical">
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/pdf"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="PDF Converter"
@@ -21,6 +21,12 @@
 
         <Button
             android:id="@+id/dir"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/save"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Save file" />

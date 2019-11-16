@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">CameraScan</string>
+    <string name="no_image_found">No Image Found</string>
+    <string name="images">%d images</string>
+    <string name="load_error">Failed to load the image</string>
+    <string name="loading">Loading...</string>
 </resources>

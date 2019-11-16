@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 
 import androidx.fragment.app.Fragment;
@@ -20,6 +21,7 @@ public class ImagesFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater,
                              final ViewGroup container, final Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.gallery, null);
+
 
         Cursor cur = getActivity().getContentResolver()
                 .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
@@ -43,9 +45,9 @@ public class ImagesFragment extends Fragment {
             cur.close();
         }
 
-        GridView grid = (GridView) v.findViewById(R.id.grid);
+        GridView grid = v.findViewById(R.id.grid);
         grid.setAdapter(new GalleryAdapter(getActivity(), images));
-        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        grid.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {

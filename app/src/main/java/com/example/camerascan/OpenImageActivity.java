@@ -2,7 +2,6 @@ package com.example.camerascan;
 
 import android.content.Intent;
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -17,10 +16,12 @@ public class OpenImageActivity extends BaseActivity {
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction();
 
+
         // Replace whatever is in the fragment_container view with this
         // fragment,
         // and add the transaction to the back stack
         transaction.replace(android.R.id.content, newFragment);
+
 
         // Commit the transaction
         transaction.commit();

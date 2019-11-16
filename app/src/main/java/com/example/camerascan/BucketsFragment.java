@@ -1,19 +1,21 @@
 package com.example.camerascan;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.MediaStore;
+
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import androidx.fragment.app.Fragment;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BucketsFragment extends Fragment {
 
@@ -59,9 +61,9 @@ public class BucketsFragment extends Fragment {
                     Toast.LENGTH_SHORT).show();
             getActivity().finish();
         } else {
-            GridView grid = (GridView) v.findViewById(R.id.grid);
+            GridView grid = v.findViewById(R.id.grid);
             grid.setAdapter(new GalleryAdapter(getActivity(), buckets));
-            grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            grid.setOnItemClickListener(new OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view,
                                         int position, long id) {

@@ -9,6 +9,7 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -21,6 +22,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
 
@@ -58,18 +62,30 @@ public class MainActivity extends Activity implements View.OnTouchListener {
      */
 
     int REQUEST_CODE_CAMERA=100;
-    ImageView view;
+
+    ImageView myImage;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         // ZOOM IMAGE
-        view = findViewById(R.id.imageView);
-        view.setOnTouchListener(this);
+        myImage = findViewById(R.id.imageView);
+        myImage.setOnTouchListener(this);
 
-       // CropImage.activity().start(this);
+        // Crop
+        Button btnCrop = findViewById(R.id.btnCrop);
+        btnCrop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               onChooseFile(view);
 
+            }
+        });
+
+
+
+        // Upload
         Button btnUpload = findViewById(R.id.btnUpload);
         btnUpload.setOnClickListener(new View.OnClickListener() {
 
@@ -110,8 +126,27 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
             }
         });
+
+        // SAVE IMAGE IN GALLERY
+        Button btnSave = findViewById(R.id.btnSave);
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                myImage.invalidate();
+                BitmapDrawable drawable = (BitmapDrawable) myImage.getDrawable();
+                Bitmap bitmap = drawable.getBitmap();
+                MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "demo" , "demo");
+            }
+        });
     }
 
+    // Choose file crop
+    public void onChooseFile(View view){
+        //CropImage.activity().start(MainActivity.this);
+        CropImage.activity()
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .start(this);
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode==REQUEST_CODE_CAMERA && grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
@@ -130,47 +165,55 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode==REQUEST_CODE_CAMERA && resultCode==RESULT_OK && data!=null){
-            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-            System.out.println("HEIGHT: " + bitmap.getHeight());
 
-            System.out.println("WIDTH: " + bitmap.getWidth());
-            int height = bitmap.getHeight();
-            int width = bitmap.getWidth();
-            int bounding = dpToPx(300);
-            float xScale = ((float) bounding) / width;
-            float yScale = ((float) bounding) / height;
+
+            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+//            System.out.println("HEIGHT: " + bitmap.getHeight());
+//
+//            System.out.println("WIDTH: " + bitmap.getWidth());
+//            int height = bitmap.getHeight();
+//            int width = bitmap.getWidth();
+//            int bounding = dpToPx(400);
+//            float xScale = ((float) bounding) / width;
+//            float yScale = ((float) bounding) / height;
+//            float scale = (xScale <= yScale) ? xScale : yScale;
+//            // Create a matrix for the scaling and add the scaling data
+//            Matrix matrix = new Matrix();
+//            matrix.postScale(scale, scale);
+//            // Create a new bitmap and convert it to a format understood by the ImageView
+//            Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+//
+//
+//            Drawable result = ConvertBitmapToDrawable(scaledBitmap);
+//            myImage.setImageDrawable(result);
+
             //Bitmap  resized = Bitmap.createScaledBitmap(bitmap,(int)(bitmap.getWidth()*2), (int)(bitmap.getHeight()*2), true);
 
-            //Drawable drawable = ConvertBitmapToDrawable(bitmap);
+            Drawable drawable = ConvertBitmapToDrawable(bitmap);
 
-            //view.setImageDrawable(drawable);
-            float scale = (xScale <= yScale) ? xScale : yScale;
-
-
-            // Create a matrix for the scaling and add the scaling data
-            Matrix matrix = new Matrix();
-            matrix.postScale(scale, scale);
-
-            // Create a new bitmap and convert it to a format understood by the ImageView
-            Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+            myImage.setImageDrawable(drawable);
 
 
-            Drawable result = ConvertBitmapToDrawable(scaledBitmap);
+
+
+
 
             // Apply the scaled bitmap
-            view.setImageDrawable(result);
+
 
             //view.setImageBitmap(resized);
         }
 
-//        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-//            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-//            if (resultCode == RESULT_OK) {
-//                Uri resultUri = result.getUri();
-//            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-//                Exception error = result.getError();
-//            }
-//        }
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
+
+                myImage.setImageURI(resultUri);
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
+        }
 
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -240,7 +283,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     public boolean onTouch(View v, MotionEvent event) {
         //view = (ImageView) v;
 
-        view.setScaleType(ImageView.ScaleType.MATRIX);
+        myImage.setScaleType(ImageView.ScaleType.MATRIX);
         float scale;
 
 
@@ -297,7 +340,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
                 break;
         }
 
-        view.setImageMatrix(matrix); // display the transformation on screen
+        myImage.setImageMatrix(matrix); // display the transformation on screen
 
         return true; // indicate event was handled
     }

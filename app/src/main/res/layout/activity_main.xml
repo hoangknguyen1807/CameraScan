@@ -39,7 +39,7 @@
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:text="Connect Camera"
-                   android:layout_gravity="center"
+
                    android:background="@android:color/holo_orange_light" />
 
                <Button
@@ -47,8 +47,29 @@
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:text="Upload file to Web server"
-                   android:layout_gravity="center"
-                   android:background="@android:color/holo_orange_light" />
+
+                   android:background="@android:color/holo_blue_light" />
+
+
+           </TableRow>
+
+           <TableRow>
+
+               <Button
+                   android:id="@+id/btnSave"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="SAVE TO GALLERY"
+
+                   android:background="@android:color/holo_green_light" />
+
+               <Button
+                   android:id="@+id/btnCrop"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="Crop"
+
+                   android:background="@android:color/holo_purple" />
 
 
            </TableRow>

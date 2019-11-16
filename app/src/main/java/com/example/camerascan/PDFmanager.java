@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 
@@ -18,14 +18,14 @@ public class PDFmanager extends Activity {
     //path of the pdf file which will get saved
     Image img;
     Button gallery, convert;
-    TextView announce;
+    ImageView preview;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pdf_manager);
 
-        announce = findViewById(R.id.announce);
+        preview = findViewById(R.id.preview);
 
         gallery = findViewById(R.id.gallery);
         gallery.setOnClickListener(new View.OnClickListener() {

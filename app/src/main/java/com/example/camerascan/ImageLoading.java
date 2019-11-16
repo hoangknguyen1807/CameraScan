@@ -15,7 +15,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public class ImageLoading extends AsyncTask<Intent, Void, Void> {
+public class ImageLoading extends AsyncTask<Intent, Void, Bitmap> {
 
     PDFmanager callerContext;
     ProgressDialog dialog = null;
@@ -34,10 +34,12 @@ public class ImageLoading extends AsyncTask<Intent, Void, Void> {
     }
 
     @Override
-    protected Void doInBackground(Intent... intents) {
+    protected Bitmap doInBackground(Intent... intents) {
         Uri selectedImage = intents[0].getData();
+        Bitmap res = null;
         try {
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(callerContext.getContentResolver(), selectedImage);
+            res = bitmap;
             ByteArrayOutputStream stream3 = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream3);
             callerContext.img = Image.getInstance(stream3.toByteArray());
@@ -48,12 +50,13 @@ public class ImageLoading extends AsyncTask<Intent, Void, Void> {
         } catch (BadElementException bee) {
 
         }
-        return null;
+        return res;
     }
 
     @Override
-    protected void onPostExecute(Void aVoid) {
-        super.onPostExecute(aVoid);
+    protected void onPostExecute(Bitmap bitmap) {
+        super.onPostExecute(bitmap);
         dialog.dismiss();
+        callerContext.preview.setImageBitmap(bitmap);
     }
 }

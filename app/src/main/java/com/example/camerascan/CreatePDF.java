@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -42,6 +43,13 @@ public class CreatePDF extends
         image = images[0];
         Document doc = new Document();
 
+        String state = Environment.getExternalStorageState();
+        if (!Environment.MEDIA_MOUNTED.equals(state)) {
+
+            //If it isn't mounted - we can't write into it.
+            return null;
+        }
+
         try {
             File file = new File(Environment.getExternalStorageDirectory()+ "/PDFdemo/",
                     "demo1.pdf");
@@ -75,6 +83,6 @@ public class CreatePDF extends
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
         dialog.dismiss();
-        callerContext.announce.setText(s);
+        Toast.makeText(callerContext, "File PDF đã được lưu", Toast.LENGTH_LONG).show();
     }
 }

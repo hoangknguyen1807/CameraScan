@@ -15,9 +15,9 @@
         android:layout_height="wrap_content"
         android:text="Chuyển" />
 
-    <TextView
-        android:id="@+id/announce"
+    <ImageView
+        android:id="@+id/preview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:layout_height="match_parent" />
+
 </LinearLayout>

@@ -146,10 +146,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
                 /*case TAKE_PHOTO_CODE:
                     handleTakePhoto();
-                    break;
-                case ACTION_REQUEST_EDITIMAGE:
-                    handleEditorImage(data);
                     break;*/
+                case ACTION_EDITIMAGE:
+                    handleEditorImage(data);
+                    break;
             }
         }
     }
@@ -157,6 +157,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void handleOpenImageFromStorage(Intent data) {
         path = data.getStringExtra("imgPath");
         loadImage(path);
+    }
+
+    private void handleEditorImage(Intent data) {
+        String newFilePath = data.getStringExtra(ImageEditorIntentBuilder.OUTPUT_PATH);
+        boolean isImageEdit = data.getBooleanExtra(EditImageActivity.IS_IMAGE_EDITED, false);
+
+        if (isImageEdit) {
+            Toast.makeText(this, getString(R.string.save_path, newFilePath), Toast.LENGTH_LONG).show();
+        } else {
+            newFilePath = data.getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
+
+        }
+
+        loadImage(newFilePath);
     }
 
     private void loadImage(String imagePath) {

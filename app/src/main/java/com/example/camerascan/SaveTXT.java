@@ -9,14 +9,14 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileOutputStream;
 
-public class WriteFile extends
+public class SaveTXT extends
         AsyncTask<String, Void, Void> {
 
     MainActivity callerContext;
     ProgressDialog dialog = null;
     String filename = "NEW_TXT.txt";
 
-    public WriteFile (Context callerContext){
+    public SaveTXT(Context callerContext){
         this.callerContext = (MainActivity) callerContext;
         dialog = new ProgressDialog(callerContext);
     }

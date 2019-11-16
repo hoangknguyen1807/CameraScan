@@ -16,7 +16,6 @@ public class MainActivity extends Activity {
     TextView text;
     Button dir, confirm;
     EditText content;
-    private String m_Text = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +39,7 @@ public class MainActivity extends Activity {
         dir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WriteFile write = new WriteFile(MainActivity.this);
+                SaveTXT write = new SaveTXT(MainActivity.this);
                 write.execute(text.getText().toString());
             }
         });

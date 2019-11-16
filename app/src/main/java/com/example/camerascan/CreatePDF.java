@@ -52,7 +52,7 @@ public class CreatePDF extends
 
         try {
             File file = new File(Environment.getExternalStorageDirectory()+ "/PDFdemo/",
-                    "demo1.pdf");
+                    callerContext.filename + ".pdf");
 
             FileOutputStream fOut = new FileOutputStream(file);
 

@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -16,6 +17,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+
+import com.example.camerascan.imageeditor.FileUtils;
+
+import java.io.File;
 
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -28,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final int REQUEST_PERMISSION_STORAGE = 1;
 
     public static final int OPEN_IMAGE_CODE = 7;
+    public static final int ACTION_EDITIMAGE = 9;
 
     private ImageView imgView;
     private Bitmap mainBitmap;
@@ -52,17 +58,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imgView = findViewById(R.id.imageView);
 
         Button btnEditImage = findViewById(R.id.btnEditImage);
-        btnEditImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
-        });
+        btnEditImage.setOnClickListener(this);
 
         Button openImage = findViewById(R.id.btnOpenImage);
         openImage.setOnClickListener(this);
 
         loadingDialog = BaseActivity.getLoadingDialog(this, R.string.loading,
                 false);
+    }
+
+    @Override
+    protected void onPause() {
+        compositeDisposable.clear();
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        compositeDisposable.dispose();
+        super.onDestroy();
     }
 
     @Override
@@ -73,7 +87,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 this.openImageFromStorage();
                 break;
             case R.id.btnEditImage:
-                this.
+                this.editImageClick();
+                break;
         }
     }
 
@@ -173,6 +188,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         imgHeight / 4
                 )
         );
+    }
+
+    private void editImageClick() {
+        File outputFile = FileUtils.genEditFile();
+        try {
+            Intent intent = new ImageEditorIntentBuilder(this, path, outputFile.getAbsolutePath())
+                    .withAddText()
+                    .withPaintFeature()
+                    .withFilterFeature()
+                    .withRotateFeature()
+                    .withCropFeature()
+                    .withBrightnessFeature()
+                    .withSaturationFeature()
+                    .withBeautyFeature()
+                    .forcePortrait(true)
+                    .build();
+
+            EditImageActivity.start(this, intent, ACTION_EDITIMAGE);
+        } catch (Exception e) {
+            Toast.makeText(this, "Please choose an image for edit", Toast.LENGTH_SHORT).show();
+            Log.e("Demo App", e.getMessage());
+        }
     }
 
 }

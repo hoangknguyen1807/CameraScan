@@ -33,13 +33,13 @@
             android:text="Connect Camera" />
 
         <Button
-            android:id="@+id/btnUpload"
+            android:id="@+id/btnEditImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="5dp"
             android:background="@android:color/holo_orange_light"
-            android:text="Upload file to Web server" />
+            android:text="@string/edit_image" />
 
         <Button
             android:id="@+id/btnOpenImage"

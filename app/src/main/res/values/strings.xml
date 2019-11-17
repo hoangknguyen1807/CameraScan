@@ -4,7 +4,7 @@
     <string name="saving">Saving...</string>
     <string name="save_path">Save path : %s</string>
 
-    <string name="open_from_storage">Open Image from Storage</string>
+    <string name="open_from_storage">Open an Image</string>
     <string name="edit_image">Edit Image</string>
     <string name="exit_without_save">The edited image is not saved. Do you want to exit? </string>
     <string name="confirm">Confirm</string>

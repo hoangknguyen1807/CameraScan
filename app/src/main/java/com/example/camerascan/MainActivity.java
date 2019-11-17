@@ -178,13 +178,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = new ImageEditorIntentBuilder(this, path, outputFile.getAbsolutePath())
                     .withAddText()
                     .withPaintFeature()
-                    .withFilterFeature()
+                    /*.withFilterFeature()*/
                     .withRotateFeature()
                     .withCropFeature()
-                    .withBrightnessFeature()
-                    .withSaturationFeature()
+                    /*.withBrightnessFeature()
+                    .withSaturationFeature()*/
                     .withStickerFeature()
-                    .withBeautyFeature()
+                    /*.withBeautyFeature()*/
                     .forcePortrait(true)
                     .build();
 

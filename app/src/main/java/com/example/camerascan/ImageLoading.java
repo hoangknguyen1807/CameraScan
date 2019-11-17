@@ -58,5 +58,6 @@ public class ImageLoading extends AsyncTask<Intent, Void, Bitmap> {
         super.onPostExecute(bitmap);
         dialog.dismiss();
         callerContext.preview.setImageBitmap(bitmap);
+        callerContext.convert.setEnabled(true);
     }
 }

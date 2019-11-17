@@ -69,6 +69,7 @@ public class PDFmanager extends Activity {
                 convert();
             }
         });
+        convert.setEnabled(false);
 
         cdir = findViewById(R.id.cd);
         cdir.setOnClickListener(new View.OnClickListener() {

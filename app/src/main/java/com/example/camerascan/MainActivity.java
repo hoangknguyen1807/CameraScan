@@ -4,12 +4,15 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -21,7 +24,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -35,6 +40,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
 
 public class MainActivity extends Activity implements View.OnTouchListener {
@@ -61,9 +68,20 @@ public class MainActivity extends Activity implements View.OnTouchListener {
      * Called when the activity is first created.
      */
 
-    int REQUEST_CODE_CAMERA=100;
+    public final  int REQUEST_CODE_CAMERA=100;
 
-    ImageView myImage;
+     ImageView myImage;
+    Uri uri;
+    public int counter = 0;
+    public final static int READ_EXTERNAL_REQUEST = 2;
+    String mediaPath;
+    String filePath="";
+    public final static int PICK_IMAGE_REQUEST = 1;
+    @Override
+    public void onBackPressed() {
+        onCreate(null);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,19 +89,28 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
         // ZOOM IMAGE
         myImage = findViewById(R.id.imageView);
+
         myImage.setOnTouchListener(this);
 
         // Crop
         Button btnCrop = findViewById(R.id.btnCrop);
         btnCrop.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-               onChooseFile(view);
+            public void onClick(View v) {
+               CropImage.startPickImageActivity(MainActivity.this);
 
             }
         });
 
+        // Rotate
+        Button btnRotate = findViewById(R.id.btnRotate);
+        btnRotate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+                roateImage(myImage);
+            }
+        });
 
         // Upload
         Button btnUpload = findViewById(R.id.btnUpload);
@@ -107,8 +134,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
                     public void onClick(View view) {
                         Toast.makeText(getApplication(), "EMAIL: " + edtEmail.getText().toString() + ", PASSWORD: " + edtPassword.getText().toString(), Toast.LENGTH_LONG).show();
                         if (edtEmail.getText().toString().equals("admin@gmail.com") && edtPassword.getText().toString().equals("123456")) {
-                            uploadToServer();
-                            setContentView(R.layout.activity_main);
+                            requestPermionAndPickImage();
 
                         }
                     }
@@ -140,20 +166,25 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         });
     }
 
-    // Choose file crop
-    public void onChooseFile(View view){
-        //CropImage.activity().start(MainActivity.this);
-        CropImage.activity()
-                .setGuidelines(CropImageView.Guidelines.ON)
-                .start(this);
+    private void roateImage(ImageView imageView) {
+        Matrix matrix = new Matrix();
+        imageView.setScaleType(ImageView.ScaleType.MATRIX); //required
+        matrix.postRotate((float) (++counter)*90f, imageView.getDrawable().getBounds().width()/2,    imageView.getDrawable().getBounds().height()/2);
+        imageView.setImageMatrix(matrix);
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode==REQUEST_CODE_CAMERA && grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             startActivityForResult(intent,REQUEST_CODE_CAMERA);
 
-        }else {
+        }
+
+        if (requestCode != READ_EXTERNAL_REQUEST) return;
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            pickImage();
+        } else {
 
             Toast.makeText(this,"YOU DO NOT HAVE ROLE CONNECT CAMERA",Toast.LENGTH_LONG).show();
 
@@ -162,6 +193,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode==REQUEST_CODE_CAMERA && resultCode==RESULT_OK && data!=null){
@@ -192,16 +224,39 @@ public class MainActivity extends Activity implements View.OnTouchListener {
             Drawable drawable = ConvertBitmapToDrawable(bitmap);
 
             myImage.setImageDrawable(drawable);
-
-
-
-
-
-
             // Apply the scaled bitmap
-
-
             //view.setImageBitmap(resized);
+        }
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null &&
+                data.getData() != null) {
+            // Khi đã chọn xong ảnh thì chúng ta tiến hành upload thôi
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+            assert cursor != null;
+            cursor.moveToFirst();
+
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            mediaPath = cursor.getString(columnIndex);
+            //str1.setText(mediaPath);
+            // Set the Image in ImageView for Previewing the Media
+            myImage.setImageBitmap(BitmapFactory.decodeFile(mediaPath));
+            cursor.close();
+            //Uri uri = data.getData();
+            uploadToServer();
+        }
+
+
+        if(requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+            Uri imageUri = CropImage.getPickImageResultUri(this,data);
+            if (CropImage.isReadExternalStoragePermissionsRequired(this,imageUri)){
+                uri = imageUri;
+                requestPermissions(new String[]{READ_EXTERNAL_STORAGE},0);
+            }else {
+                StartCrop(imageUri);
+            }
         }
 
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -210,12 +265,29 @@ public class MainActivity extends Activity implements View.OnTouchListener {
                 Uri resultUri = result.getUri();
 
                 myImage.setImageURI(resultUri);
+
+                Toast.makeText(this,"Image Update Successfully", Toast.LENGTH_LONG).show();
+
+
+
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }
         }
 
+
+
         super.onActivityResult(requestCode, resultCode, data);
+
+
+    }
+
+    public void StartCrop(Uri imageUri){
+        //CropImage.activity().start(MainActivity.this);
+        CropImage.activity(imageUri)
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setMultiTouchEnabled(true)
+                .start(this);
     }
 
     private int dpToPx(int dp) {
@@ -230,62 +302,71 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         return drawable;
     }
 
+    private void requestPermionAndPickImage() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            pickImage();
+            return;
+        }
+        // Các bạn nhớ request permison cho các máy M trở lên nhé, k là crash ngay đấy.
+        int result = ContextCompat.checkSelfPermission(this,
+                READ_EXTERNAL_STORAGE);
+        if (result == PackageManager.PERMISSION_GRANTED) {
+            pickImage();
+        } else {
+            requestPermissions(new String[]{
+                    READ_EXTERNAL_STORAGE}, READ_EXTERNAL_REQUEST);
+        }
+    }
+
+    public void pickImage() {
+        // Gọi intent của hệ thống để chọn ảnh nhé.
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select a File to Upload"),
+                PICK_IMAGE_REQUEST);
+    }
     public void uploadToServer() {
-        String filePath = "drawable://" + R.drawable.demo;
 
 
-        Retrofit retrofit = NetworkClient.getRetrofitClient(this);
-        UploadAPIs uploadAPIs = retrofit.create(UploadAPIs.class);
+
         //Create a file object using file path
         File file = new File(filePath);
         // Create a request body with file and image media type
         RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"), file);
         // Create MultipartBody.Part using file request-body,file name and part name
-        MultipartBody.Part part = MultipartBody.Part.createFormData("upload", file.getName(), fileReqBody);
+        MultipartBody.Part part = MultipartBody.Part.createFormData("img", file.getName(), fileReqBody);
         //Create request body with text description and text media type
         RequestBody description = RequestBody.create(MediaType.parse("text/plain"), "image-type");
         //
-        Call call = uploadAPIs.uploadImage(part, description);
+        Retrofit retrofit = NetworkClient.getRetrofitClient(this);
+        UploadAPIs uploadAPIs = retrofit.create(UploadAPIs.class);
+        Call call = uploadAPIs.uploadImage(part,description);
+
         call.enqueue(new Callback() {
             @Override
             public void onResponse(Call call, Response response) {
             }
-
             @Override
             public void onFailure(Call call, Throwable t) {
             }
         });
+    }
 
-
-//        Retrofit retrofit = NetworkClient.getRetrofitClient(this);
-//        UploadAPIs uploadAPIs = retrofit.create(UploadAPIs.class);
-//        //Create a file object using file path
-//        File file = new File(filePath);
-//        // Create a request body with file and image media type
-//        RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"), file);
-//        // Create MultipartBody.Part using file request-body,file name and part name
-//        MultipartBody.Part part = MultipartBody.Part.createFormData("upload", file.getName(), fileReqBody);
-//        //Create request body with text description and text media type
-//        RequestBody description = RequestBody.create(MediaType.parse("text/plain"), "image-type");
-//        //
-//        Call call = uploadAPIs.uploadImage(part, description);
-//        call.enqueue(new Callback() {
-//            @Override
-//            public void onResponse(Call call, Response response) {
-//            }
-//            @Override
-//            public void onFailure(Call call, Throwable t) {
-//            }
-//        });
+    private String getRealPathFromURI(Uri uri,Activity activity) {
+        String[] projection = {MediaStore.MediaColumns.DATA};
+        Cursor cursor = activity.managedQuery(uri, projection, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
     }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        //view = (ImageView) v;
+        myImage = (ImageView) v;
 
         myImage.setScaleType(ImageView.ScaleType.MATRIX);
         float scale;
-
 
 
         dumpEvent(event);

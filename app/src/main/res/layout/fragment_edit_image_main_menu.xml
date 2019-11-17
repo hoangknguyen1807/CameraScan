@@ -33,7 +33,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="Edit"
+                    android:text="Doodle"
                     android:textColor="@color/text_color"
                     android:textSize="@dimen/image_edit_text_size"
                     tool:text="Text" />

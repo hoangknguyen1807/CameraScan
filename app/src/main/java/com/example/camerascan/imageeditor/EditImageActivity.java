@@ -147,6 +147,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     private void getData() {
         isPortraitForced = getIntent().getBooleanExtra(ImageEditorIntentBuilder.FORCE_PORTRAIT, false);
         sourceFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
+
         outputFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.OUTPUT_PATH);
         loadImageFromFile(sourceFilePath);
     }

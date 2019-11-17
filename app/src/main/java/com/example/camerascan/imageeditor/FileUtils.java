@@ -35,7 +35,7 @@ public class FileUtils {
     }
 
     public static File genEditFile() {
-        return FileUtils.getEmptyFile("tietu"
+        return FileUtils.getEmptyFile("nkh-"
                 + System.currentTimeMillis() + ".jpg");
     }
 

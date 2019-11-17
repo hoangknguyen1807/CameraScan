@@ -31,7 +31,7 @@ public class CustomViewPager extends ViewPager {
         setCurrentItem(item, false);
     }
 
-    public void setScanScroll(boolean isCanScroll) {
+    public void setCanScroll(boolean isCanScroll) {
         this.isCanScroll = isCanScroll;
     }
 

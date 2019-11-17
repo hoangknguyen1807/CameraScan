@@ -136,43 +136,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }*/
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case OPEN_IMAGE_CODE:
-                    handleOpenImageFromStorage(data);
-                    break;
-                /*case TAKE_PHOTO_CODE:
-                    handleTakePhoto();
-                    break;*/
-                case ACTION_EDITIMAGE:
-                    handleEditorImage(data);
-                    break;
-            }
-        }
-    }
-
-    private void handleOpenImageFromStorage(Intent data) {
-        path = data.getStringExtra("imgPath");
-        loadImage(path);
-    }
-
-    private void handleEditorImage(Intent data) {
-        String newFilePath = data.getStringExtra(ImageEditorIntentBuilder.OUTPUT_PATH);
-        boolean isImageEdit = data.getBooleanExtra(EditImageActivity.IS_IMAGE_EDITED, false);
-
-        if (isImageEdit) {
-            Toast.makeText(this, getString(R.string.save_path, newFilePath), Toast.LENGTH_LONG).show();
-        } else {
-            newFilePath = data.getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
-
-        }
-
-        loadImage(newFilePath);
-    }
-
     private void loadImage(String imagePath) {
         compositeDisposable.clear();
         Disposable applyRotationDisposable = loadBitmapFromFile(imagePath)
@@ -220,6 +183,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .withCropFeature()
                     .withBrightnessFeature()
                     .withSaturationFeature()
+                    .withStickerFeature()
                     .withBeautyFeature()
                     .forcePortrait(true)
                     .build();
@@ -229,6 +193,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(this, "Please choose an image for edit", Toast.LENGTH_SHORT).show();
             Log.e("Demo App", e.getMessage());
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case OPEN_IMAGE_CODE:
+                    handleOpenImageFromStorage(data);
+                    break;
+                /*case TAKE_PHOTO_CODE:
+                    handleTakePhoto();
+                    break;*/
+                case ACTION_EDITIMAGE:
+                    handleEditorImage(data);
+                    break;
+            }
+        }
+    }
+
+    private void handleOpenImageFromStorage(Intent data) {
+        path = data.getStringExtra("imgPath");
+        loadImage(path);
+    }
+
+    private void handleEditorImage(Intent data) {
+        String newFilePath = data.getStringExtra(ImageEditorIntentBuilder.OUTPUT_PATH);
+        boolean isImageEdit = data.getBooleanExtra(EditImageActivity.IS_IMAGE_EDITED, false);
+
+        if (isImageEdit) {
+            Toast.makeText(this, getString(R.string.save_path, newFilePath), Toast.LENGTH_LONG).show();
+        } else {
+            newFilePath = data.getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
+
+        }
+
+        loadImage(newFilePath);
     }
 
 }

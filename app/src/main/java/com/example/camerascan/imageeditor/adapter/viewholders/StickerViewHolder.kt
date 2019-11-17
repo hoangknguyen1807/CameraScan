@@ -7,5 +7,5 @@ import com.example.camerascan.R
 
 class StickerViewHolder internal constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
     @JvmField
-    var image: ImageView = itemView.findViewById(R.id.imageView)
+    var image: ImageView = itemView.findViewById(R.id.img)
 }

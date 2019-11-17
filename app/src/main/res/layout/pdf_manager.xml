@@ -4,38 +4,52 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal" >
 
-        <Button
-            android:id="@+id/gallery"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/pathtxt"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Chọn ảnh" />
-
-        <Button
-            android:id="@+id/convert"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Chuyển" />
+            android:layout_weight="8"
+            android:text="" />
 
         <Button
             android:id="@+id/cd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Chọn đường dẫn" />
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="2"
+            android:textSize="10sp"
+            android:text="Đổi" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/pathtxt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="" />
 
     <ImageView
         android:id="@+id/preview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_weight="10"
+        android:background="@color/greyblue"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/gallery"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Chọn ảnh"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/convert"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Chuyển PDF"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -67,6 +67,11 @@ public class SaveTXT extends
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         dialog.dismiss();
-        Toast.makeText(callerContext, "Lưu file thành công", Toast.LENGTH_LONG).show();
+        File file = new File(callerContext.path + callerContext.filename);
+        if (file.exists()) {
+            Toast.makeText(callerContext, "Tập tin TXT đã được lưu", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(callerContext, "Tạo tập tin TXT không thành công", Toast.LENGTH_LONG).show();
+        }
     }
 }

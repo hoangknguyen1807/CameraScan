@@ -2,11 +2,11 @@ package com.example.camerascan;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.InputType;
@@ -17,8 +17,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 
 import com.itextpdf.text.Image;
@@ -31,12 +31,13 @@ public class PDFmanager extends Activity {
 
     private static final int GALLERY_REQUEST_CODE = 1555;
     private static final int FOLDERPICKER_CODE = 1666;
+    private static final int REQUEST_CODE_STORAGE_ACCESS = 1777;
 
     Image img;
     Button gallery, convert, cdir;
     ImageView preview;
     String filename;
-    String path = Environment.getExternalStorageDirectory() + "/PDF_Converter/";
+    String path;
     TextView pathtxt;
 
     @Override
@@ -44,10 +45,14 @@ public class PDFmanager extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pdf_manager);
 
+        SharedPreferences stored = getSharedPreferences("data", 0);
+        path = stored.getString("pathpdf",
+                Environment.getExternalStorageDirectory() + "/PDF_Converter/");
+
         preview = findViewById(R.id.preview);
 
         pathtxt = findViewById(R.id.pathtxt);
-        pathtxt.setText(path);
+        pathtxt.setText("Vị trí:" + path);
 
         gallery = findViewById(R.id.gallery);
         gallery.setOnClickListener(new View.OnClickListener() {
@@ -77,19 +82,12 @@ public class PDFmanager extends Activity {
     }
 
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        SharedPreferences stored = PDFmanager.this.getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = stored.edit();
-        editor.putString("path", path);
-        editor.commit();
-    }
-
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        SharedPreferences stored = PDFmanager.this.getPreferences(Context.MODE_PRIVATE);
-        path = stored.getString("path", null);
+    protected void onPause() {
+        super.onPause();
+        SharedPreferences stored = getSharedPreferences("data", 0);
+        SharedPreferences.Editor store = stored.edit();
+        store.putString("pathpdf", path);
+        store.commit();
     }
 
     private void pickFromGallery() {
@@ -100,10 +98,10 @@ public class PDFmanager extends Activity {
         startActivityForResult(intent, GALLERY_REQUEST_CODE);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         // Result code is RESULT_OK only if the user selects an Image
         if (resultCode == Activity.RESULT_OK)
             switch (requestCode) {
@@ -113,7 +111,7 @@ public class PDFmanager extends Activity {
                     break;
                 case FOLDERPICKER_CODE:
                     path = data.getExtras().getString("data") + "/";
-                    pathtxt.setText(path);
+                    pathtxt.setText("Vị trí:" + path);
                     break;
             }
     }

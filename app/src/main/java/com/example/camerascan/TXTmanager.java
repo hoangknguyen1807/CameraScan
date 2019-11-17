@@ -3,6 +3,7 @@ package com.example.camerascan;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.InputType;
@@ -24,7 +25,7 @@ public class TXTmanager extends Activity {
 
     Button cdir, save;
     String filename;
-    String path = Environment.getExternalStorageDirectory()+ "/PDF_Converter/";;
+    String path;
     TextView pathtxt;
     EditText content;
 
@@ -33,8 +34,12 @@ public class TXTmanager extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.save_text_manager);
 
+        SharedPreferences stored = getSharedPreferences("data", 0);
+        path = stored.getString("pathtxt",
+                Environment.getExternalStorageDirectory() + "/PDF_Converter/");
+
         pathtxt = findViewById(R.id.pathtxt);
-        pathtxt.setText(path);
+        pathtxt.setText("Vị trí:" + path);
 
         content = findViewById(R.id.content);
 
@@ -58,13 +63,22 @@ public class TXTmanager extends Activity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        SharedPreferences stored = getSharedPreferences("data", 0);
+        SharedPreferences.Editor store = stored.edit();
+        store.putString("pathtxt", path);
+        store.commit();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK)
             switch (requestCode) {
                 case FOLDERPICKER_CODE:
                     path = data.getExtras().getString("data") + "/";
-                    pathtxt.setText(path);
+                    pathtxt.setText("Vị trí:" + path);
                     break;
             }
     }

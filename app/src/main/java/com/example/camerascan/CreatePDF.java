@@ -57,8 +57,7 @@ public class CreatePDF extends
                 dir.mkdir();
             }
 
-            File file = new File(callerContext.path,callerContext.filename);
-
+            File file = new File(callerContext.path, callerContext.filename);
 
             FileOutputStream fOut = new FileOutputStream(file);
 
@@ -89,7 +88,12 @@ public class CreatePDF extends
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
         dialog.dismiss();
-        Toast.makeText(callerContext, "File PDF đã được lưu", Toast.LENGTH_LONG).show();
+        File file = new File(callerContext.path + callerContext.filename);
+        if (file.exists()) {
+            Toast.makeText(callerContext, "Tập tin PDF đã được lưu", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(callerContext, "Tạo tập tin PDF không thành công", Toast.LENGTH_LONG).show();
+        }
         callerContext.previewPDF();
     }
 }

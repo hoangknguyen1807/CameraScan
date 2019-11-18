@@ -1,7 +1,6 @@
 package com.example.camerascan;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -17,12 +16,13 @@ import java.io.IOException;
 
 public class ImageLoading extends AsyncTask<Intent, Void, Bitmap> {
 
-    PDFmanager callerContext;
-    ProgressDialog dialog = null;
+    ProgressDialog dialog;
+    private ImageLoader<Bitmap> callerContext;
+    Image img;
 
-    public ImageLoading(Context callerContext){
-        this.callerContext = (PDFmanager) callerContext;
-        dialog = new ProgressDialog(callerContext);
+    public ImageLoading(ImageLoader cb){
+        this.callerContext = cb;
+        dialog = new ProgressDialog(cb);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class ImageLoading extends AsyncTask<Intent, Void, Bitmap> {
             res = bitmap;
             ByteArrayOutputStream stream3 = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream3);
-            callerContext.img = Image.getInstance(stream3.toByteArray());
+            img = Image.getInstance(stream3.toByteArray());
         } catch (FileNotFoundException e){
 
         } catch (IOException ioe) {
@@ -57,7 +57,6 @@ public class ImageLoading extends AsyncTask<Intent, Void, Bitmap> {
     protected void onPostExecute(Bitmap bitmap) {
         super.onPostExecute(bitmap);
         dialog.dismiss();
-        callerContext.preview.setImageBitmap(bitmap);
-        callerContext.convert.setEnabled(true);
+        callerContext.onTaskComplete(bitmap, img);
     }
 }

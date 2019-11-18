@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,21 +18,23 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 
+import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Image;
 
 import java.io.File;
+import java.io.IOException;
 
 import lib.folderpicker.FolderPicker;
 
-public class PDFmanager extends Activity {
+public class PDFmanager extends ImageLoader {
 
     private static final int GALLERY_REQUEST_CODE = 1555;
     private static final int FOLDERPICKER_CODE = 1666;
-    private static final int REQUEST_CODE_STORAGE_ACCESS = 1777;
 
     Image img;
     Button gallery, convert, cdir;
@@ -39,6 +42,8 @@ public class PDFmanager extends Activity {
     String filename;
     String path;
     TextView pathtxt;
+    Bitmap bitmap = null;
+    byte[] streamArray = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,6 +85,24 @@ public class PDFmanager extends Activity {
                 startActivityForResult(intent, FOLDERPICKER_CODE);
             }
         });
+
+        if (savedInstanceState!=null) {
+            if (savedInstanceState.getParcelable("image")!=null) {
+                bitmap = savedInstanceState.getParcelable("image");
+                preview.setImageBitmap(bitmap);
+
+                convert.setEnabled(savedInstanceState.getBoolean("clickable"));
+                try {
+                    img = Image.getInstance(savedInstanceState.getByteArray("convert"));
+                } catch (IOException ioe) {
+
+                } catch (BadElementException bee) {
+
+                }
+            }
+            /*savedInstanceState.putParcelable("image",null);
+            savedInstanceState.putByteArray("convert",null);*/
+        }
     }
 
     @Override
@@ -89,6 +112,16 @@ public class PDFmanager extends Activity {
         SharedPreferences.Editor store = stored.edit();
         store.putString("pathpdf", path);
         store.commit();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (bitmap!=null) {
+            outState.putParcelable("image", bitmap);
+            outState.putBoolean("clickable", true);
+            outState.putByteArray("convert", streamArray);
+        }
     }
 
     private void pickFromGallery() {
@@ -108,7 +141,7 @@ public class PDFmanager extends Activity {
             switch (requestCode) {
                 case GALLERY_REQUEST_CODE:
                     ImageLoading imageLoading = new ImageLoading(PDFmanager.this);
-                    imageLoading.execute(data);//, dir, name);
+                    imageLoading.execute(data);
                     break;
                 case FOLDERPICKER_CODE:
                     path = data.getExtras().getString("data") + "/";
@@ -211,5 +244,12 @@ public class PDFmanager extends Activity {
                 Log.e("Instance Failed", "Failed Get Instance");
             }
         }
+    }
+
+    @Override
+    public void onTaskComplete(Object result, Image img) {
+        preview.setImageBitmap((Bitmap)result);
+        this.img=img;
+        convert.setEnabled(true);
     }
 }

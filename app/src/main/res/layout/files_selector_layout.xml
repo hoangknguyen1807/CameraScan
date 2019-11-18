@@ -21,7 +21,9 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginHorizontal="10dp"
         android:layout_marginTop="20dp"
-        android:text="Pick file" />
+        android:text="Pick file"
+        android:background="@drawable/custom_button_1"
+        />
 
     <ImageButton
         android:id="@+id/buttonOCR"

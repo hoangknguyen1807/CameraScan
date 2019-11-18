@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
@@ -23,12 +22,14 @@ import androidx.annotation.Nullable;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
+import com.itextpdf.text.Image;
 
-public class ScanFiles extends Activity  {
+public class ScanFiles extends ImageLoader  {
     private static final int GALLERY_REQUEST_CODE = 1555;
     final int REQUEST_SENDTOTXT = 222; //const to switch screen
     private static final int FOLDERPICKER_CODE = 1666;
 
+    Bitmap _tmpImg;
 
     ImageButton buttonToOCR;
     ImageView imageViewToPreviewSelectedImage;
@@ -53,7 +54,7 @@ public class ScanFiles extends Activity  {
             @Override
             public void onClick(View v) {
 
-                Bitmap img = BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.testimg);
+                Bitmap img = _tmpImg;
 
                 TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
 
@@ -90,7 +91,7 @@ public class ScanFiles extends Activity  {
             @Override
             public void onClick(View v) {
                 //pick files
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType("image/*");
                 String[] mimeTypes = {"image/jpeg", "image/png"};
                 intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
@@ -130,4 +131,9 @@ public class ScanFiles extends Activity  {
 //        super.onSaveInstanceState(outState);
     }
 
+    @Override
+    public void onTaskComplete(Object result, Image img) {
+        imageViewToPreviewSelectedImage.setImageBitmap((Bitmap)result);
+        _tmpImg=(Bitmap)result;
+    }
 }

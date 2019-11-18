@@ -31,7 +31,7 @@ public class ScanFiles extends ImageLoader  {
 
     Bitmap _tmpImg;
 
-    ImageButton buttonToOCR;
+    Button buttonToOCR;
     ImageView imageViewToPreviewSelectedImage;
     Button buttonToSelectFile;
 

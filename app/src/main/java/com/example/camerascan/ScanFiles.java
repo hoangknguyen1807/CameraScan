@@ -24,9 +24,11 @@ import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 
-public class ScanFiles extends Activity {
-
+public class ScanFiles extends Activity  {
+    private static final int GALLERY_REQUEST_CODE = 1555;
     final int REQUEST_SENDTOTXT = 222; //const to switch screen
+    private static final int FOLDERPICKER_CODE = 1666;
+
 
     ImageButton buttonToOCR;
     ImageView imageViewToPreviewSelectedImage;
@@ -87,10 +89,33 @@ public class ScanFiles extends Activity {
         buttonToSelectFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //pich file from Vinh :)))
+                //pick files
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+                String[] mimeTypes = {"image/jpeg", "image/png"};
+                intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+                startActivityForResult(intent, GALLERY_REQUEST_CODE);
             }
         });
+
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // Result code is RESULT_OK only if the user selects an Image
+        if (resultCode == Activity.RESULT_OK)
+            switch (requestCode) {
+                case GALLERY_REQUEST_CODE:
+                    ImageLoading imageLoading = new ImageLoading(ScanFiles.this);
+                    imageLoading.execute(data);//, dir, name);
+                    break;
+                case REQUEST_SENDTOTXT:
+
+                    break;
+            }
+    }
+
 
     private void changeToPreviewScreen(String data)
     {
@@ -103,16 +128,6 @@ public class ScanFiles extends Activity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
 //        outState.putInt("data",tmpVal);
 //        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode==Activity.RESULT_OK && requestCode==REQUEST_SENDTOTXT)
-        {
-            Log.w("MainActivity", "finish");
-           //do something to show success here :)
-        }
     }
 
 }

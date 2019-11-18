@@ -33,4 +33,9 @@ dependencies {
 
     //add lib to use google ocr
     implementation 'com.google.android.gms:play-services-vision:19.0.0'
+
+    //pick image and load
+    implementation 'com.itextpdf:itextg:5.5.10'
+    implementation 'lib.kashif:folderpicker:2.4'
+
 }

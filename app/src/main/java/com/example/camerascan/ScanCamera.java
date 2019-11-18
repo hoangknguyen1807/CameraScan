@@ -59,7 +59,9 @@ public class ScanCamera extends Activity {
 
     @Override
     public void onBackPressed() {
-        cameraSource.release();
+        //reset camera source
+        if (cameraSource!=null)
+            cameraSource.release();
         super.onBackPressed();
     }
 
@@ -84,6 +86,14 @@ public class ScanCamera extends Activity {
         DoProcess();
     }
 
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        //reset camera source
+//        if (cameraSource!=null)
+//            cameraSource.release();
+//    }
+
     protected void DoProcess()
     {
         TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
@@ -99,6 +109,7 @@ public class ScanCamera extends Activity {
                 Log.w("MainActivity", "Storage isn't enough!");
             }
         } else {
+
             //link camera to variable
             cameraSource = new CameraSource.Builder(getApplicationContext(), textRecognizer)
                     .setFacing(CameraSource.CAMERA_FACING_BACK)
@@ -161,15 +172,18 @@ public class ScanCamera extends Activity {
     }
 
     @Override
-    protected void onPause() {
-        cameraSource.release();
-        super.onPause();
+    protected void onStart() {
+        //reset camera source
+        if (cameraSource!=null)
+            cameraSource.release();
+        super.onStart();
+
     }
 
     @Override
     protected void onResume() {
-        DoProcess();
         super.onResume();
+        DoProcess();
     }
 
     @Override
@@ -178,8 +192,9 @@ public class ScanCamera extends Activity {
         if (resultCode==Activity.RESULT_OK && requestCode==REQUEST_SENDTOTXT)
         {
             Log.w("MainActivity", "finish");
-            cameraSource.release();
-            DoProcess();
+//            if (cameraSource!=null)
+//                cameraSource.release();
+//            DoProcess();
         }
     }
 

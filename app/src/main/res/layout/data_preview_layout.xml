@@ -14,12 +14,13 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="18" android:background="#fff">
-            <TextView
+            <EditText
                 android:id="@+id/textViewToReviewData"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_gravity="center"
                 android:text="activityB"
+                android:textSize="10sp"
                 android:background="#fff"/>
         </ScrollView>
     <LinearLayout

@@ -8,13 +8,17 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -32,6 +36,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import com.example.camerascan.imageeditor.EditImageActivity;
 import com.example.camerascan.imageeditor.ImageEditorIntentBuilder;
@@ -44,7 +49,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener {
     public static final int REQUEST_PERMISSION_STORAGE = 1;
     public static final int REQUEST_IMAGE_CAPTURE = 2;
 
@@ -58,10 +63,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Dialog loadingDialog;
     private int imgWidth, imgHeight;
 
-    private String imgPath;
-    private String takenImgPath;
+    // The 3 states (events) which the user is trying to perform
+    static final int NONE = 0;
+    static final int DRAG = 1;
+    static final int ZOOM = 2;
+    /* member fields for Zoom - from here */
+    private static final String TAG = "Touch";
+    // These matrices will be used to scale points of the image
+    Matrix matrix = new Matrix();
+    Matrix savedMatrix = new Matrix();
+    // these PointF objects are used to record the point(s) the user is touching
+    PointF start = new PointF();
+    PointF mid = new PointF();
+    float oldDist = 1f;
+    int mode = NONE;
+    /* member fields for Zoom - to here */
 
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private String imgPath;
+    Uri takenPhotoUri;
+
+    //private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     /** Called when the activity is first created. */
     @Override
@@ -75,6 +96,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imgHeight = metrics.heightPixels;
 
         imgView = findViewById(R.id.imageView);
+        imgView.setOnTouchListener(this);
+
         Button btnTakePhoto = findViewById(R.id.btnCamera);
         btnTakePhoto.setOnClickListener(this);
 
@@ -94,13 +117,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onPause() {
-        compositeDisposable.clear();
+        //compositeDisposable.clear();
         super.onPause();
     }
 
     @Override
     protected void onDestroy() {
-        compositeDisposable.dispose();
+        //compositeDisposable.dispose();
         super.onDestroy();
     }
 
@@ -165,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 OpenImageActivity.class);
         this.startActivityForResult(intentOpenImage,
                 OPEN_IMAGE_CODE);*/
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.setType("image/*");
         String[] mimeTypes = {"image/jpeg", "image/png"};
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
@@ -182,30 +205,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            /*File imageFile = null;
+            File imageFile = null;
             try {
                 imageFile = createImageFile();
-            } catch (IOException exc)
-            {
+            } catch (IOException exc) {
                 Toast.makeText(this,
                         "Cannot create new image file", Toast.LENGTH_SHORT).show();
                 Log.e("Demo App", exc.getMessage());
             }
 
-            if (imageFile != null)
-            {
-                Uri uri = FileProvider.getUriForFile(
+            if (imageFile != null) {
+                imgPath = imageFile.getAbsolutePath();
+                takenPhotoUri = FileProvider.getUriForFile(
                         this, "com.example.android.fileprovider",
                         imageFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                        uri);
-
-            }*/
-            startActivityForResult(takePictureIntent, TAKE_PHOTO_CODE);
+                        takenPhotoUri);
+                startActivityForResult(takePictureIntent, TAKE_PHOTO_CODE);
+            }
         }
     }
 
-    private void loadImage(String imagePath) {
+    private int loadImage(String imagePath) {
         /*compositeDisposable.clear();
         Disposable applyRotationDisposable = loadBitmapFromFile(imagePath)
                 .subscribeOn(Schedulers.io())
@@ -217,7 +238,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         e -> Toast.makeText(
                                 this, R.string.load_error, Toast.LENGTH_SHORT).show()
                 );
-
         compositeDisposable.add(applyRotationDisposable);*/
 
         Uri selectedImage = Uri.fromFile(new File(imagePath));
@@ -226,12 +246,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             res = MediaStore.Images.Media.getBitmap(MainActivity.this.getContentResolver(), selectedImage);
         } catch (FileNotFoundException exc) {
             Log.e("Demo App", exc.getMessage());
-            return;
+            return -1;
         } catch (IOException exc) {
             Log.e("Demo App", exc.getMessage());
-            return;
+            return -2;
         }
         imgView.setImageBitmap(res);
+        return 0;
     }
 
     private void setMainBitmap(Bitmap sourceBitmap) {
@@ -253,6 +274,130 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 )
         );
     }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        imgView = (ImageView) v;
+
+        imgView.setScaleType(ImageView.ScaleType.MATRIX);
+        float scale;
+
+
+        dumpEvent(event);
+        // Handle touch events here...
+
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_DOWN:   // first finger down only
+                savedMatrix.set(matrix);
+                start.set(event.getX(), event.getY());
+                Log.d(TAG, "mode=DRAG"); // write to LogCat
+                mode = DRAG;
+                break;
+
+            case MotionEvent.ACTION_UP: // first finger lifted
+
+            case MotionEvent.ACTION_POINTER_UP: // second finger lifted
+
+                mode = NONE;
+                Log.d(TAG, "mode=NONE");
+                break;
+
+            case MotionEvent.ACTION_POINTER_DOWN: // first and second finger down
+
+                oldDist = spacing(event);
+                Log.d(TAG, "oldDist=" + oldDist);
+                if (oldDist > 5f) {
+                    savedMatrix.set(matrix);
+                    midPoint(mid, event);
+                    mode = ZOOM;
+                    Log.d(TAG, "mode=ZOOM");
+                }
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+
+                if (mode == DRAG) {
+                    matrix.set(savedMatrix);
+                    // create the transformation in the matrix  of points
+                    matrix.postTranslate(event.getX() - start.x, event.getY() - start.y);
+                } else if (mode == ZOOM) {
+                    // pinch zooming
+                    float newDist = spacing(event);
+                    Log.d(TAG, "newDist=" + newDist);
+                    if (newDist > 5f) {
+                        matrix.set(savedMatrix);
+                        scale = newDist / oldDist; // setting the scaling of the
+                        // matrix...if scale > 1 means
+                        // zoom in...if scale < 1 means
+                        // zoom out
+                        matrix.postScale(scale, scale, mid.x, mid.y);
+                    }
+                }
+                break;
+        }
+
+        imgView.setImageMatrix(matrix); // display the transformation on screen
+
+        return true; // indicate event was handled
+    }
+
+    /*
+     * --------------------------------------------------------------------------
+     * Method: spacing Parameters: MotionEvent Returns: float Description:
+     * checks the spacing between the two fingers on touch
+     * ----------------------------------------------------
+     */
+
+    private float spacing(MotionEvent event) {
+        float x = event.getX(0) - event.getX(1);
+        float y = event.getY(0) - event.getY(1);
+        return (float) Math.sqrt(x * x + y * y);
+    }
+
+    /**
+     * -----------------------------------------------------------------------
+     * Method: midPoint Parameters: PointF object, MotionEvent Returns: void
+     * Description: calculates the midpoint between the two fingers
+     * -----------------------------------------------------------------------
+     */
+
+    private void midPoint(PointF point, MotionEvent event) {
+        float x = event.getX(0) + event.getX(1);
+        float y = event.getY(0) + event.getY(1);
+        point.set(x / 2, y / 2);
+    }
+
+    /**
+     * Show an event in the LogCat view, for debugging
+     */
+    private void dumpEvent(MotionEvent event) {
+        String[] names = {"DOWN", "UP", "MOVE", "CANCEL", "OUTSIDE", "POINTER_DOWN", "POINTER_UP", "7?", "8?", "9?"};
+        StringBuilder sb = new StringBuilder();
+        int action = event.getAction();
+        int actionCode = action & MotionEvent.ACTION_MASK;
+        sb.append("event ACTION_").append(names[actionCode]);
+
+        if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_POINTER_UP) {
+            sb.append("(pid ").append(action >> MotionEvent.ACTION_POINTER_ID_SHIFT);
+            sb.append(")");
+        }
+
+        sb.append("[");
+        for (int i = 0; i < event.getPointerCount(); i++) {
+            sb.append("#").append(i);
+            sb.append("(pid ").append(event.getPointerId(i));
+            sb.append(")=").append((int) event.getX(i));
+            sb.append(",").append((int) event.getY(i));
+            if (i + 1 < event.getPointerCount())
+                sb.append(";");
+        }
+
+        sb.append("]");
+        Log.d("Touch Events ---------", sb.toString());
+    }
+
+
+
 
     private void editImageClick() {
         File outputFile = FileUtils.genEditFile();
@@ -284,6 +429,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent convertToPDF = new Intent(MainActivity.this,
                     PDFConverter.class);
             convertToPDF.putExtra(PDFConverter.sourcePath, imgPath);
+
             startActivity(convertToPDF);
         } catch (Exception e) {
             Toast.makeText(this, "Please choose an image to convert", Toast.LENGTH_SHORT).show();
@@ -307,6 +453,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     handleEditorImage(data);
                     break;
             }
+        } else if (resultCode == RESULT_CANCELED) {
+            switch (requestCode) {
+                case TAKE_PHOTO_CODE:
+                    // Canceled, so imgPath is set to blank
+                    imgPath = "";
+                    break;
+            }
         }
     }
 
@@ -328,23 +481,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void handleTakePhoto(Intent data) {
-        Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
-        //imgView.setImageBitmap(imageBitmap);
-        try {
-            imgPath = createImageFile().getAbsolutePath();
-        } catch (IOException exc) {
-            Toast.makeText(this,
-                    "Cannot create new image file", Toast.LENGTH_SHORT).show();
-            Log.e("Demo App", exc.getMessage());
+        // at this point, data is null
+        if (loadImage(imgPath) == -1)
+            // FileNotFound, -1, set imgPath to blank
+            imgPath = "";
+        /*Bitmap imgBitmap;
+        try
+        {
+            imgBitmap = android.provider.MediaStore.Images.Media.getBitmap(this.getContentResolver()
+                    , takenPhotoUri);
+            imgView.setImageBitmap(imgBitmap);
         }
-        //com.example.camerascan.imageeditor.utils.BitmapUtils.saveBitmap(imageBitmap, takenImgPath);
-        BitmapUtils.saveBitmap(imageBitmap, imgPath);
-        loadImage(imgPath);
+        catch (Exception e)
+        {
+            Toast.makeText(this, "Failed to load image", Toast.LENGTH_LONG).show();
+            Log.e("Failed to load image", e.getMessage());
+            // Image not found, imgPath is set to blank
+            imgPath = "";
+        }*/
     }
 
     private void handleOpenImageFromStorage(Intent data) {
         Uri uri = data.getData();
-        imgPath = UriUtil.getPath(MainActivity.this, uri);
+        try {
+
+            imgPath = UriUtil.getPath(MainActivity.this, uri);
+            if (imgPath == null)
+                throw new NullPointerException("Unable to get image absolute path");
+        } catch (NullPointerException ex) {
+            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT);
+        }
         Toast.makeText(this, imgPath, Toast.LENGTH_SHORT).show();
         loadImage(imgPath);
         //File myfile = new File(data.getData().getPath());//data.getStringExtra("imgPath");

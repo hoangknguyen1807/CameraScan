@@ -20,7 +20,7 @@ public class FileUtils {
             baseDir = Environment.getExternalStorageDirectory();
         } else {
             baseDir = Environment
-                    .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+                    .getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
         }
         if (baseDir == null)
             return Environment.getExternalStorageDirectory();

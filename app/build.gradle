@@ -44,5 +44,7 @@ dependencies {
     api "com.theartofdev.edmodo:android-image-cropper:2.8.0"
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'androidx.core:core-ktx:1.2.0-alpha02'
+    implementation 'com.itextpdf:itextg:5.5.10'
     implementation 'com.google.android.material:material:1.0.0'
+    implementation 'lib.kashif:folderpicker:2.4'
 }

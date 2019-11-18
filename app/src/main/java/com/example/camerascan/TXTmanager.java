@@ -20,14 +20,14 @@ import java.io.File;
 import lib.folderpicker.FolderPicker;
 
 public class TXTmanager extends Activity {
+    //activity xử lí chuyển đổi text -> file .txt
+    private static final int FOLDERPICKER_CODE = 1666;//mã request code cố định
 
-    private static final int FOLDERPICKER_CODE = 1666;
-
-    Button cdir, save;
-    String filename;
-    String path;
-    TextView pathtxt;
-    EditText content;
+    Button cdir, save;//các phím trong layout
+    String filename;//chứa tên file cần tạo
+    String path;//đường dẫn lưu file
+    TextView pathtxt;//hiển thị đường dẫn lưu file hiện tại
+    EditText content;//Edittext: nội dung cần ghi file txt
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,7 +43,7 @@ public class TXTmanager extends Activity {
 
         content = findViewById(R.id.content);
 
-        cdir = findViewById(R.id.cdir);
+        cdir = findViewById(R.id.cdir);//phím đổi đường dẫn lưu file
         cdir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,7 +53,7 @@ public class TXTmanager extends Activity {
             }
         });
 
-        save = findViewById(R.id.save);
+        save = findViewById(R.id.save);// phím lưu nội dụng text xuống file txt
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,6 +65,7 @@ public class TXTmanager extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
+        //lưu lại dữ liệu khi unfocus ứng dụng/khi đóng ứng dụng
         SharedPreferences stored = getSharedPreferences("data", 0);
         SharedPreferences.Editor store = stored.edit();
         store.putString("pathtxt", path);
@@ -74,16 +75,20 @@ public class TXTmanager extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        // Xử lí kết quả được trả về từ intent
         if (resultCode == Activity.RESULT_OK)
             switch (requestCode) {
                 case FOLDERPICKER_CODE:
-                    path = data.getExtras().getString("data") + "/";
-                    pathtxt.setText("Vị trí:" + path);
+                    //trường hợp intent chọn đường dẫn lưu file trả kết quả
+                    path = data.getExtras().getString("data") + "/";//gán kết quả cho path
+                    pathtxt.setText("Vị trí:" + path);//set textview thành đường dẫn hiện hành
                     break;
             }
     }
 
     public void saveTXT(){
+        //hàm chứa xử lí khi bấm nút lưu nội dung xuống file .txt
+        //Kiểm tra thư mục có tồn tại không ->nếu không -> hỏi tạo -> nếu từ chối -> hủy việc lưu
         File dir = new File(path);
         if (!dir.exists()){
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -108,6 +113,7 @@ public class TXTmanager extends Activity {
     }
 
     public void NameDialog() {
+        //hiện dialog nhập tên file cần lưu
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Tên tập tin:");
         // Set up the input
@@ -134,6 +140,7 @@ public class TXTmanager extends Activity {
     }
 
     public void fileExist(){
+        //kiểm tra file có tồn tại không -> nếu có -> hỏi ghi đè -> nếu từ chối ->nhập lại tên
         if (filename.indexOf(".txt")==-1)
             filename+=".txt";
         File file = new File(path + filename);

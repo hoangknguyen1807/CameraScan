@@ -11,11 +11,12 @@ import java.io.FileOutputStream;
 
 public class SaveTXT extends
         AsyncTask<String, Void, Void> {
-
-    TXTmanager callerContext;
+    //ASynTask xử lí việc lưu text xuống file .txt
+    TXTmanager callerContext;//context gọi ASyncTask
     ProgressDialog dialog = null;
 
     public SaveTXT(Context callerContext){
+        //khởi tạo --> truyền vào context gọi ASyncTask
         this.callerContext = (TXTmanager) callerContext;
         dialog = new ProgressDialog(callerContext);
     }
@@ -23,6 +24,8 @@ public class SaveTXT extends
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+        //tiền xử lí ASyncTask
+        //cài đặt hiển thị dialog
         this.dialog.setMessage("Vui lòng chờ!\nĐang lưu file ...");
         this.dialog.setCancelable(false);
         this.dialog.show();
@@ -30,35 +33,35 @@ public class SaveTXT extends
 
     @Override
     protected Void doInBackground(String... strings) {
-        //Text of the Document
-        String path= strings[0];
-        String filename = strings[1];
-        String textToWrite = strings[2];
+        //xử lí ASyncTask
+        String path= strings[0];            //
+        String filename = strings[1];       //
+        String textToWrite = strings[2];    //lấy dữ liệu truyền vào
 
-        //Checking the availability state of the External Storage.
+        //Kiểm tra bộ tình trạng bộ nhớ
         String state = Environment.getExternalStorageState();
         if (!Environment.MEDIA_MOUNTED.equals(state)) {
 
-            //If it isn't mounted - we can't write into it.
+            //nếu bộ nhớ ko được mount -> không thể ghi
             return null;
         }
 
-        //Create a new file that points to the root directory, with the given name:
+        //Tạo file với đường dẫn và tên
         File file = new File(path, filename);
 
-        //This point and below is responsible for the write operation
+        //tạo luồng output ghi dữ liệu
         FileOutputStream outputStream = null;
         try {
-            file.createNewFile();
-            //second argument of FileOutputStream constructor indicates whether
-            //to append or create new file if one exists
+            file.createNewFile();//tạo file mới
+
+            //đồng bộ luồng output với file được tạo, tham số thứ 2: ghi nối tiếp hay xóa rồi ghi lại file
             outputStream = new FileOutputStream(file, false);
 
-            outputStream.write(textToWrite.getBytes());
-            outputStream.flush();
-            outputStream.close();
+            outputStream.write(textToWrite.getBytes()); //ghi dữ liệu vào file
+            outputStream.flush();                       //
+            outputStream.close();                       //
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); //kiểm soát Exception
         }
         return null;
     }
@@ -66,7 +69,9 @@ public class SaveTXT extends
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
+        //hậu xử lí ASyncTask
         dialog.dismiss();
+        //kiểm tra việc tạo có thành công hay không (file có tồn tại không)
         File file = new File(callerContext.path + callerContext.filename);
         if (file.exists()) {
             Toast.makeText(callerContext, "Tập tin TXT đã được lưu", Toast.LENGTH_LONG).show();

@@ -277,6 +277,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+        // nên cài đặt cái tác vụ onTouch (Zoom) này vào trong một class
+        // để dễ sử dụng lên các ảnh khác
         imgView = (ImageView) v;
 
         imgView.setScaleType(ImageView.ScaleType.MATRIX);

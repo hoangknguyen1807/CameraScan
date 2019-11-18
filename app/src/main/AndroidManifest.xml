@@ -25,15 +25,16 @@
             </intent-filter>
         </activity>
 
-        <!--<provider
-            android:name="android.support.v4.content.FileProver"
+        <!--"android.support.v4.content.FileProvider"-->
+        <provider
+            android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.android.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"></meta-data>
-        </provider>-->
+        </provider>
 
         <activity android:name=".OpenImageActivity"></activity>
         <activity android:name=".imageeditor.EditImageActivity"></activity>

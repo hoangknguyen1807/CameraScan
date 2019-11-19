@@ -1,30 +1,31 @@
-package com.example.camerascan;
+package com.example.camerascan.ocrscanning;
 
 
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.camerascan.ImageLoader;
+import com.example.camerascan.ImageLoading;
+import com.example.camerascan.PreviewData;
+import com.example.camerascan.R;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 import com.itextpdf.text.Image;
 
-public class ScanFiles extends ImageLoader  {
+public class ScanFiles extends ImageLoader {
     private static final int GALLERY_REQUEST_CODE = 1555;
     final int REQUEST_SENDTOTXT = 222; //const to switch screen
     private static final int FOLDERPICKER_CODE = 1666;

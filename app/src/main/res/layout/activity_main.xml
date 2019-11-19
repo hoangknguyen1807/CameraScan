@@ -17,13 +17,7 @@
         android:layout_marginBottom="20dp"
         android:contentDescription="Background Image"
         android:scaleType="fitCenter"
-        android:src="@drawable/pdf_scanner"
-        app:layout_constraintBottom_toTopOf="@id/barrier"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        android:src="@drawable/pdf_scanner" />
 
     <Button
         android:id="@+id/btnCamera"
@@ -34,12 +28,9 @@
         android:layout_marginBottom="24dp"
         android:background="@android:color/holo_orange_light"
         android:textSize="12sp"
-        android:text="Connect\nCamera"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btnOpenImage" />
+        android:text="Connect\nCamera" />
 
-        <ImageView
+        <!--<ImageView
 
             android:id="@+id/imageView"
             android:layout_width="400dp"
@@ -48,7 +39,7 @@
            android:layout_gravity="center"
             android:scaleType="matrix"
 
-            />
+            />-->
 <!--       <com.github.chrisbanes.photoview.PhotoView-->
 <!--           android:id="@+id/photo_view"-->
 <!--           android:layout_width="match_parent"-->
@@ -63,7 +54,6 @@
            android:layout_height="wrap_content"
            android:stretchColumns="*"
            android:layout_marginTop="30dp"
-
            >
 
 

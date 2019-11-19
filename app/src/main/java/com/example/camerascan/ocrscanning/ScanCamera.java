@@ -1,4 +1,4 @@
-package com.example.camerascan;
+package com.example.camerascan.ocrscanning;
 
 
 import androidx.annotation.NonNull;
@@ -19,6 +19,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.camerascan.PreviewData;
+import com.example.camerascan.R;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.text.TextBlock;

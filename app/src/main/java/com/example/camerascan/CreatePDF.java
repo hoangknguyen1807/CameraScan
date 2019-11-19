@@ -74,12 +74,30 @@ public class CreatePDF extends
             doc.open(); //mở document
 
             int indentation = 0;
-            //tạo kích thước scale ảnh cho phù hợp với trang dữ liệu
-            float scaler = ((doc.getPageSize().getWidth() - doc.leftMargin()
-                    - doc.rightMargin() - indentation) / image.getWidth()) * 100;
 
+            float size;
+
+            float scaler;
+
+            if (image.getWidth()>=image.getHeight()) {
+
+                size = image.getWidth();
+
+                //tạo kích thước scale ảnh cho phù hợp với trang dữ liệu
+                scaler = ((doc.getPageSize().getWidth() - doc.leftMargin()
+                        - doc.rightMargin() - indentation) / size) * 100;
+            } else {
+                size = image.getHeight();
+
+                scaler = ((doc.getPageSize().getHeight() - doc.topMargin()
+                        - doc.bottomMargin() - indentation) / size) * 100;
+            }
             //scale ảnh theo kích thước trên
+            //image.scaleToFit(doc.getPageSize().getWidth(),doc.getPageSize().getHeight());
             image.scalePercent(scaler);
+
+            image.setAlignment(Image.ALIGN_CENTER);
+
 
             //ghi ảnh vào document
             doc.add(image);

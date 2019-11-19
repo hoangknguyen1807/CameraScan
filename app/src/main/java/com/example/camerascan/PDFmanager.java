@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.FileProvider;
 
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Image;
@@ -30,6 +31,8 @@ import java.io.File;
 import java.io.IOException;
 
 import lib.folderpicker.FolderPicker;
+
+import static androidx.core.content.FileProvider.getUriForFile;
 
 public class PDFmanager extends ImageLoader {
     //activity chính xử lí chuyển đổi ảnh -> pdf
@@ -245,12 +248,17 @@ public class PDFmanager extends ImageLoader {
 
     public void previewPDF() {
         //hàm xem file pdf sau khi được tạo
-        File file = new File(path + filename);
+        File file = new File(path, filename);
         if (file.exists()) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            Uri uri = Uri.fromFile(file);
+            //Uri uri = Uri.fromFile(file);
+            Uri uri = FileProvider.getUriForFile(this,
+                    this.getApplicationContext().getPackageName()+"provider" ,file);
             intent.setDataAndType(uri, "application/pdf");
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            Intent intent1 = Intent.createChooser(intent,"Open File");
             try {
                 startActivity(intent);
             } catch (ActivityNotFoundException e) {

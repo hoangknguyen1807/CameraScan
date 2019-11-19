@@ -13,12 +13,12 @@ import androidx.annotation.NonNull;
 
 
 
-public class MainActivity extends Activity {
+public class PDFMain extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.pdf_activity_main);
         initPermission();
     }
 
@@ -37,9 +37,9 @@ public class MainActivity extends Activity {
         if (requestCode == 1) {
             if (grantResults.length == 1 &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(MainActivity.this, "Permision Write File is Granted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PDFMain.this, "Permision Write File is Granted", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(MainActivity.this, "Permision Write File is Denied", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PDFMain.this, "Permision Write File is Denied", Toast.LENGTH_SHORT).show();
             }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -52,11 +52,11 @@ public class MainActivity extends Activity {
                 //Permisson don't granted
                 if (shouldShowRequestPermissionRationale(
                         Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    Toast.makeText(MainActivity.this, "Permission isn't granted ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PDFMain.this, "Permission isn't granted ", Toast.LENGTH_SHORT).show();
                 }
                 // Permisson don't granted and dont show dialog again.
                 else {
-                    Toast.makeText(MainActivity.this, "Permisson don't granted and dont show dialog again ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PDFMain.this, "Permisson don't granted and dont show dialog again ", Toast.LENGTH_SHORT).show();
                 }
                 //Register permission
                 requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);

@@ -257,6 +257,7 @@ public class PDFConverter extends ImageLoader {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             Uri uri = Uri.fromFile(file);
             //Uri uri =
+            //Uri uri = Uri.fromFile(file);
             intent.setDataAndType(uri, "application/pdf");
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             try {

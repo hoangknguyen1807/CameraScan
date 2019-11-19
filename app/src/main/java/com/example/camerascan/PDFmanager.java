@@ -24,6 +24,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
 
+import com.example.camerascan.pdfconverter.SaveInstanceFragment;
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Image;
 
@@ -40,8 +41,8 @@ public class PDFmanager extends ImageLoader {
     Image img;//lưu ảnh đã được xử lí để chuyển PDF
     Button gallery, convert, cdir;//button ở layout
     ImageView preview;//ImageView để preview sau khi chọn ảnh
-    String filename;//chứa tên file pdf cần tạo
-    String path;//đường dẫn chứa file
+    public String filename;//chứa tên file pdf cần tạo
+    public String path;//đường dẫn chứa file
     TextView pathtxt;//textview hiển thị đường dẫn lưu hiện hành
     Bitmap bitmap = null;//dùng để saveInstanceState
     byte[] imgInBytes;//dùng để saveInstanceState

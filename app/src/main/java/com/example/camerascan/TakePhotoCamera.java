@@ -43,7 +43,6 @@ public class TakePhotoCamera extends Activity {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.CAMERA},
                     REQUEST_PERMISSION_CAMERA);
-            return;
         }
         takePhotoFromCamera();
     }

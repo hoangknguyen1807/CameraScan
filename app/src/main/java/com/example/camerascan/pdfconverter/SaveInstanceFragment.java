@@ -8,7 +8,7 @@ public class SaveInstanceFragment extends Fragment {
     /**
      * Fragment đóng vai trò lưu giữ Instance <-- Lưu giữ instance ảnh có thể nặng, vượt quá giới
      * hạn bundle SavedInstanceState (~1MB)
-     */
+     * */
 
     private static final String TAG = "SavedInstanceFragment";
     private static Bundle mInstanceBundle = null;

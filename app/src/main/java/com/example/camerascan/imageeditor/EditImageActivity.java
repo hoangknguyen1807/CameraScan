@@ -31,24 +31,18 @@ import org.jetbrains.annotations.NotNull;
 
 import com.example.camerascan.R;
 import com.example.camerascan.imageeditor.fragment.AddTextFragment;
-import com.example.camerascan.imageeditor.fragment.BeautyFragment;
-import com.example.camerascan.imageeditor.fragment.BrightnessFragment;
-import com.example.camerascan.imageeditor.fragment.FilterListFragment;
 import com.example.camerascan.imageeditor.fragment.MainMenuFragment;
 import com.example.camerascan.imageeditor.fragment.paint.PaintFragment;
 import com.example.camerascan.imageeditor.fragment.RotateFragment;
-import com.example.camerascan.imageeditor.fragment.SaturationFragment;
 import com.example.camerascan.imageeditor.fragment.StickerFragment;
 import com.example.camerascan.imageeditor.fragment.crop.CropFragment;
 import com.example.camerascan.imageeditor.interfaces.OnLoadingDialogListener;
 import com.example.camerascan.imageeditor.interfaces.OnMainBitmapChangeListener;
 import com.example.camerascan.imageeditor.utils.BitmapUtils;
 import com.example.camerascan.imageeditor.utils.PermissionUtils;
-import com.example.camerascan.imageeditor.view.BrightnessView;
 import com.example.camerascan.imageeditor.view.CustomPaintView;
 import com.example.camerascan.imageeditor.view.CustomViewPager;
 import com.example.camerascan.imageeditor.view.RotateImageView;
-import com.example.camerascan.imageeditor.view.SaturationView;
 import com.example.camerascan.imageeditor.view.StickerView;
 import com.example.camerascan.imageeditor.view.TextStickerView;
 import com.example.camerascan.imageeditor.view.imagezoom.ImageViewTouch;
@@ -87,19 +81,13 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     public int mode = MODE_NONE;
     public CustomPaintView paintView;
     public ViewFlipper bannerFlipper;
-    public BrightnessView brightnessView;
-    public SaturationView saturationView;
     public RotateImageView rotatePanel;
     public CustomViewPager bottomGallery;
     public StickerFragment stickerFragment;
-    public FilterListFragment filterListFragment;
     public CropFragment cropFragment;
     public RotateFragment rotateFragment;
     public AddTextFragment addTextFragment;
     public PaintFragment paintFragment;
-    public BeautyFragment beautyFragment;
-    public BrightnessFragment brightnessFragment;
-    public SaturationFragment saturationFragment;
     protected boolean isBeenSaved = false;
     protected boolean isPortraitForced = false;
     protected int numberOfOperations = 0;
@@ -177,8 +165,6 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         rotatePanel = findViewById(R.id.rotate_panel);
         textStickerView = findViewById(R.id.text_sticker_panel);
         paintView = findViewById(R.id.custom_paint_view);
-        brightnessView = findViewById(R.id.brightness_panel);
-        saturationView = findViewById(R.id.contrast_panel);
         bottomGallery = findViewById(R.id.bottom_gallery);
 
         mainMenuFragment = MainMenuFragment.newInstance();
@@ -187,13 +173,9 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         BottomGalleryAdapter bottomGalleryAdapter = new BottomGalleryAdapter(
                 this.getSupportFragmentManager());
         stickerFragment = StickerFragment.newInstance();
-        filterListFragment = FilterListFragment.newInstance();
         cropFragment = CropFragment.newInstance();
         rotateFragment = RotateFragment.newInstance();
         paintFragment = PaintFragment.newInstance();
-        beautyFragment = BeautyFragment.newInstance();
-        brightnessFragment = BrightnessFragment.newInstance();
-        saturationFragment = SaturationFragment.newInstance();
         addTextFragment = AddTextFragment.newInstance();
         setOnMainBitmapChangeListener(addTextFragment);
 
@@ -258,9 +240,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
             case MODE_STICKERS:
                 stickerFragment.backToMain();
                 break;
-            case MODE_FILTER:
-                filterListFragment.backToMain();
-                break;
+
             case MODE_CROP:
                 cropFragment.backToMain();
                 break;
@@ -273,15 +253,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
             case MODE_PAINT:
                 paintFragment.backToMain();
                 break;
-            case MODE_BEAUTY:
-                beautyFragment.backToMain();
-                break;
-            case MODE_BRIGHTNESS:
-                brightnessFragment.backToMain();
-                break;
-            case MODE_SATURATION:
-                saturationFragment.backToMain();
-                break;
+
             default:
                 if (canAutoExit()) {
                     onSaveTaskDone();
@@ -455,8 +427,6 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
                     return mainMenuFragment;
                 case StickerFragment.INDEX:
                     return stickerFragment;
-                case FilterListFragment.INDEX:
-                    return filterListFragment;
                 case CropFragment.INDEX:
                     return cropFragment;
                 case RotateFragment.INDEX:
@@ -465,12 +435,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
                     return addTextFragment;
                 case PaintFragment.INDEX:
                     return paintFragment;
-                case BeautyFragment.INDEX:
-                    return beautyFragment;
-                case BrightnessFragment.INDEX:
-                    return brightnessFragment;
-                case SaturationFragment.INDEX:
-                    return saturationFragment;
+
             }
             return MainMenuFragment.newInstance();
         }
@@ -499,9 +464,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
                 case MODE_STICKERS:
                     stickerFragment.applyStickers();
                     break;
-                case MODE_FILTER:
-                    filterListFragment.applyFilterImage();
-                    break;
+
                 case MODE_CROP:
                     cropFragment.applyCropImage();
                     break;
@@ -514,15 +477,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
                 case MODE_PAINT:
                     paintFragment.savePaintImage();
                     break;
-                case MODE_BEAUTY:
-                    beautyFragment.applyBeauty();
-                    break;
-                case MODE_BRIGHTNESS:
-                    brightnessFragment.applyBrightness();
-                    break;
-                case MODE_SATURATION:
-                    saturationFragment.applySaturation();
-                    break;
+
                 default:
                     break;
             }

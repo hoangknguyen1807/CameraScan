@@ -33,9 +33,7 @@ public class MainMenuActivity extends Activity {
         buttonToTakePhotoScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentTakePhotoCamera = new
-                        Intent(MainMenuActivity.this,
-                        TakePhotoCamera.class);
+                Intent intentTakePhotoCamera = new Intent(MainMenuActivity.this, TakePhotoCamera.class);
                 startActivity(intentTakePhotoCamera);
             }
         });

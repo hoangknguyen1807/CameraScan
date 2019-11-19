@@ -16,7 +16,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import com.example.camerascan.BaseActivity;
+import com.example.camerascan.imageeditor.BaseActivity;
 import com.example.camerascan.R;
 import com.example.camerascan.imageeditor.EditImageActivity;
 import com.example.camerascan.imageeditor.ModuleConfig;

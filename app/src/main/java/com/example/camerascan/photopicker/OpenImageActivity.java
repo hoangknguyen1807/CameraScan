@@ -6,7 +6,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.camerascan.BaseActivity;
+import com.example.camerascan.imageeditor.BaseActivity;
 
 public class OpenImageActivity extends BaseActivity {
     @Override

@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.example.camerascan.BaseActivity;
+import com.example.camerascan.imageeditor.BaseActivity;
 import com.example.camerascan.R;
 import com.example.camerascan.imageeditor.EditImageActivity;
 import com.example.camerascan.imageeditor.ModuleConfig;

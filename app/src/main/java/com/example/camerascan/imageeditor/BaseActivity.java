@@ -1,4 +1,4 @@
-package com.example.camerascan;
+package com.example.camerascan.imageeditor;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;

@@ -11,7 +11,7 @@ import android.widget.Toast;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.camerascan.BaseActivity;
+import com.example.camerascan.imageeditor.BaseActivity;
 import com.example.camerascan.R;
 import com.example.camerascan.imageeditor.EditImageActivity;
 import com.example.camerascan.imageeditor.ModuleConfig;

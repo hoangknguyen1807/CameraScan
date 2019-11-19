@@ -12,7 +12,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.example.camerascan.BaseActivity;
+import com.example.camerascan.imageeditor.BaseActivity;
 import com.example.camerascan.R;
 import com.example.camerascan.imageeditor.EditImageActivity;
 import com.example.camerascan.imageeditor.ModuleConfig;

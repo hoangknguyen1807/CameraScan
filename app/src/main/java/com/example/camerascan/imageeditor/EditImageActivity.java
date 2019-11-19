@@ -29,7 +29,6 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.example.camerascan.BaseActivity;
 import com.example.camerascan.R;
 import com.example.camerascan.imageeditor.fragment.AddTextFragment;
 import com.example.camerascan.imageeditor.fragment.BeautyFragment;

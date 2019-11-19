@@ -7,6 +7,7 @@ android {
     buildToolsVersion "29.0.2"
 
     defaultConfig {
+        multiDexEnabled true
         applicationId "com.example.camerascan"
         minSdkVersion 16
         targetSdkVersion 29
@@ -55,4 +56,5 @@ dependencies {
     implementation 'com.itextpdf:itextg:5.5.10'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'lib.kashif:folderpicker:2.4'
+    implementation 'com.android.support:multidex:1.0.3'
 }

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#82FFFF"
+    android:padding="5dp"
+    android:weightSum="20">
+
+    <SurfaceView
+        android:id="@+id/cameraView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="18"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:weightSum="10">
+        <TextView
+            android:id="@+id/textViewResult"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="8"
+            android:hint="Nothing yet!"
+            android:layout_gravity="bottom"
+            android:textColor="@android:color/black"
+            android:textSize="10sp"
+            android:background="#fff"
+            android:layout_margin="5dp"
+            />
+        <Button
+            android:id="@+id/buttonToTxtView"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:text="Get Text"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:textAllCaps="false"
+            android:background="@drawable/custom_circle_button"
+        />
+    </LinearLayout>
+</LinearLayout>

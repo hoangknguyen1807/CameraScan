@@ -1,22 +1,14 @@
 package com.example.camerascan;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.FileProvider;
 
-import java.io.File;
-import java.io.IOException;
+import com.example.camerascan.pdfconverter.PDFConverter;
 
 public class MainMenuActivity extends Activity {
 
@@ -67,7 +59,7 @@ public class MainMenuActivity extends Activity {
         buttonToConvertScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent PDF = new Intent(MainMenuActivity.this, PDFmanager.class);
+                Intent PDF = new Intent(MainMenuActivity.this, PDFConverter.class);
                 startActivity(PDF);
             }
         });
@@ -84,7 +76,7 @@ public class MainMenuActivity extends Activity {
         buttonToUploadScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentChangeToUploadScreen = new Intent(MainMenuActivity.this, MainActivity.class);
+                Intent intentChangeToUploadScreen = new Intent(MainMenuActivity.this, UploadActivity.class);
                 startActivity(intentChangeToUploadScreen);
             }
         });

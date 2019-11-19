@@ -16,8 +16,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.camerascan.ImageLoader;
-import com.example.camerascan.ImageLoading;
+import com.example.camerascan.pdfconverter.ImageLoader;
+import com.example.camerascan.pdfconverter.ImageLoading;
 import com.example.camerascan.PreviewData;
 import com.example.camerascan.R;
 import com.google.android.gms.vision.Frame;

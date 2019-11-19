@@ -47,7 +47,7 @@ import retrofit2.Retrofit;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
 
-public class MainActivity extends Activity implements View.OnTouchListener {
+public class UploadActivity extends Activity implements View.OnTouchListener {
     private static final String TAG = "Touch";
     @SuppressWarnings("unused")
     private static final float MIN_ZOOM = 1f, MAX_ZOOM = 1f;
@@ -98,7 +98,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.upload_activity);
 
 
         // ZOOM IMAGE
@@ -114,7 +114,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
                  matrix=null;
                  savedMatrix=null;
                  flag=0;
-                CropImage.startPickImageActivity(MainActivity.this);
+                CropImage.startPickImageActivity(UploadActivity.this);
 
             }
         });
@@ -169,7 +169,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 //                }
 //                System.out.println(fileName[fileName.length - 1]);
 //                File file = new File(folderPath + fileName[fileName.length - 1]);
-                Retrofit retrofit = NetworkClient.getRetrofitClient(MainActivity.this);
+                Retrofit retrofit = NetworkClient.getRetrofitClient(UploadActivity.this);
                 uploadAPIs = retrofit.create(UploadAPIs.class);
                 //Create a file object using file path
                 File file = new File(imgPath);
@@ -197,13 +197,13 @@ public class MainActivity extends Activity implements View.OnTouchListener {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()) {
-                            Toast.makeText(MainActivity.this, "Image uploaded success", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(UploadActivity.this, "Image uploaded success", Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Toast.makeText(MainActivity.this, "ERROR " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UploadActivity.this, "ERROR " + t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -257,7 +257,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
     private void handleOpenImageFromStorage(Intent data) {
         Uri uri = data.getData();
-        imgPath = UriUtil.getPath(MainActivity.this, uri);
+        imgPath = UriUtil.getPath(UploadActivity.this, uri);
         Toast.makeText(this, imgPath, Toast.LENGTH_SHORT).show();
 
         Toast.makeText(this, "to loadImage", Toast.LENGTH_SHORT).show();
@@ -273,7 +273,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
     private String getImagePath(Intent data) {
         Uri uri = data.getData();
-        imgPath = UriUtil.getPath(MainActivity.this, uri);
+        imgPath = UriUtil.getPath(UploadActivity.this, uri);
         Toast.makeText(this, imgPath, Toast.LENGTH_SHORT).show();
         loadImage(imgPath);
         //File myfile = new File(data.getData().getPath());//data.getStringExtra("imgPath");
@@ -291,7 +291,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         Uri selectedImage = Uri.fromFile(new File(imagePath));
         Bitmap res;
         try {
-            res = MediaStore.Images.Media.getBitmap(MainActivity.this.getContentResolver(), selectedImage);
+            res = MediaStore.Images.Media.getBitmap(UploadActivity.this.getContentResolver(), selectedImage);
         } catch (FileNotFoundException exc) {
             Log.e("Demo App", exc.getMessage());
             return;
@@ -566,7 +566,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
      * Show an event in the LogCat view, for debugging
      */
     private void dumpEvent(MotionEvent event) {
-        String names[] = {"DOWN", "UP", "MOVE", "CANCEL", "OUTSIDE", "POINTER_DOWN", "POINTER_UP", "7?", "8?", "9?"};
+        String[] names = {"DOWN", "UP", "MOVE", "CANCEL", "OUTSIDE", "POINTER_DOWN", "POINTER_UP", "7?", "8?", "9?"};
         StringBuilder sb = new StringBuilder();
         int action = event.getAction();
         int actionCode = action & MotionEvent.ACTION_MASK;

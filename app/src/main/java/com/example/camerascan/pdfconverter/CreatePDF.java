@@ -1,4 +1,4 @@
-package com.example.camerascan;
+package com.example.camerascan.pdfconverter;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -22,13 +22,13 @@ public class CreatePDF extends
         AsyncTask<Image, Void, String> {
     //Class convert ảnh sang file pdf
 
-    PDFmanager callerContext; //context gọi ASyncTask
+    PDFConverter callerContext; //context gọi ASyncTask
     ProgressDialog dialog = null;
     Image image;// biến đóng vai trò chứa tham số truyền vào
 
     public CreatePDF (Context callerContext){
         //Hàm khởi tạo khi gọi new CreatePDF, truyền context gọi hàm vào ASyncTask
-        this.callerContext = (PDFmanager) callerContext;
+        this.callerContext = (PDFConverter) callerContext;
         dialog = new ProgressDialog(callerContext);
     }
 
@@ -46,7 +46,7 @@ public class CreatePDF extends
     protected String doInBackground(Image... images) {
 
         //xử lí ASyncTask
-        this.dialog.setMessage("Đang xử lí...");
+        //this.dialog.setMessage("Đang xử lí...");
         image = images[0];//đọc tham số truyền vào
         Document doc = new Document();//tạo trang document mới
 

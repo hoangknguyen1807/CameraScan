@@ -1,4 +1,4 @@
-package com.example.camerascan;
+package com.example.camerascan.pdfconverter;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
@@ -22,7 +22,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.FileProvider;
 
+import com.example.camerascan.R;
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Image;
 
@@ -31,7 +33,7 @@ import java.io.IOException;
 
 import lib.folderpicker.FolderPicker;
 
-public class PDFmanager extends ImageLoader {
+public class PDFConverter extends ImageLoader {
     //activity chính xử lí chuyển đổi ảnh -> pdf
     private static final int GALLERY_REQUEST_CODE = 1555;//
     private static final int FOLDERPICKER_CODE = 1666;//biến request code được gán cố định
@@ -39,14 +41,15 @@ public class PDFmanager extends ImageLoader {
     Image img;//lưu ảnh đã được xử lí để chuyển PDF
     Button gallery, convert, cdir;//button ở layout
     ImageView preview;//ImageView để preview sau khi chọn ảnh
-    String filename;//chứa tên file pdf cần tạo
-    String path;//đường dẫn chứa file
+    public String filename;//chứa tên file pdf cần tạo
+    public String path;//đường dẫn chứa file
     TextView pathtxt;//textview hiển thị đường dẫn lưu hiện hành
     Bitmap bitmap = null;//dùng để saveInstanceState
     byte[] imgInBytes;//dùng để saveInstanceState
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        savedInstanceState = SaveInstanceFragment.getInstance(getFragmentManager()).popData();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pdf_manager);
 
@@ -81,7 +84,7 @@ public class PDFmanager extends ImageLoader {
         cdir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(PDFmanager.this, FolderPicker.class);
+                Intent intent = new Intent(PDFConverter.this, FolderPicker.class);
                 intent.putExtra("title", "Chọn đường dẫn");
                 startActivityForResult(intent, FOLDERPICKER_CODE);
             }
@@ -126,6 +129,8 @@ public class PDFmanager extends ImageLoader {
             outState.putBoolean("clickable", true);
             outState.putByteArray("convert", imgInBytes);
         }
+        SaveInstanceFragment.getInstance(getFragmentManager()).pushData((Bundle) outState.clone());
+        outState.clear();
     }
 
     private void pickFromGallery() {
@@ -147,7 +152,7 @@ public class PDFmanager extends ImageLoader {
                 case GALLERY_REQUEST_CODE:
                     //trường hợp intent chọn ảnh từ gallery trả kết quả
                     //gọi intent load ảnh lên để preview và tiền xử lí ảnh để chuyển pdf
-                    ImageLoading imageLoading = new ImageLoading(PDFmanager.this);
+                    ImageLoading imageLoading = new ImageLoading(PDFConverter.this);
                     imageLoading.execute(data);
                     break;
                 case FOLDERPICKER_CODE:
@@ -220,7 +225,7 @@ public class PDFmanager extends ImageLoader {
             filename += ".pdf";
         File file = new File(path + filename);
         if (!file.exists()) {
-            CreatePDF createPDF = new CreatePDF(PDFmanager.this);
+            CreatePDF createPDF = new CreatePDF(PDFConverter.this);
             createPDF.execute(img);
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -228,7 +233,7 @@ public class PDFmanager extends ImageLoader {
             builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    CreatePDF createPDF = new CreatePDF(PDFmanager.this);
+                    CreatePDF createPDF = new CreatePDF(PDFConverter.this);
                     createPDF.execute(img);//, dir, name);
                 }
             });
@@ -245,12 +250,15 @@ public class PDFmanager extends ImageLoader {
 
     public void previewPDF() {
         //hàm xem file pdf sau khi được tạo
-        File file = new File(path + filename);
+        File file = new File(path, filename);
         if (file.exists()) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            Uri uri = Uri.fromFile(file);
+            Uri uri = FileProvider.getUriForFile(this,
+                    this.getApplicationContext().getPackageName() + ".provider", file);
             intent.setDataAndType(uri, "application/pdf");
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
             try {
                 startActivity(intent);
             } catch (ActivityNotFoundException e) {
@@ -268,4 +276,6 @@ public class PDFmanager extends ImageLoader {
         convert.setEnabled(true);//cho phép bấm phím chuyển pdf
         imgInBytes = array;
     }
+
+
 }

@@ -1,7 +1,8 @@
-package com.example.camerascan;
+package com.example.camerascan.pdfconverter;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -33,6 +34,7 @@ public class ImageLoading extends AsyncTask<Intent, Void, Bitmap> {
         super.onPreExecute();
         //tiền xử lí ASyncTask
         //cài đặt hiển thị dialog
+        callerContext.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
         this.dialog.setMessage("Vui lòng chờ!\nĐang tải ảnh...");
         this.dialog.setCancelable(false);
         this.dialog.show();
@@ -67,6 +69,8 @@ public class ImageLoading extends AsyncTask<Intent, Void, Bitmap> {
         //hậu xử lí ASyncTask
         dialog.dismiss();
         //truyền các kết quả trả về vào hàm onTaskComplete để context gọi ASyncTask có thể sử dụng
+        callerContext.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         callerContext.onTaskComplete(bitmap, img, tmp);
+
     }
 }

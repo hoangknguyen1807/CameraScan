@@ -34,6 +34,7 @@ import com.example.camerascan.imageeditor.FileUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -111,8 +112,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnConvert.setOnClickListener(this);
 
 
-        loadingDialog = BaseActivity.getLoadingDialog(this, R.string.loading,
-                false);
+        //loadingDialog = BaseActivity.getLoadingDialog(this, R.string.loading,false);
     }
 
     @Override
@@ -206,6 +206,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             File imageFile = null;
+
             try {
                 imageFile = createImageFile();
             } catch (IOException exc) {
@@ -221,6 +222,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         imageFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
                         takenPhotoUri);
+
                 startActivityForResult(takePictureIntent, TAKE_PHOTO_CODE);
             }
         }
@@ -265,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imgView.setImageBitmap(mainBitmap);
     }
 
-    private Single<Bitmap> loadBitmapFromFile(String filePath) {
+    /*private Single<Bitmap> loadBitmapFromFile(String filePath) {
         return Single.fromCallable(() ->
                 BitmapUtils.getSampledBitmap(
                         filePath,
@@ -273,15 +275,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         imgHeight / 4
                 )
         );
-    }
+    }*/
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         // nên cài đặt cái tác vụ onTouch (Zoom) này vào trong một class
         // để dễ sử dụng lên các ảnh khác
-        imgView = (ImageView) v;
+        //imgView = (ImageView) v;
+        ImageView preview = (ImageView) v;
 
-        imgView.setScaleType(ImageView.ScaleType.MATRIX);
+        //imgView.setScaleType(ImageView.ScaleType.MATRIX);
+        preview.setScaleType(ImageView.ScaleType.MATRIX);
         float scale;
 
 
@@ -338,7 +342,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
 
-        imgView.setImageMatrix(matrix); // display the transformation on screen
+        preview.setImageMatrix(matrix); // display the transformation on screen
 
         return true; // indicate event was handled
     }

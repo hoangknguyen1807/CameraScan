@@ -1,4 +1,4 @@
-package com.example.camerascan;
+package com.example.camerascan.photopicker;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -11,6 +11,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 
 import androidx.fragment.app.Fragment;
+
+import com.example.camerascan.R;
 
 import java.util.ArrayList;
 import java.util.List;

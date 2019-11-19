@@ -1,4 +1,4 @@
-package com.example.camerascan;
+package com.example.camerascan.noneed;
 
 import android.content.Context;
 

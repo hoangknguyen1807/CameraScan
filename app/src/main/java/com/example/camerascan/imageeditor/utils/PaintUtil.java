@@ -23,7 +23,7 @@ import android.util.TypedValue;
  */
 public class PaintUtil {
 
-    // Private Constants ///////////////////////////////////////////////////////
+    // Private constants ///////////////////////////////////////////////////////
 
     private static final int DEFAULT_CORNER_COLOR = Color.WHITE;
     private static final String SEMI_TRANSPARENT = "#AAFFFFFF";

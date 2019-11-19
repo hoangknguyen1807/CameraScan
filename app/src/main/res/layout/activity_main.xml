@@ -16,9 +16,8 @@
         android:layout_height="0dp"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
+        android:contentDescription="Background Image"
         android:scaleType="fitCenter"
-        android:scaleX="1"
-        android:scaleY="1"
         android:src="@drawable/pdf_scanner"
         app:layout_constraintBottom_toTopOf="@id/barrier"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,6 +34,7 @@
         android:layout_marginLeft="12dp"
         android:layout_marginBottom="24dp"
         android:background="@android:color/holo_orange_light"
+        android:textSize="12sp"
         android:text="Connect\nCamera"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -46,40 +46,45 @@
         android:layout_height="0dp"
         android:layout_marginStart="12dp"
         android:layout_marginLeft="12dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginRight="6dp"
         android:layout_marginBottom="24dp"
         android:background="@android:color/holo_orange_light"
         android:text="Open\nAn\nImage"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnEditImage"
         app:layout_constraintStart_toEndOf="@+id/btnCamera" />
 
     <Button
         android:id="@+id/btnEditImage"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginLeft="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginRight="12dp"
         android:layout_marginBottom="24dp"
         android:background="@android:color/holo_orange_light"
-        android:text="@string/edit_image"
+        android:text="Edit\nImage"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnConvert"
         app:layout_constraintStart_toEndOf="@+id/btnOpenImage"
-        app:layout_constraintTop_toTopOf="@+id/btnOpenImage" />
+        app:layout_constraintTop_toTopOf="@id/barrier"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/btnConvert"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginLeft="12dp"
         android:layout_marginEnd="12dp"
         android:layout_marginRight="12dp"
         android:layout_marginBottom="24dp"
         android:background="@android:color/holo_orange_light"
         android:text="Convert"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btnEditImage"
-        app:layout_constraintTop_toTopOf="@+id/btnEditImage" />
+        app:layout_constraintTop_toTopOf="@id/barrier" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier"

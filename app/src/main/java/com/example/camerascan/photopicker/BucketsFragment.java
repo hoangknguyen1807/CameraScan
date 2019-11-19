@@ -1,13 +1,16 @@
-package com.example.camerascan;
+package com.example.camerascan.photopicker;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.example.camerascan.R;
 
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.MediaStore;
 
 import androidx.fragment.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

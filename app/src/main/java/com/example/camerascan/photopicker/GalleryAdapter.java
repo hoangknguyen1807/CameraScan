@@ -1,4 +1,4 @@
-package com.example.camerascan;
+package com.example.camerascan.photopicker;
 
 
 import android.content.Context;
@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.camerascan.R;
 
 import com.bumptech.glide.Glide;
 

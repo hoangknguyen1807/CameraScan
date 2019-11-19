@@ -20,8 +20,9 @@ public class StickerItem {
     private static final float MIN_SCALE = 0.15f;
     private static final int HELP_BOX_PAD = 25;
     private static final int BORDER_STROKE_WIDTH = 8;
+    public static final int STICKER_BTN_HALF_SIZE = 30;
 
-    private static final int BUTTON_WIDTH = Constants.STICKER_BTN_HALF_SIZE;
+    private static final int BUTTON_WIDTH = STICKER_BTN_HALF_SIZE;
     private static Bitmap deleteBit;
     private static Bitmap rotateBit;
     public Bitmap bitmap;
@@ -34,7 +35,7 @@ public class StickerItem {
     private RectF deleteRect;
     private RectF rotateRect;
     private RectF helpBox;
-    private float roatetAngle = 0;
+    private float rotateAngle = 0;
     private Paint paint = new Paint();
     private Paint helpBoxPaint = new Paint();
     private float initWidth;
@@ -168,14 +169,14 @@ public class StickerItem {
         int flag = calMatrix > 0 ? 1 : -1;
         angle = flag * angle;
 
-        roatetAngle += angle;
+        rotateAngle += angle;
         this.matrix.postRotate(angle, this.dstRect.centerX(),
                 this.dstRect.centerY());
 
         RectUtil.rotateRect(this.detectRotateRect, this.dstRect.centerX(),
-                this.dstRect.centerY(), roatetAngle);
+                this.dstRect.centerY(), rotateAngle);
         RectUtil.rotateRect(this.detectDeleteRect, this.dstRect.centerX(),
-                this.dstRect.centerY(), roatetAngle);
+                this.dstRect.centerY(), rotateAngle);
     }
 
     void draw(Canvas canvas) {
@@ -183,7 +184,7 @@ public class StickerItem {
 
         if (this.isDrawHelpTool) {
             canvas.save();
-            canvas.rotate(roatetAngle, helpBox.centerX(), helpBox.centerY());
+            canvas.rotate(rotateAngle, helpBox.centerX(), helpBox.centerY());
             canvas.drawRoundRect(helpBox, 10, 10, helpBoxPaint);
 
             canvas.drawBitmap(deleteBit, helpToolsRect, deleteRect, null);

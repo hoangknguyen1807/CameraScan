@@ -78,11 +78,13 @@
         android:layout_below="@id/banner"
         android:background="#000000">
 
+
         <com.example.camerascan.imageeditor.view.imagezoom.ImageViewTouch
             android:id="@+id/main_image"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_gravity="center" />
+
 
         <com.example.camerascan.imageeditor.view.RotateImageView
             android:id="@+id/rotate_panel"
@@ -90,6 +92,7 @@
             android:layout_height="fill_parent"
             android:layout_gravity="center"
             android:visibility="gone" />
+
 
         <com.example.camerascan.imageeditor.layout.ZoomLayout
             android:id="@+id/text_sticker_panel_frame"
@@ -105,12 +108,14 @@
 
         </com.example.camerascan.imageeditor.layout.ZoomLayout>
 
+
         <com.example.camerascan.imageeditor.view.CustomPaintView
             android:id="@+id/custom_paint_view"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_gravity="center"
             android:visibility="gone" />
+
 
         <com.example.camerascan.imageeditor.view.BrightnessView
             android:id="@+id/brightness_panel"
@@ -139,6 +144,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:visibility="gone" />
+
     </FrameLayout>
 
     <LinearLayout

@@ -1,4 +1,4 @@
-package com.example.camerascan;
+package com.example.camerascan.photopicker;
 
 import android.content.Context;
 import android.util.AttributeSet;

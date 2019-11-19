@@ -1,4 +1,4 @@
-package com.example.camerascan;
+package com.example.camerascan.photopicker;
 
 public class BucketItem extends GridItem {
     final int id;

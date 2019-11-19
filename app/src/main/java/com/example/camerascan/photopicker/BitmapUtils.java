@@ -1,4 +1,4 @@
-package com.example.camerascan;
+package com.example.camerascan.photopicker;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -22,13 +22,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public class BitmapUtils {
+    public static final long MAX_SZIE = 1024 * 512;// 500KB
     /**
      * Used to tag logs
      */
     @SuppressWarnings("unused")
     private static final String TAG = "BitmapUtils";
-
-    public static final long MAX_SZIE = 1024 * 512;// 500KB
 
     public static int getOrientation(final String imagePath) {
         int rotate = 0;
@@ -73,16 +72,6 @@ public class BitmapUtils {
                 / ratio));
 
         return new BitmapSize(scaledWidth, scaledHeight);
-    }
-
-    public static class BitmapSize {
-        public int width;
-        public int height;
-
-        public BitmapSize(int width, int height) {
-            this.width = width;
-            this.height = height;
-        }
     }
 
     public static byte[] bitmapTobytes(Bitmap bitmap) {
@@ -150,7 +139,6 @@ public class BitmapUtils {
         return compressImage(bitmap);
     }
 
-
     public static Bitmap compress(Bitmap image) {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -197,14 +185,6 @@ public class BitmapUtils {
         ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());
         Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, null);
         return bitmap;
-    }
-
-    public void printscreen_share(View v, Activity context) {
-        View view1 = context.getWindow().getDecorView();
-        Display display = context.getWindowManager().getDefaultDisplay();
-        view1.layout(0, 0, display.getWidth(), display.getHeight());
-        view1.setDrawingCacheEnabled(true);
-        Bitmap bitmap = Bitmap.createBitmap(view1.getDrawingCache());
     }
 
     // 图片转为文件
@@ -309,7 +289,6 @@ public class BitmapUtils {
             return input;
     }
 
-
     /**
      * Resize a bitmap
      *
@@ -333,7 +312,6 @@ public class BitmapUtils {
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeFile(filePath, options);
     }
-
 
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
@@ -374,6 +352,24 @@ public class BitmapUtils {
         } catch (IOException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public void printscreen_share(View v, Activity context) {
+        View view1 = context.getWindow().getDecorView();
+        Display display = context.getWindowManager().getDefaultDisplay();
+        view1.layout(0, 0, display.getWidth(), display.getHeight());
+        view1.setDrawingCacheEnabled(true);
+        Bitmap bitmap = Bitmap.createBitmap(view1.getDrawingCache());
+    }
+
+    public static class BitmapSize {
+        public int width;
+        public int height;
+
+        public BitmapSize(int width, int height) {
+            this.width = width;
+            this.height = height;
         }
     }
 

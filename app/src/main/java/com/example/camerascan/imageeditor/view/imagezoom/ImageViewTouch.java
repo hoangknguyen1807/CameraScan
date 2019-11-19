@@ -14,6 +14,8 @@ import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.ViewConfiguration;
 
+import java.io.File;
+
 public class ImageViewTouch extends ImageViewTouchBase {
     static final float SCROLL_DELTA_THRESHOLD = 1.0f;
     protected ScaleGestureDetector mScaleDetector;
@@ -37,6 +39,7 @@ public class ImageViewTouch extends ImageViewTouchBase {
     @Override
     protected void init() {
         super.init();
+
         mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
         mGestureListener = getGestureListener();
         mScaleListener = getScaleListener();

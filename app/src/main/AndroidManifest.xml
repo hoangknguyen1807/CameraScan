@@ -47,13 +47,13 @@
 
         <!--"android.support.v4.content.FileProvider"-->
         <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="com.example.android.fileprovider"
+            android:name=".GenericFileProvider"
+            android:authorities="com.example.camerascan.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths"/>
         </provider>
 
         <!--<activity android:name=".OpenImageActivity"></activity>-->

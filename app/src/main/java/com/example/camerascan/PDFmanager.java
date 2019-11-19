@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.FileProvider;
 
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Image;
@@ -47,6 +48,7 @@ public class PDFmanager extends ImageLoader {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        savedInstanceState = SaveInstanceFragment.getInstance(getFragmentManager()).popData();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pdf_manager);
 
@@ -126,6 +128,8 @@ public class PDFmanager extends ImageLoader {
             outState.putBoolean("clickable", true);
             outState.putByteArray("convert", imgInBytes);
         }
+        SaveInstanceFragment.getInstance( getFragmentManager() ).pushData( (Bundle) outState.clone() );
+        outState.clear();
     }
 
     private void pickFromGallery() {
@@ -245,12 +249,15 @@ public class PDFmanager extends ImageLoader {
 
     public void previewPDF() {
         //hàm xem file pdf sau khi được tạo
-        File file = new File(path + filename);
+        File file = new File(path, filename);
         if (file.exists()) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            Uri uri = Uri.fromFile(file);
+            Uri uri = FileProvider.getUriForFile(this,
+                    this.getApplicationContext().getPackageName()+".provider" ,file);
             intent.setDataAndType(uri, "application/pdf");
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
             try {
                 startActivity(intent);
             } catch (ActivityNotFoundException e) {
@@ -268,4 +275,6 @@ public class PDFmanager extends ImageLoader {
         convert.setEnabled(true);//cho phép bấm phím chuyển pdf
         imgInBytes = array;
     }
+
+
 }

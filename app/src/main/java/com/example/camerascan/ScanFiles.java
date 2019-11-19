@@ -131,8 +131,9 @@ public class ScanFiles extends ImageLoader  {
 //        super.onSaveInstanceState(outState);
     }
 
+
     @Override
-    public void onTaskComplete(Object result, Image img) {
+    public void onTaskComplete(Object result, Image img, byte[] array) {
         imageViewToPreviewSelectedImage.setImageBitmap((Bitmap)result);
         _tmpImg=(Bitmap)result;
     }

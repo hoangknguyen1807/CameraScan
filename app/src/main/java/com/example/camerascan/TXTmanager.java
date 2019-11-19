@@ -1,8 +1,6 @@
 package com.example.camerascan;
 
 import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,47 +11,28 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-
-import com.example.camerascan.R;
 
 import java.io.File;
 
 import lib.folderpicker.FolderPicker;
 
-
-public class PreviewData extends Activity {
-    Button buttonCopy;
-    Button buttonSave, cdir;
-    TextView textViewToReviewData;
-    TextView pathtxt;//hiển thị đường dẫn lưu file hiện tại
-    public String path;
-    public String filename;
-
+public class TXTmanager extends Activity {
+    //activity xử lí chuyển đổi text -> file .txt
     private static final int FOLDERPICKER_CODE = 1666;//mã request code cố định
 
-    ClipboardManager clipboardManager;
-    ClipData clipData;
-
-    @Override
-    public void finish() {
-        this.setResult(Activity.RESULT_OK);
-        super.finish();
-    }
+    Button cdir, save;//các phím trong layout
+    String filename;//chứa tên file cần tạo
+    String path;//đường dẫn lưu file
+    TextView pathtxt;//hiển thị đường dẫn lưu file hiện tại
+    EditText content;//Edittext: nội dung cần ghi file txt
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.data_preview_layout);
-
-        buttonCopy=findViewById(R.id.buttonCopy);
-        buttonSave=findViewById(R.id.buttonSave);
-        textViewToReviewData=findViewById(R.id.textViewToReviewData);
-        clipboardManager=(ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
+        setContentView(R.layout.save_text_manager);
 
         SharedPreferences stored = getSharedPreferences("data", 0);
         path = stored.getString("pathtxt",
@@ -62,41 +41,25 @@ public class PreviewData extends Activity {
         pathtxt = findViewById(R.id.pathtxt);
         pathtxt.setText("Vị trí:" + path);
 
+        content = findViewById(R.id.content);
+
         cdir = findViewById(R.id.cdir);//phím đổi đường dẫn lưu file
         cdir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(PreviewData.this, FolderPicker.class);
+                Intent intent = new Intent(TXTmanager.this, FolderPicker.class);
                 intent.putExtra("title", "Chọn đường dẫn");
                 startActivityForResult(intent, FOLDERPICKER_CODE);
             }
         });
 
-
-        Intent intentReceived = this.getIntent();
-        String _data =intentReceived.getStringExtra("data");
-        textViewToReviewData.setText(_data);
-
-        buttonCopy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String _data = textViewToReviewData.getText().toString(); //get data from text view
-                clipData=ClipData.newPlainText("text",_data);
-                clipboardManager.setPrimaryClip(clipData);
-
-                Toast.makeText(PreviewData.this,"Copied!",Toast.LENGTH_SHORT).show();
-                //finish();
-            }
-        });
-
-        buttonSave.setOnClickListener(new View.OnClickListener() {
+        save = findViewById(R.id.save);// phím lưu nội dụng text xuống file txt
+        save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 saveTXT();
             }
         });
-
-
     }
 
     @Override
@@ -121,11 +84,6 @@ public class PreviewData extends Activity {
                     pathtxt.setText("Vị trí:" + path);//set textview thành đường dẫn hiện hành
                     break;
             }
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
     }
 
     public void saveTXT(){
@@ -187,16 +145,16 @@ public class PreviewData extends Activity {
             filename+=".txt";
         File file = new File(path + filename);
         if (!file.exists()){
-            SaveTXT write = new SaveTXT(PreviewData.this);
-            write.execute(path, filename, textViewToReviewData.getText().toString());
+            SaveTXT write = new SaveTXT(TXTmanager.this);
+            write.execute(path, filename, content.getText().toString());
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Tập tin đã tồn tại.\nGhi đè?");
             builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    SaveTXT write = new SaveTXT(PreviewData.this);
-                    write.execute(path, filename, textViewToReviewData.getText().toString());
+                    SaveTXT write = new SaveTXT(TXTmanager.this);
+                    write.execute(path, filename, content.getText().toString());
                 }
             });
             builder.setNegativeButton("Từ chối", new DialogInterface.OnClickListener() {

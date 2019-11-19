@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Image;
@@ -15,12 +16,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class ImageLoading extends AsyncTask<Intent, Void, Bitmap> {
-
+    //class dùng để tải ảnh lên image view (+ tiền xử lí để chuyển pdf) sau khi được chọn từ gallery
     ProgressDialog dialog;
-    private ImageLoader<Bitmap> callerContext;
-    Image img;
+    private ImageLoader<Bitmap> callerContext; //context gọi ASyncTask
+    Image img; //biến tạm chứa kết quả trả về
+    byte[] tmp;//biến tạm chứa kết quả trả về
 
     public ImageLoading(ImageLoader cb){
+        //khởi tạo -> truyền vào context gọi ASyncTask
         this.callerContext = cb;
         dialog = new ProgressDialog(cb);
     }
@@ -28,6 +31,8 @@ public class ImageLoading extends AsyncTask<Intent, Void, Bitmap> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+        //tiền xử lí ASyncTask
+        //cài đặt hiển thị dialog
         this.dialog.setMessage("Vui lòng chờ!\nĐang tải ảnh...");
         this.dialog.setCancelable(false);
         this.dialog.show();
@@ -35,28 +40,33 @@ public class ImageLoading extends AsyncTask<Intent, Void, Bitmap> {
 
     @Override
     protected Bitmap doInBackground(Intent... intents) {
-        Uri selectedImage = intents[0].getData();
-        Bitmap res = null;
+        //xử lí ASyncTask
+        Uri selectedImage = intents[0].getData();//lấy dữ liệu truyền vào
+        Bitmap res = null;//biến tạm chứa kết quả trả về
         try {
+            //chuyển uri ảnh được chọn sang dạng Bitmap
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(callerContext.getContentResolver(), selectedImage);
-            res = bitmap;
-            ByteArrayOutputStream stream3 = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream3);
-            img = Image.getInstance(stream3.toByteArray());
+            res = bitmap;//lưu kết quả trả về
+            ByteArrayOutputStream stream3 = new ByteArrayOutputStream();//đưa ảnh bitmap về dạng mảng byte
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream3);//
+            tmp = stream3.toByteArray();//lưu kết quả dạng mảng của ảnh
+            img = Image.getInstance(stream3.toByteArray());//truyền vào ảnh đã được xử lí để convert PDF
         } catch (FileNotFoundException e){
-
-        } catch (IOException ioe) {
-
-        } catch (BadElementException bee) {
-
+            Log.e("File Failed", "File Not Found"); //kiểm soát exception
+        } catch (IOException ioe) {                             //
+            Log.e("File Failed", "File Not Found"); //
+        } catch (BadElementException bee) {                     //
+            Log.e("File Failed", "File Not Found"); //
         }
-        return res;
+        return res; //trả về kết quả là ảnh dạng bitmap
     }
 
     @Override
     protected void onPostExecute(Bitmap bitmap) {
         super.onPostExecute(bitmap);
+        //hậu xử lí ASyncTask
         dialog.dismiss();
-        callerContext.onTaskComplete(bitmap, img);
+        //truyền các kết quả trả về vào hàm onTaskComplete để context gọi ASyncTask có thể sử dụng
+        callerContext.onTaskComplete(bitmap, img, tmp);
     }
 }

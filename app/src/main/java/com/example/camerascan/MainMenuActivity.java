@@ -52,7 +52,8 @@ public class MainMenuActivity extends Activity {
         buttonToConvertScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent PDF = new Intent(MainMenuActivity.this, PDFmanager.class);
+                startActivity(PDF);
             }
         });
 

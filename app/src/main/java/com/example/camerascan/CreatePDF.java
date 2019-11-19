@@ -20,12 +20,6 @@ import java.io.IOException;
 
 public class CreatePDF extends
         AsyncTask<Image, Void, String> {
-
-    PDFmanager callerContext;
-    ProgressDialog dialog = null;
-    Image image;
-
-    public CreatePDF (Context callerContext){
     //Class convert ảnh sang file pdf
 
     PDFmanager callerContext; //context gọi ASyncTask
@@ -50,14 +44,6 @@ public class CreatePDF extends
 
     @Override
     protected String doInBackground(Image... images) {
-        this.dialog.setMessage("Đang xử lí...");
-        image = images[0];
-        Document doc = new Document();
-
-        String state = Environment.getExternalStorageState();
-        if (!Environment.MEDIA_MOUNTED.equals(state)) {
-
-            //If it isn't mounted - we can't write into it.
 
         //xử lí ASyncTask
         this.dialog.setMessage("Đang xử lí...");
@@ -72,33 +58,6 @@ public class CreatePDF extends
         }
 
         try {
-            File dir = new File(callerContext.path);
-            if (!dir.exists()){
-                dir.mkdir();
-            }
-
-            File file = new File(callerContext.path, callerContext.filename);
-
-            FileOutputStream fOut = new FileOutputStream(file);
-
-            PdfWriter.getInstance(doc,fOut);
-
-            doc.open();
-
-            int indentation = 0;
-            float scaler = ((doc.getPageSize().getWidth() - doc.leftMargin()
-                    - doc.rightMargin() - indentation) / image.getWidth()) * 100;
-
-            image.scalePercent(scaler);
-            doc.add(image);
-        } catch (FileNotFoundException e) {
-            Log.e("File Failed", "File Not Found");
-        } catch (DocumentException de) {
-            Log.e("File Failed", "File Not Found");
-        } catch (IOException ioe){
-            Log.e("Instance Failed", "Failed Get Instance");
-        } finally {
-            doc.close();
             File dir = new File(callerContext.path); //mở đường dẫn được truyền vào
             if (!dir.exists()){
                 dir.mkdir(); //tạo nếu đường dẫn chưa tồn tại
@@ -115,12 +74,30 @@ public class CreatePDF extends
             doc.open(); //mở document
 
             int indentation = 0;
-            //tạo kích thước scale ảnh cho phù hợp với trang dữ liệu
-            float scaler = ((doc.getPageSize().getWidth() - doc.leftMargin()
-                    - doc.rightMargin() - indentation) / image.getWidth()) * 100;
 
+            float size;
+
+            float scaler;
+
+            if (image.getWidth()>=image.getHeight()) {
+
+                size = image.getWidth();
+
+                //tạo kích thước scale ảnh cho phù hợp với trang dữ liệu
+                scaler = ((doc.getPageSize().getWidth() - doc.leftMargin()
+                        - doc.rightMargin() - indentation) / size) * 100;
+            } else {
+                size = image.getHeight();
+
+                scaler = ((doc.getPageSize().getHeight() - doc.topMargin()
+                        - doc.bottomMargin() - indentation) / size) * 100;
+            }
             //scale ảnh theo kích thước trên
+            //image.scaleToFit(doc.getPageSize().getWidth(),doc.getPageSize().getHeight());
             image.scalePercent(scaler);
+
+            image.setAlignment(Image.ALIGN_CENTER);
+
 
             //ghi ảnh vào document
             doc.add(image);
@@ -140,16 +117,6 @@ public class CreatePDF extends
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        dialog.dismiss();
-        File file = new File(callerContext.path + callerContext.filename);
-        if (file.exists()) {
-            Toast.makeText(callerContext, "Tập tin PDF đã được lưu", Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(callerContext, "Tạo tập tin PDF không thành công", Toast.LENGTH_LONG).show();
-        }
-        callerContext.previewPDF();
-    }
-}
         //hậu xử lí ASyncTask
         dialog.dismiss();
         //Kiểm tra việc tạo file pdf có thành công không (tồn tại hay không)

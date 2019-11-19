@@ -9,7 +9,35 @@
         android:orientation="vertical">
 
 
-       >
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:contentDescription="Background Image"
+        android:scaleType="fitCenter"
+        android:src="@drawable/pdf_scanner"
+        app:layout_constraintBottom_toTopOf="@id/barrier"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/btnCamera"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginBottom="24dp"
+        android:background="@android:color/holo_orange_light"
+        android:textSize="12sp"
+        android:text="Connect\nCamera"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnOpenImage" />
 
         <ImageView
 
@@ -124,5 +152,6 @@
        </TableLayout>
 
     </LinearLayout>
+
 
 </LinearLayout>

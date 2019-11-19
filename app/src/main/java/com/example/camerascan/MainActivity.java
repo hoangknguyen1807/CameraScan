@@ -43,13 +43,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
@@ -103,14 +96,13 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initPermission();
+
 
         // ZOOM IMAGE
         myImage = findViewById(R.id.imageView);
-
         myImage.setOnTouchListener(this);
 
         // Crop
@@ -593,45 +585,11 @@ public class MainActivity extends Activity implements View.OnTouchListener {
             sb.append(",").append((int) event.getY(i));
             if (i + 1 < event.getPointerCount())
                 sb.append(";");
-    public void toPDF(View view){
-        Intent PDF = new Intent(this, PDFmanager.class);
-        startActivity(PDF);
-    }
-
-    public void toTXT(View view){
-        Intent TXT = new Intent(this, TXTmanager.class);
-        startActivity(TXT);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == 1) {
-            if (grantResults.length == 1 &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(MainActivity.this, "Permision Write File is Granted", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(MainActivity.this, "Permision Write File is Denied", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+
+        sb.append("]");
+        Log.d("Touch Events ---------", sb.toString());
     }
 
-    public void initPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                //Permisson don't granted
-                if (shouldShowRequestPermissionRationale(
-                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    Toast.makeText(MainActivity.this, "Permission isn't granted ", Toast.LENGTH_SHORT).show();
-                }
-                // Permisson don't granted and dont show dialog again.
-                else {
-                    Toast.makeText(MainActivity.this, "Permisson don't granted and dont show dialog again ", Toast.LENGTH_SHORT).show();
-                }
-                //Register permission
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-            }
-        }
-    }
+
 }

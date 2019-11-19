@@ -47,13 +47,13 @@
 
                >
 
-               <Button
-                   android:id="@+id/btnCamera"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:text="Connect Camera"
+<!--               <Button-->
+<!--                   android:id="@+id/btnCamera"-->
+<!--                   android:layout_width="wrap_content"-->
+<!--                   android:layout_height="wrap_content"-->
+<!--                   android:text="Connect Camera"-->
 
-                   android:background="@android:color/holo_orange_light" />
+<!--                   android:background="@android:color/holo_orange_light" />-->
 
                <Button
                    android:id="@+id/btnUpload"
@@ -63,13 +63,13 @@
 
                    android:background="@android:color/holo_blue_light" />
 
-               <Button
-                   android:id="@+id/btnSave"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:text="SAVE TO GALLERY"
+<!--               <Button-->
+<!--                   android:id="@+id/btnSave"-->
+<!--                   android:layout_width="wrap_content"-->
+<!--                   android:layout_height="wrap_content"-->
+<!--                   android:text="SAVE TO GALLERY"-->
 
-                   android:background="@android:color/holo_green_light" />
+<!--                   android:background="@android:color/holo_green_light" />-->
 
 
 

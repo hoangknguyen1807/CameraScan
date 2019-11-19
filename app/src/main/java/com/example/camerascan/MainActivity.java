@@ -211,27 +211,9 @@ public class MainActivity extends Activity implements View.OnTouchListener {
             }
         });
 
-        // CONNECT CAMERA
-        Button btnConnectCamera = findViewById(R.id.btnCamera);
-        btnConnectCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, REQUEST_CODE_CAMERA);
 
-            }
-        });
 
-        // SAVE IMAGE IN GALLERY
-        Button btnSave = findViewById(R.id.btnSave);
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                myImage.invalidate();
-                BitmapDrawable drawable = (BitmapDrawable) myImage.getDrawable();
-                Bitmap bitmap = drawable.getBitmap();
-                MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "demo", "demo");
-            }
-        });
+
     }
 
     private void openImageFromStorage() {
@@ -411,25 +393,6 @@ public class MainActivity extends Activity implements View.OnTouchListener {
             //myImage.setImageBitmap(resized);
         }
 
-//        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null &&
-//                data.getData() != null) {
-//            // Khi đã chọn xong ảnh thì chúng ta tiến hành upload thôi
-//            Uri selectedImage = data.getData();
-//            String[] filePathColumn = {MediaStore.Images.Media.DATA};
-//
-//            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-//            assert cursor != null;
-//            cursor.moveToFirst();
-//
-//            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//            mediaPath = cursor.getString(columnIndex);
-//            //str1.setText(mediaPath);
-//            // Set the Image in ImageView for Previewing the Media
-//            myImage.setImageBitmap(BitmapFactory.decodeFile(mediaPath));
-//            cursor.close();
-//            //Uri uri = data.getData();
-//            uploadToServer(filePath);
-//        }
 
 
         if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
@@ -506,30 +469,6 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select a File to Upload"),
                 PICK_IMAGE_REQUEST);
-    }
-
-    public void uploadToServer(String filePath) {
-//        Retrofit retrofit = NetworkClient.getRetrofitClient(this);
-//        UploadAPIs uploadAPIs = retrofit.create(UploadAPIs.class);
-//        //Create a file object using file path
-//        File file = new File(filePath);
-//        // Create a request body with file and image media type
-//        RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"), file);
-//        // Create MultipartBody.Part using file request-body,file name and part name
-//        MultipartBody.Part part = MultipartBody.Part.createFormData("upload", file.getName(), fileReqBody);
-//        //Create request body with text description and text media type
-//        RequestBody email = RequestBody.create(MediaType.parse("text/plain"), "image-type");
-//        RequestBody password = RequestBody.create(MediaType.parse("text/plain"), "image-type");
-//        //
-//        Call call = uploadAPIs.uploadImage(part, email,password);
-//        call.enqueue(new Callback() {
-//            @Override
-//            public void onResponse(Call call, Response response) {
-//            }
-//            @Override
-//            public void onFailure(Call call, Throwable t) {
-//            }
-//        });
     }
 
     private String getRealPathFromURI(Uri uri, Activity activity) {
@@ -611,25 +550,12 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         return true; // indicate event was handled
     }
 
-    /*
-     * --------------------------------------------------------------------------
-     * Method: spacing Parameters: MotionEvent Returns: float Description:
-     * checks the spacing between the two fingers on touch
-     * ----------------------------------------------------
-     */
 
     private float spacing(MotionEvent event) {
         float x = event.getX(0) - event.getX(1);
         float y = event.getY(0) - event.getY(1);
         return (float) Math.sqrt(x * x + y * y);
     }
-
-    /*
-     * --------------------------------------------------------------------------
-     * Method: midPoint Parameters: PointF object, MotionEvent Returns: void
-     * Description: calculates the midpoint between the two fingers
-     * ------------------------------------------------------------
-     */
 
     private void midPoint(PointF point, MotionEvent event) {
         float x = event.getX(0) + event.getX(1);

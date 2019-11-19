@@ -68,7 +68,8 @@ public class MainMenuActivity extends Activity {
         buttonToUploadScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intentChangeToUploadScreen = new Intent(MainMenuActivity.this, MainActivity.class);
+                startActivity(intentChangeToUploadScreen);
             }
         });
 

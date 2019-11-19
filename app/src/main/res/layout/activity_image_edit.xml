@@ -117,20 +117,6 @@
             android:visibility="gone" />
 
 
-        <com.example.camerascan.imageeditor.view.BrightnessView
-            android:id="@+id/brightness_panel"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center"
-            android:visibility="gone" />
-
-        <com.example.camerascan.imageeditor.view.SaturationView
-            android:id="@+id/contrast_panel"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center"
-            android:visibility="gone" />
-
         <com.example.camerascan.imageeditor.view.StickerView
             android:id="@+id/sticker_panel"
             android:layout_width="fill_parent"

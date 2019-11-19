@@ -70,6 +70,7 @@ public class MainMenuActivity extends Activity {
             }
         });
 
+
         buttonToUploadScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

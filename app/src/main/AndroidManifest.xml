@@ -22,12 +22,16 @@
         android:theme="@style/AppTheme">
 
         <activity android:name=".MainMenuActivity">
+
+        </activity>
+
+        <activity android:name=".EntranceActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".ScanActivityOptions" />
         <activity android:name=".PreviewData" />
         <activity android:name=".ShareActivity" />
@@ -55,6 +59,16 @@
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
+        </provider>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.android.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"></meta-data>
         </provider>
 
         <!--<activity android:name=".OpenImageActivity"></activity>-->

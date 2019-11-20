@@ -43,7 +43,6 @@ public class MainMenuActivity extends Activity {
             public void onClick(View v) {
                 Intent intentChangeToScanScreen = new Intent(MainMenuActivity.this, ScanActivityOptions.class);
                 startActivity(intentChangeToScanScreen);
-
             }
         });
 

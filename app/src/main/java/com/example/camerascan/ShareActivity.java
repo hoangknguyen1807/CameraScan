@@ -42,7 +42,7 @@ public class ShareActivity extends Activity {
         buttonToShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (textViewToShowPath.getText()=="null")
+                if (textViewToShowPath.getText()==null)
                 {
                     Toast.makeText(ShareActivity.this, "Please choose file first!",Toast.LENGTH_SHORT).show();
                 }

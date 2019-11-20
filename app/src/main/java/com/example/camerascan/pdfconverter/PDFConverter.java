@@ -72,7 +72,7 @@ public class PDFConverter extends ImageLoader {
         preview = findViewById(R.id.preview);
 
         pathtxt = findViewById(R.id.pathtxt);
-        pathtxt.setText("Vị trí:" + path);
+        pathtxt.setText("Save at:" + path);
 
         gallery = findViewById(R.id.gallery);//phím chọn ảnh từ gallery
         gallery.setOnClickListener(new View.OnClickListener() {
@@ -158,7 +158,7 @@ public class PDFConverter extends ImageLoader {
                 case FOLDERPICKER_CODE:
                     //trường hợp intent chọn đường dẫn lưu file trả kết quả
                     path = data.getExtras().getString("data") + "/";//gán kết quả cho path
-                    pathtxt.setText("Vị trí:" + path);//set textview thành đường dẫn hiện hành
+                    pathtxt.setText("Save at:" + path);//set textview thành đường dẫn hiện hành
                     break;
             }
     }

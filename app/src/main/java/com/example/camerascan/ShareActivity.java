@@ -25,7 +25,7 @@ import java.io.FileNotFoundException;
 import java.net.URLConnection;
 
 public class ShareActivity extends Activity {
-    ImageButton buttonToShare;
+    Button buttonToShare;
     Button buttonToPickFile;
     TextView textViewToShowPath;
 

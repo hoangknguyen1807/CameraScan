@@ -6,15 +6,18 @@ import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.Display;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +37,7 @@ public class ScanCamera extends Activity {
     TextView textViewResult;
     CameraSource cameraSource;
     Button buttonToTxtView;
+    int _tmpOrientation;
 
     final int REQUEST_CAMERA = 111; //const to request camera
     final int REQUEST_SENDTOTXT = 222; //const to switch screen
@@ -67,10 +71,19 @@ public class ScanCamera extends Activity {
         super.onBackPressed();
     }
 
+    private int getOrientation(){
+// the TOP of the device points to [0:North, 1:West, 2:South, 3:East]
+        Display display = ((WindowManager) getApplication().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        display.getRotation();
+        return display.getRotation();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.scan_camera_layout);
+
+        _tmpOrientation= getOrientation();
 
         cameraView = findViewById(R.id.cameraView);
         textViewResult = findViewById(R.id.textViewResult);
@@ -88,13 +101,19 @@ public class ScanCamera extends Activity {
         DoProcess();
     }
 
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        //reset camera source
-//        if (cameraSource!=null)
-//            cameraSource.release();
-//    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (getOrientation()!=_tmpOrientation)
+        {
+            cameraSource.release();
+        }
+        else
+        {
+            //Do nothing
+        }
+    }
 
     protected void DoProcess()
     {

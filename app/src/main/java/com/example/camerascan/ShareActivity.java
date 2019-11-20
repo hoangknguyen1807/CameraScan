@@ -1,6 +1,7 @@
 package com.example.camerascan;
 
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -14,7 +15,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -30,6 +33,17 @@ public class ShareActivity extends Activity {
 
     Uri _fileUri;
 
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
+    public void requestPermissions(Activity activity) {
+        ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,10 +53,18 @@ public class ShareActivity extends Activity {
         buttonToPickFile = findViewById(R.id.buttonToPickFile);
         textViewToShowPath=findViewById(R.id.textViewToShowPath);
 
+        requestPermissions(ShareActivity.this);
+
+        if (savedInstanceState!=null)
+        {
+            textViewToShowPath.setText(savedInstanceState.getString("tmpUri"));
+            _fileUri=Uri.parse(savedInstanceState.getString("tmpUri"));
+        }
+
         buttonToShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (textViewToShowPath.getText()==null)
+                if (textViewToShowPath.getText()=="")
                 {
                     Toast.makeText(ShareActivity.this, "Please choose file first!",Toast.LENGTH_SHORT).show();
                 }
@@ -65,6 +87,13 @@ public class ShareActivity extends Activity {
                 startActivityForResult(requestFileIntent, REQUEST_PICK_FILE);
             }
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (_fileUri!=null)
+            outState.putString("tmpUri",_fileUri.toString());
     }
 
     @Override

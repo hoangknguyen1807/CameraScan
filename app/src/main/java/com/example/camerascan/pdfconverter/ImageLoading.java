@@ -34,7 +34,6 @@ public class ImageLoading extends AsyncTask<Intent, Void, Bitmap> {
         super.onPreExecute();
         //tiền xử lí ASyncTask
         //cài đặt hiển thị dialog
-        callerContext.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
         this.dialog.setMessage("Vui lòng chờ!\nĐang tải ảnh...");
         this.dialog.setCancelable(false);
         this.dialog.show();
@@ -63,7 +62,6 @@ public class ImageLoading extends AsyncTask<Intent, Void, Bitmap> {
         //hậu xử lí ASyncTask
         dialog.dismiss();
         //truyền các kết quả trả về vào hàm onTaskComplete để context gọi ASyncTask có thể sử dụng
-        callerContext.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         callerContext.onTaskComplete(bitmap, img, tmp);
 
     }

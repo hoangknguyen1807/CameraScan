@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -27,29 +28,45 @@ public class TakePhotoCamera extends Activity {
 
     public static final int TAKE_PHOTO_CODE = 10;
 
-    File imageFile;
+    private static File imageFile;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+
+        takePhotoFromCamera();
+
+    }
+
+    private void takePhotoFromCamera() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            takePhotoWithPermissionCheck();
+        } else {
+            takePhoto();
+        }
+    }
+
+    private void takePhotoWithPermissionCheck() {
+        /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     REQUEST_PERMISSION_STORAGE);
-        }
+        }*/
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.CAMERA},
                     REQUEST_PERMISSION_CAMERA);
+            return;
         }
-        takePhotoFromCamera();
+        takePhoto();
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_PERMISSION_STORAGE) {
+        /*if (requestCode == REQUEST_PERMISSION_STORAGE) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 return;
@@ -58,20 +75,21 @@ public class TakePhotoCamera extends Activity {
                         "External storage Permission DENIED",
                         Toast.LENGTH_SHORT).show();
             }
-        }
+        }*/
         if (requestCode == REQUEST_PERMISSION_CAMERA) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                takePhotoFromCamera();
+                takePhoto();
             } else {
                 Toast.makeText(this,
                         "Camera Permission DENIED",
                         Toast.LENGTH_SHORT).show();
+                finish();
             }
         }
     }
 
-    private void takePhotoFromCamera() {
+    private void takePhoto() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             imageFile = null;
@@ -102,9 +120,8 @@ public class TakePhotoCamera extends Activity {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = Environment.getExternalStorageDirectory();
-        //getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        //Environment.getExternalStorageDirectory();
         File image = File.createTempFile(
                 imageFileName,   /* prefix */
                 ".jpg",          /* suffix */
@@ -120,7 +137,11 @@ public class TakePhotoCamera extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            // insert action here
+            switch (requestCode) {
+                case TAKE_PHOTO_CODE:
+                    takePhoto();
+                    break;
+            }
         } else {
             if (resultCode == RESULT_CANCELED) {
                 switch (requestCode) {
@@ -133,7 +154,7 @@ public class TakePhotoCamera extends Activity {
                         break;
                 }
             }
+            finish();
         }
     }
-
 }

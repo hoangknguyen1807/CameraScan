@@ -3,4 +3,7 @@
     <external-path
         name="external_files"
         path="." />
+    <external-path
+        name="my_images"
+        path="Android/data/com.example.camerascan/files/Pictures" />
 </paths>

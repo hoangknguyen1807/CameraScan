@@ -7,10 +7,13 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Surface;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,6 +28,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 
+import com.example.camerascan.UriUtil;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.jetbrains.annotations.NotNull;
@@ -54,6 +58,8 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.example.camerascan.TakePhotoCamera.storedPath;
+
 public class EditImageActivity extends BaseActivity implements OnLoadingDialogListener {
     public static final String IS_IMAGE_EDITED = "is_image_edited";
     public static final int MODE_NONE = 0;
@@ -63,15 +69,15 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     public static final int MODE_ROTATE = 4;
     public static final int MODE_TEXT = 5;
     public static final int MODE_PAINT = 6;
-    public static final int MODE_BEAUTY = 7;
-    public static final int MODE_BRIGHTNESS = 8;
-    public static final int MODE_SATURATION = 9;
     private static final int PERMISSIONS_REQUEST_CODE = 110;
+    private static final int REQUEST_PERMISSION_READ = 31;
+    private static final int OPEN_IMAGE_CODE = 32;
     private final String[] requiredPermissions = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
+    public String imgPath; // path received from picking Image from Storage
     public String sourceFilePath;
     public String outputFilePath;
     public StickerView stickerView;
@@ -111,6 +117,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_edit);
+        openImageFromStorage();
         initView();
         getData();
     }
@@ -133,27 +140,45 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
 
     private void getData() {
         isPortraitForced = getIntent().getBooleanExtra(ImageEditorIntentBuilder.FORCE_PORTRAIT, false);
-        sourceFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
+        sourceFilePath = imgPath;
+        //getIntent().getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
 
-        outputFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.OUTPUT_PATH);
+        outputFilePath = Environment.getExternalStorageDirectory().getAbsolutePath() + storedPath;
+        //getIntent().getStringExtra(ImageEditorIntentBuilder.OUTPUT_PATH);
         loadImageFromFile(sourceFilePath);
     }
 
     private void openImageFromStorage() {
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             openImageWithPermissionsCheck();
         } else {
             openImage();
-        }*/
+        }
     }
 
+    private void openImageWithPermissionsCheck() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    REQUEST_PERMISSION_READ);
+            return;
+        }
+        openImage();
+    }
+
+    private void openImage() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("image/*");
+        String[] mimeTypes = {"image/jpeg", "image/png"};
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+        startActivityForResult(intent, OPEN_IMAGE_CODE);
+    }
 
 
     private void initView() {
         loadingDialog = BaseActivity.getLoadingDialog(this, R.string.loading,
                 false);
-        openImageFromStorage();
-
 
 
         DisplayMetrics metrics = getResources().getDisplayMetrics();
@@ -181,7 +206,25 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         bottomGallery = findViewById(R.id.bottom_gallery);
 
         mainMenuFragment = MainMenuFragment.newInstance();
-        mainMenuFragment.setArguments(getIntent().getExtras());
+        Intent intentEdit = null;
+        try {
+            intentEdit = new ImageEditorIntentBuilder(this, storedPath, storedPath)
+                    .withAddText()
+                    .withPaintFeature()
+                    /*.withFilterFeature()*/
+                    .withRotateFeature()
+                    .withCropFeature()
+                    /*.withBrightnessFeature()
+                    .withSaturationFeature()*/
+                    .withStickerFeature()
+                    /*.withBeautyFeature()*/
+                    .forcePortrait(true)
+                    .build();
+        } catch (Exception e) {
+            Toast.makeText(this, "Please choose an image for edit", Toast.LENGTH_SHORT).show();
+            Log.e("Demo App", e.getMessage());
+        }
+        mainMenuFragment.setArguments(intentEdit.getExtras());
 
         BottomGalleryAdapter bottomGalleryAdapter = new BottomGalleryAdapter(
                 this.getSupportFragmentManager());
@@ -223,6 +266,11 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
                 }
                 break;
             }
+            case REQUEST_PERMISSION_READ: {
+                openImageFromStorage();
+                break;
+            }
+
         }
     }
 
@@ -242,6 +290,37 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
             addTextFragment.hideInput();
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case OPEN_IMAGE_CODE:
+                    handleOpenImageFromStorage(data);
+                    break;
+            }
+        } else if (resultCode == RESULT_CANCELED) {
+
+        }
+    }
+
+    private void handleOpenImageFromStorage(Intent data) {
+        Uri uri = data.getData();
+        try {
+            imgPath = UriUtil.getPath(EditImageActivity.this, uri);
+            if (imgPath == null)
+                throw new NullPointerException("Unable to get image absolute path");
+        } catch (NullPointerException ex) {
+            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT);
+        }
+        //Toast.makeText(this, imgPath, Toast.LENGTH_SHORT).show();
+        //File myfile = new File(data.getData().getPath());//data.getStringExtra("imgPath");
+        //imgPath = myfile.getAbsolutePath();
+//        imgPath = data.getStringExtra("imgPath");
+//        loadImage(imgPath);
+    }
+
 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {

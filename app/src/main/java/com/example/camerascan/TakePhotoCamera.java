@@ -23,17 +23,21 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class TakePhotoCamera extends Activity {
-    public static final int REQUEST_PERMISSION_STORAGE = 11;
-    public static final int REQUEST_PERMISSION_CAMERA = 22;
-
-    public static final int TAKE_PHOTO_CODE = 10;
-
+    public static final String storedPath = "/CameraScan/";
+    // private static final int REQUEST_PERMISSION_CAMERA = 15;
+    // private static final int REQUEST_PERMISSION_WRITE = 16;
+    public static final int REQUEST_PERMISSIONS_CODE = 11;
+    public static final int TAKE_PHOTO_CODE = 12;
+    private final String[] requiredPermissions = new String[]{
+            Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+    String imgPath = null;
     private static File imageFile;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         takePhotoFromCamera();
 
     }
@@ -47,17 +51,28 @@ public class TakePhotoCamera extends Activity {
     }
 
     private void takePhotoWithPermissionCheck() {
-        /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+        /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    REQUEST_PERMISSION_STORAGE);
-        }*/
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_PERMISSION_WRITE);
+            return;
+        }
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.CAMERA},
                     REQUEST_PERMISSION_CAMERA);
+            return;
+        }*/
+        if ((ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED)
+                ||
+                (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                        != PackageManager.PERMISSION_GRANTED)
+        ) {
+            ActivityCompat.requestPermissions(this, requiredPermissions,
+                    REQUEST_PERMISSIONS_CODE);
             return;
         }
         takePhoto();
@@ -66,23 +81,14 @@ public class TakePhotoCamera extends Activity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        /*if (requestCode == REQUEST_PERMISSION_STORAGE) {
+        if (requestCode == REQUEST_PERMISSIONS_CODE) {
             if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                return;
-            } else {
-                Toast.makeText(this,
-                        "External storage Permission DENIED",
-                        Toast.LENGTH_SHORT).show();
-            }
-        }*/
-        if (requestCode == REQUEST_PERMISSION_CAMERA) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 takePhoto();
             } else {
                 Toast.makeText(this,
-                        "Camera Permission DENIED",
+                        "Camera Permission or Write Permission DENIED",
                         Toast.LENGTH_SHORT).show();
                 finish();
             }
@@ -103,7 +109,7 @@ public class TakePhotoCamera extends Activity {
             }
 
             if (imageFile != null) {
-                // imgPath = imageFile.getAbsolutePath();
+                imgPath = imageFile.getAbsolutePath();
                 Uri takenPhotoUri = FileProvider.getUriForFile(
                         this, "com.example.android.fileprovider",
                         imageFile);
@@ -117,11 +123,16 @@ public class TakePhotoCamera extends Activity {
     }
 
     private File createImageFile() throws IOException {
+
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        //Environment.getExternalStorageDirectory();
+        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + storedPath;
+        //File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = new File(path);
+        if (!storageDir.exists()) {
+            storageDir.mkdir();
+        }
         File image = File.createTempFile(
                 imageFileName,   /* prefix */
                 ".jpg",          /* suffix */
@@ -139,6 +150,9 @@ public class TakePhotoCamera extends Activity {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case TAKE_PHOTO_CODE:
+                    Toast.makeText(this, imageFile.getAbsolutePath(),
+                            Toast.LENGTH_SHORT);
+
                     takePhoto();
                     break;
             }

@@ -92,7 +92,7 @@ public class UploadActivity extends Activity implements View.OnTouchListener {
 
     @Override
     public void onBackPressed() {
-        onCreate(null);
+        finish();
     }
 
     @Override
@@ -111,9 +111,9 @@ public class UploadActivity extends Activity implements View.OnTouchListener {
             @Override
             public void onClick(View v) {
                 // SET SIZE IMAGE DEFAULT
-                 matrix=null;
-                 savedMatrix=null;
-                 flag=0;
+                matrix = null;
+                savedMatrix = null;
+                flag = 0;
                 CropImage.startPickImageActivity(UploadActivity.this);
 
             }
@@ -124,7 +124,7 @@ public class UploadActivity extends Activity implements View.OnTouchListener {
         btnRotate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                System.out.println("MY IMAGE : " + myImage);
                 roateImage(myImage);
             }
         });
@@ -138,7 +138,7 @@ public class UploadActivity extends Activity implements View.OnTouchListener {
                 // SET SIZE IMAGE DEFAULT
                 matrix=null;
                 savedMatrix=null;
-                 flag=0;
+                flag = 0;
 //                Intent intent = new Intent(Intent.ACTION_PICK);
 //                intent.setType("image/*");
 //                startActivityForResult(intent,0);
@@ -171,41 +171,48 @@ public class UploadActivity extends Activity implements View.OnTouchListener {
 //                File file = new File(folderPath + fileName[fileName.length - 1]);
                 Retrofit retrofit = NetworkClient.getRetrofitClient(UploadActivity.this);
                 uploadAPIs = retrofit.create(UploadAPIs.class);
-                //Create a file object using file path
-                File file = new File(imgPath);
-                if (!file.exists()) {
-                    System.out.println("CHUA TON TAI");
-                    file.mkdir();
-                }
-                FileInfo fileInfo = new FileInfo(file,file.getName());
-                Toast.makeText(getApplication(), "onclick btnUpload: " + imgPath, Toast.LENGTH_SHORT).show();
                 System.out.println("onclick btnUpload: " + imgPath);
-                System.out.println("directory file upload: " + file.getAbsolutePath());
-                // Create a request body with file and image media type
+                if (imgPath == null) {
+                    Toast.makeText(UploadActivity.this, "Please chooose picture upload to server", Toast.LENGTH_SHORT).show();
+                } else {
+                    //Create a file object using file path
+                    File file = new File(imgPath);
+                    if (!file.exists()) {
+                        System.out.println("CHUA TON TAI");
+                        file.mkdir();
+                    }
+                    FileInfo fileInfo = new FileInfo(file, file.getName());
+                    Toast.makeText(getApplication(), "onclick btnUpload: " + imgPath, Toast.LENGTH_SHORT).show();
 
-                //RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-                RequestBody requestFile = RequestBody.create(MediaType.parse("*/*"), file);
-                // Create MultipartBody.Part using file request-body,file name and part name
-                System.out.println("Name file image: " + file.getName());
-                MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
-                //Create request body with text description and text media type
-                //RequestBody description = RequestBody.create(MediaType.parse("text/plain"), "image-type");
-                //
-                Call call = uploadAPIs.upload(part);
+                    System.out.println("directory file upload: " + file.getAbsolutePath());
+                    // Create a request body with file and image media type
 
-                call.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response.isSuccessful()) {
-                            Toast.makeText(UploadActivity.this, "Image uploaded success", Toast.LENGTH_SHORT).show();
+                    //RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+                    RequestBody requestFile = RequestBody.create(MediaType.parse("*/*"), file);
+                    // Create MultipartBody.Part using file request-body,file name and part name
+                    System.out.println("Name file image: " + file.getName());
+                    MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+                    //Create request body with text description and text media type
+                    //RequestBody description = RequestBody.create(MediaType.parse("text/plain"), "image-type");
+                    //
+                    Call call = uploadAPIs.upload(part);
+
+                    call.enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            if (response.isSuccessful()) {
+                                Toast.makeText(UploadActivity.this, "Image uploaded success", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Toast.makeText(UploadActivity.this, "ERROR " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            Toast.makeText(UploadActivity.this, "ERROR " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+
 
             }
         });

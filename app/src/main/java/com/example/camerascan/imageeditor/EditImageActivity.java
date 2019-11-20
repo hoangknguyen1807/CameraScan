@@ -139,9 +139,22 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         loadImageFromFile(sourceFilePath);
     }
 
+    private void openImageFromStorage() {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            openImageWithPermissionsCheck();
+        } else {
+            openImage();
+        }*/
+    }
+
+
+
     private void initView() {
         loadingDialog = BaseActivity.getLoadingDialog(this, R.string.loading,
                 false);
+        openImageFromStorage();
+
+
 
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         imageWidth = metrics.widthPixels / 2;

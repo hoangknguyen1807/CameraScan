@@ -6,142 +6,116 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
 
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:contentDescription="Background Image"
-        android:scaleType="fitCenter"
-        android:src="@drawable/pdf_scanner" />
+        >
 
-    <Button
-        android:id="@+id/btnCamera"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginBottom="24dp"
-        android:background="@android:color/holo_orange_light"
-        android:textSize="12sp"
-        android:text="Connect\nCamera" />
-
-        <!--<ImageView
+        <ImageView
 
             android:id="@+id/imageView"
             android:layout_width="400dp"
             android:layout_height="400dp"
             android:layout_margin="20dp"
-           android:layout_gravity="center"
+            android:layout_gravity="center"
             android:scaleType="matrix"
 
-            />-->
-<!--       <com.github.chrisbanes.photoview.PhotoView-->
-<!--           android:id="@+id/photo_view"-->
-<!--           android:layout_width="match_parent"-->
-<!--           android:layout_height="match_parent"/>-->
+            />
+        <!--       <com.github.chrisbanes.photoview.PhotoView-->
+        <!--           android:id="@+id/photo_view"-->
+        <!--           android:layout_width="match_parent"-->
+        <!--           android:layout_height="match_parent"/>-->
 
 
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:orientation="vertical"
+            android:stretchColumns="*"
+
+            >
 
 
-       <TableLayout
-           android:orientation="vertical"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:stretchColumns="*"
-           android:layout_marginTop="30dp"
-           >
+            <TableRow android:layout_gravity="center_vertical"
+
+                >
+
+                <!--               <Button-->
+                <!--                   android:id="@+id/btnCamera"-->
+                <!--                   android:layout_width="wrap_content"-->
+                <!--                   android:layout_height="wrap_content"-->
+                <!--                   android:text="Connect Camera"-->
+
+                <!--                   android:background="@android:color/holo_orange_light" />-->
+
+                <Button
+                    android:id="@+id/btnUpload"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/holo_blue_light"
+
+                    android:text="Upload file to Web server" />
+
+                <!--               <Button-->
+                <!--                   android:id="@+id/btnSave"-->
+                <!--                   android:layout_width="wrap_content"-->
+                <!--                   android:layout_height="wrap_content"-->
+                <!--                   android:text="SAVE TO GALLERY"-->
+
+                <!--                   android:background="@android:color/holo_green_light" />-->
 
 
-           <TableRow
-               android:layout_gravity="center_vertical"
-
-               >
-
-<!--               <Button-->
-<!--                   android:id="@+id/btnCamera"-->
-<!--                   android:layout_width="wrap_content"-->
-<!--                   android:layout_height="wrap_content"-->
-<!--                   android:text="Connect Camera"-->
-
-<!--                   android:background="@android:color/holo_orange_light" />-->
-
-               <Button
-                   android:id="@+id/btnUpload"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:text="Upload file to Web server"
-
-                   android:background="@android:color/holo_blue_light" />
-
-<!--               <Button-->
-<!--                   android:id="@+id/btnSave"-->
-<!--                   android:layout_width="wrap_content"-->
-<!--                   android:layout_height="wrap_content"-->
-<!--                   android:text="SAVE TO GALLERY"-->
-
-<!--                   android:background="@android:color/holo_green_light" />-->
+            </TableRow>
 
 
-
-           </TableRow>
-
+        </TableLayout>
 
 
-       </TableLayout>
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:orientation="vertical"
+            android:stretchColumns="*"
+
+            >
 
 
-       <TableLayout
-           android:orientation="vertical"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:stretchColumns="*"
-           android:layout_marginTop="30dp"
+            <TableRow>
 
-           >
+                <Button
+                    android:id="@+id/btnOpenImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/holo_blue_light"
 
-
-           <TableRow>
-
-               <Button
-                   android:id="@+id/btnOpenImage"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:text="Choose File"
-
-                   android:background="@android:color/holo_blue_light" />
+                    android:text="Choose File" />
 
 
+                <Button
+                    android:id="@+id/btnCrop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/holo_purple"
 
-               <Button
-                   android:id="@+id/btnCrop"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:text="Crop"
-
-                   android:background="@android:color/holo_purple" />
-
+                    android:text="Crop" />
 
 
-               <Button
-                   android:id="@+id/btnRotate"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:text="Rotate"
+                <Button
+                    android:id="@+id/btnRotate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/holo_blue_bright"
 
-                   android:background="@android:color/holo_blue_bright" />
+                    android:text="Rotate" />
 
-           </TableRow>
+            </TableRow>
 
 
+        </TableLayout>
 
-       </TableLayout>
 
     </LinearLayout>
-
 
 </LinearLayout>

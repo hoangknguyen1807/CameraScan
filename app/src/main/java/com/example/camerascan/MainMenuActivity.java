@@ -8,6 +8,7 @@ import android.widget.Button;
 
 import androidx.annotation.Nullable;
 
+import com.example.camerascan.imageeditor.EditImageActivity;
 import com.example.camerascan.pdfconverter.PDFConverter;
 
 public class MainMenuActivity extends Activity {
@@ -49,7 +50,9 @@ public class MainMenuActivity extends Activity {
         buttonToEditScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intentToEditScreen = new Intent(MainMenuActivity.this,
+                        EditImageActivity.class);
+                startActivity(intentToEditScreen);
             }
         });
 

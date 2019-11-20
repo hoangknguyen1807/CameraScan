@@ -3,16 +3,16 @@ package com.example.camerascan;
 import java.io.File;
 
 public class FileInfo {
-    private File file;
     private String name;
+    private long size;
 
 
     public FileInfo() {
     }
 
-    public FileInfo(File file,String name ) {
+    public FileInfo(String name, long size) {
         this.name = name;
-        this.file = file;
+        this.size = size;
     }
 
     public String getName() {
@@ -23,19 +23,19 @@ public class FileInfo {
         this.name = name;
     }
 
-    public File getFile() {
-        return file;
+    public long getSize() {
+        return size;
     }
 
-    public void setFile(File file) {
-        this.file = file;
+    public void setSize(long size) {
+        this.size = size;
     }
 
     @Override
     public String toString() {
         return "FileInfo{" +
                 "name='" + name + '\'' +
-                ", file=" + file +
+                ", size=" + size +
                 '}';
     }
 }

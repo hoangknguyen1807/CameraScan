@@ -155,22 +155,8 @@ public class UploadActivity extends Activity implements View.OnTouchListener {
             @Override
             public void onClick(View view) {
 
-//                String folderPath = System.getProperty("user.dir");
-//                folderPath += "/upload/";
-//                File dir = new File(folderPath);
-//                System.out.println("Folder save image: " + folderPath);
-//                // Nếu chưa tồn tại thư mục upload thì tạo mới
-//                if (!dir.exists()) {
-//                    dir.mkdir();
-//                }
-//                String fileName[] = imgPath.split("/");
-//                for (int i = 0; i < fileName.length; i++) {
-//                    System.out.println(fileName[i]);
-//                }
-//                System.out.println(fileName[fileName.length - 1]);
-//                File file = new File(folderPath + fileName[fileName.length - 1]);
-                Retrofit retrofit = NetworkClient.getRetrofitClient(UploadActivity.this);
-                uploadAPIs = retrofit.create(UploadAPIs.class);
+                //      Retrofit retrofit = NetworkClient.getRetrofitClient(UploadActivity.this);
+                uploadAPIs = APIUtils.getFileService();
                 System.out.println("onclick btnUpload: " + imgPath);
                 if (imgPath == null) {
                     Toast.makeText(UploadActivity.this, "Please chooose picture upload to server", Toast.LENGTH_SHORT).show();
@@ -181,7 +167,7 @@ public class UploadActivity extends Activity implements View.OnTouchListener {
                         System.out.println("CHUA TON TAI");
                         file.mkdir();
                     }
-                    FileInfo fileInfo = new FileInfo(file, file.getName());
+                    //  FileInfo fileInfo = new FileInfo(file, file.getName());
                     Toast.makeText(getApplication(), "onclick btnUpload: " + imgPath, Toast.LENGTH_SHORT).show();
 
                     System.out.println("directory file upload: " + file.getAbsolutePath());

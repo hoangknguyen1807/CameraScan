@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.FileProvider;
 
 import com.example.camerascan.R;
 import com.itextpdf.text.BadElementException;
@@ -33,9 +34,6 @@ import java.io.IOException;
 import lib.folderpicker.FolderPicker;
 
 public class PDFConverter extends ImageLoader {
-
-    public static final String sourcePath = "source_path";
-
     //activity chính xử lí chuyển đổi ảnh -> pdf
     private static final int GALLERY_REQUEST_CODE = 1555;//
     private static final int FOLDERPICKER_CODE = 1666;//biến request code được gán cố định
@@ -51,6 +49,7 @@ public class PDFConverter extends ImageLoader {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        savedInstanceState = SaveInstanceFragment.getInstance(getFragmentManager()).popData();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pdf_manager);
 
@@ -64,13 +63,13 @@ public class PDFConverter extends ImageLoader {
         pathtxt = findViewById(R.id.pathtxt);
         pathtxt.setText("Vị trí:" + path);
 
-        /*gallery = findViewById(R.id.gallery);//phím chọn ảnh từ gallery
+        gallery = findViewById(R.id.gallery);//phím chọn ảnh từ gallery
         gallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 pickFromGallery();
             }
-        });*/
+        });
 
         convert = findViewById(R.id.convert);//phím chuyển ảnh sang pdf
         convert.setOnClickListener(new View.OnClickListener() {
@@ -91,8 +90,8 @@ public class PDFConverter extends ImageLoader {
             }
         });
 
-        if (savedInstanceState != null) {//khôi phục InstanceState
-            if (savedInstanceState.getParcelable("image") != null) {
+        if (savedInstanceState!=null) {//khôi phục InstanceState
+            if (savedInstanceState.getParcelable("image")!=null) {
                 bitmap = savedInstanceState.getParcelable("image");
                 preview.setImageBitmap(bitmap);
 
@@ -109,9 +108,6 @@ public class PDFConverter extends ImageLoader {
                 }
             }
         }
-
-        ImageLoading imageLoading = new ImageLoading(PDFConverter.this);
-        imageLoading.execute(getIntent());
     }
 
     @Override
@@ -128,11 +124,13 @@ public class PDFConverter extends ImageLoader {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         //lưu InstanceState
-        if (bitmap != null) {
+        if (bitmap!=null) {
             outState.putParcelable("image", bitmap);
             outState.putBoolean("clickable", true);
             outState.putByteArray("convert", imgInBytes);
         }
+        SaveInstanceFragment.getInstance( getFragmentManager() ).pushData( (Bundle) outState.clone() );
+        outState.clear();
     }
 
     private void pickFromGallery() {
@@ -252,14 +250,15 @@ public class PDFConverter extends ImageLoader {
 
     public void previewPDF() {
         //hàm xem file pdf sau khi được tạo
-        File file = new File(path + filename);
+        File file = new File(path, filename);
         if (file.exists()) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            Uri uri = Uri.fromFile(file);
-            //Uri uri =
-            //Uri uri = Uri.fromFile(file);
+            Uri uri = FileProvider.getUriForFile(this,
+                    this.getApplicationContext().getPackageName()+".provider" ,file);
             intent.setDataAndType(uri, "application/pdf");
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
             try {
                 startActivity(intent);
             } catch (ActivityNotFoundException e) {
@@ -271,10 +270,12 @@ public class PDFConverter extends ImageLoader {
     @Override
     public void onTaskComplete(Object result, Image img, byte[] array) {
         //hàm nhận và xử lí kết quả trả về của ASyncTask ImageLoading
-        bitmap = (Bitmap) result;//lưu ảnh bitmap
+        bitmap = (Bitmap)result;//lưu ảnh bitmap
         preview.setImageBitmap(bitmap);//dán ảnh lên ImageView
         this.img = img;
         convert.setEnabled(true);//cho phép bấm phím chuyển pdf
         imgInBytes = array;
     }
+
+
 }

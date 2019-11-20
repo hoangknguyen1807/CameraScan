@@ -1,7 +1,9 @@
 package com.example.camerascan.pdfconverter;
 
+import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -39,6 +41,7 @@ public class CreatePDF extends
         super.onPreExecute();
         //Tiền xử lí ASynTask
         //Cài đặt hiển thị dialog
+
         this.dialog.setMessage("Vui lòng chờ!\nĐang tạo file pdf...");
         this.dialog.setCancelable(false);
         this.dialog.show();

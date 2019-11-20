@@ -1,5 +1,6 @@
 package com.example.camerascan.pdfconverter;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
@@ -22,14 +23,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
 import com.example.camerascan.R;
-import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Image;
 
 import java.io.File;
-import java.io.IOException;
 
 import lib.folderpicker.FolderPicker;
 
@@ -38,14 +38,23 @@ public class PDFConverter extends ImageLoader {
     private static final int GALLERY_REQUEST_CODE = 1555;//
     private static final int FOLDERPICKER_CODE = 1666;//biến request code được gán cố định
 
-    Image img;//lưu ảnh đã được xử lí để chuyển PDF
+    Bitmap image = null;//lưu ảnh đã được xử lí để chuyển PDF
     Button gallery, convert, cdir;//button ở layout
     ImageView preview;//ImageView để preview sau khi chọn ảnh
     String filename;//chứa tên file pdf cần tạo
     String path;//đường dẫn chứa file
     TextView pathtxt;//textview hiển thị đường dẫn lưu hiện hành
-    Bitmap bitmap = null;//dùng để saveInstanceState
-    byte[] imgInBytes;//dùng để saveInstanceState
+
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
+    public void requestPermissions(Activity activity) {
+        ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,6 +62,7 @@ public class PDFConverter extends ImageLoader {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pdf_manager);
 
+        requestPermissions(this);
         //load lại dữ liệu (đường dẫn) mà người dùng đã chọn trước đây
         SharedPreferences stored = getSharedPreferences("data", 0);
         path = stored.getString("pathpdf",
@@ -92,20 +102,10 @@ public class PDFConverter extends ImageLoader {
 
         if (savedInstanceState!=null) {//khôi phục InstanceState
             if (savedInstanceState.getParcelable("image")!=null) {
-                bitmap = savedInstanceState.getParcelable("image");
-                preview.setImageBitmap(bitmap);
+                image = savedInstanceState.getParcelable("image");
+                preview.setImageBitmap(image);
 
                 convert.setEnabled(savedInstanceState.getBoolean("clickable"));
-
-                try {
-                    byte[] middlemen = savedInstanceState.getByteArray("convert");
-                    img = Image.getInstance(middlemen);
-                    imgInBytes = middlemen;
-                } catch (IOException ioe) {
-
-                } catch (BadElementException bee) {
-
-                }
             }
         }
     }
@@ -124,10 +124,9 @@ public class PDFConverter extends ImageLoader {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         //lưu InstanceState
-        if (bitmap!=null) {
-            outState.putParcelable("image", bitmap);
+        if (image!=null) {
+            outState.putParcelable("image", image);
             outState.putBoolean("clickable", true);
-            outState.putByteArray("convert", imgInBytes);
         }
         SaveInstanceFragment.getInstance( getFragmentManager() ).pushData( (Bundle) outState.clone() );
         outState.clear();
@@ -226,7 +225,7 @@ public class PDFConverter extends ImageLoader {
         File file = new File(path + filename);
         if (!file.exists()) {
             CreatePDF createPDF = new CreatePDF(PDFConverter.this);
-            createPDF.execute(img);
+            createPDF.execute(image);
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Tập tin đã tồn tại.\nGhi đè?");
@@ -234,7 +233,7 @@ public class PDFConverter extends ImageLoader {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     CreatePDF createPDF = new CreatePDF(PDFConverter.this);
-                    createPDF.execute(img);//, dir, name);
+                    createPDF.execute(image);//, dir, name);
                 }
             });
             builder.setNegativeButton("Từ chối", new DialogInterface.OnClickListener() {
@@ -270,11 +269,9 @@ public class PDFConverter extends ImageLoader {
     @Override
     public void onTaskComplete(Object result, Image img, byte[] array) {
         //hàm nhận và xử lí kết quả trả về của ASyncTask ImageLoading
-        bitmap = (Bitmap)result;//lưu ảnh bitmap
-        preview.setImageBitmap(bitmap);//dán ảnh lên ImageView
-        this.img = img;
+        image = (Bitmap)result;//lưu ảnh bitmap
+        preview.setImageBitmap(image);//dán ảnh lên ImageView
         convert.setEnabled(true);//cho phép bấm phím chuyển pdf
-        imgInBytes = array;
     }
 
 

@@ -20,8 +20,8 @@ public class ImageLoading extends AsyncTask<Intent, Void, Bitmap> {
     //class dùng để tải ảnh lên image view (+ tiền xử lí để chuyển pdf) sau khi được chọn từ gallery
     ProgressDialog dialog;
     private ImageLoader<Bitmap> callerContext; //context gọi ASyncTask
-    Image img; //biến tạm chứa kết quả trả về
-    byte[] tmp;//biến tạm chứa kết quả trả về
+    Image img = null; //biến tạm chứa kết quả trả về
+    byte[] tmp = null;//biến tạm chứa kết quả trả về
 
     public ImageLoading(ImageLoader cb){
         //khởi tạo -> truyền vào context gọi ASyncTask
@@ -49,15 +49,9 @@ public class ImageLoading extends AsyncTask<Intent, Void, Bitmap> {
             //chuyển uri ảnh được chọn sang dạng Bitmap
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(callerContext.getContentResolver(), selectedImage);
             res = bitmap;//lưu kết quả trả về
-            ByteArrayOutputStream stream3 = new ByteArrayOutputStream();//đưa ảnh bitmap về dạng mảng byte
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream3);//
-            tmp = stream3.toByteArray();//lưu kết quả dạng mảng của ảnh
-            img = Image.getInstance(stream3.toByteArray());//truyền vào ảnh đã được xử lí để convert PDF
         } catch (FileNotFoundException e){
             Log.e("File Failed", "File Not Found"); //kiểm soát exception
         } catch (IOException ioe) {                             //
-            Log.e("File Failed", "File Not Found"); //
-        } catch (BadElementException bee) {                     //
             Log.e("File Failed", "File Not Found"); //
         }
         return res; //trả về kết quả là ảnh dạng bitmap

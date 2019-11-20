@@ -2,6 +2,7 @@ package com.example.camerascan.pdfconverter;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
@@ -13,13 +14,14 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class CreatePDF extends
-        AsyncTask<Image, Void, String> {
+        AsyncTask<Bitmap, Void, String> {
     //Class convert ảnh sang file pdf
 
     PDFConverter callerContext; //context gọi ASyncTask
@@ -43,11 +45,11 @@ public class CreatePDF extends
     }
 
     @Override
-    protected String doInBackground(Image... images) {
-
+    protected String doInBackground(Bitmap... bitmaps) {
         //xử lí ASyncTask
         //this.dialog.setMessage("Đang xử lí...");
-        image = images[0];//đọc tham số truyền vào
+        Bitmap bitmap = bitmaps[0];
+
         Document doc = new Document();//tạo trang document mới
 
         String state = Environment.getExternalStorageState();   //kiểm tra bộ nhớ
@@ -58,6 +60,11 @@ public class CreatePDF extends
         }
 
         try {
+            ByteArrayOutputStream stream3 = new ByteArrayOutputStream();//đưa ảnh bitmap về dạng mảng byte
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream3);//
+
+            image = Image.getInstance(stream3.toByteArray());//truyền vào ảnh đã được xử lí để convert PDF
+
             File dir = new File(callerContext.path); //mở đường dẫn được truyền vào
             if (!dir.exists()){
                 dir.mkdir(); //tạo nếu đường dẫn chưa tồn tại

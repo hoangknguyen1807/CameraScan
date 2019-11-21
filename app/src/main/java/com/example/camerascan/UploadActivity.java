@@ -53,9 +53,9 @@ public class UploadActivity extends Activity implements View.OnTouchListener {
     private static final float MIN_ZOOM = 1f, MAX_ZOOM = 1f;
 
     // These matrices will be used to scale points of the image
-    Matrix matrix=null;
-    Matrix savedMatrix=null;
-    int flag=0; // SET SIZE IMAGE DEFAULT
+    Matrix matrix = null;
+    Matrix savedMatrix = null;
+    int flag = 0; // SET SIZE IMAGE DEFAULT
 
     // The 3 states (events) which the user is trying to perform
     static final int NONE = 0;
@@ -136,8 +136,8 @@ public class UploadActivity extends Activity implements View.OnTouchListener {
             @Override
             public void onClick(View view) {
                 // SET SIZE IMAGE DEFAULT
-                matrix=null;
-                savedMatrix=null;
+                matrix = null;
+                savedMatrix = null;
                 flag = 0;
 //                Intent intent = new Intent(Intent.ACTION_PICK);
 //                intent.setType("image/*");
@@ -154,56 +154,75 @@ public class UploadActivity extends Activity implements View.OnTouchListener {
 
             @Override
             public void onClick(View view) {
+//                Intent intent = new Intent(UploadActivity.this, LoginActivity.class);
+//                startActivity(intent);
+//                intent = getIntent();
+//                String email = intent.getStringExtra("email");
+//                String password = intent.getStringExtra("password");
 
-                //      Retrofit retrofit = NetworkClient.getRetrofitClient(UploadActivity.this);
-                uploadAPIs = APIUtils.getFileService();
-                System.out.println("onclick btnUpload: " + imgPath);
-                if (imgPath == null) {
-                    Toast.makeText(UploadActivity.this, "Please chooose picture upload to server", Toast.LENGTH_SHORT).show();
-                } else {
-                    //Create a file object using file path
-                    File file = new File(imgPath);
-                    if (!file.exists()) {
-                        System.out.println("CHUA TON TAI");
-                        file.mkdir();
-                    }
-                    //  FileInfo fileInfo = new FileInfo(file, file.getName());
-                    Toast.makeText(getApplication(), "onclick btnUpload: " + imgPath, Toast.LENGTH_SHORT).show();
+                setContentView(R.layout.login_form);
+                EditText edtEmail = findViewById(R.id.edtEmail);
+                EditText edtPassword = findViewById(R.id.edtPassword);
 
-                    System.out.println("directory file upload: " + file.getAbsolutePath());
-                    // Create a request body with file and image media type
 
-                    //RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-                    RequestBody requestFile = RequestBody.create(MediaType.parse("*/*"), file);
-                    // Create MultipartBody.Part using file request-body,file name and part name
-                    System.out.println("Name file image: " + file.getName());
-                    MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
-                    //Create request body with text description and text media type
-                    //RequestBody description = RequestBody.create(MediaType.parse("text/plain"), "image-type");
-                    //
-                    Call call = uploadAPIs.upload(part);
 
-                    call.enqueue(new Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                            if (response.isSuccessful()) {
-                                Toast.makeText(UploadActivity.this, "Image uploaded success", Toast.LENGTH_SHORT).show();
+                Button btnLogin = findViewById(R.id.btnLogin);
+                btnLogin.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String email = edtEmail.getText().toString();
+                        String password = edtPassword.getText().toString();
+                        Toast.makeText(UploadActivity.this, "email: " + email + " ,password: " + password, Toast.LENGTH_SHORT).show();
+
+                        System.out.println("email: " + email + " ,password: " + password);
+                        //      Retrofit retrofit = NetworkClient.getRetrofitClient(UploadActivity.this);
+                        uploadAPIs = APIUtils.getFileService();
+                        System.out.println("onclick btnUpload: " + imgPath);
+                        if (imgPath == null) {
+                            Toast.makeText(UploadActivity.this, "Please chooose picture upload to server", Toast.LENGTH_SHORT).show();
+                        } else {
+                            //Create a file object using file path
+                            File file = new File(imgPath);
+                            if (!file.exists()) {
+                                System.out.println("CHUA TON TAI");
+                                file.mkdir();
                             }
-                        }
+                            //  FileInfo fileInfo = new FileInfo(file, file.getName());
+                            Toast.makeText(getApplication(), "onclick btnUpload: " + imgPath, Toast.LENGTH_SHORT).show();
 
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            Toast.makeText(UploadActivity.this, "ERROR " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
+                            System.out.println("directory file upload: " + file.getAbsolutePath());
+                            // Create a request body with file and image media type
 
+                            //RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+                            RequestBody requestFile = RequestBody.create(MediaType.parse("*/*"), file);
+                            // Create MultipartBody.Part using file request-body,file name and part name
+                            System.out.println("Name file image: " + file.getName());
+                            MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+                            //Create request body with text description and text media type
+                            //RequestBody description = RequestBody.create(MediaType.parse("text/plain"), "image-type");
+                            //
+                            Call call = uploadAPIs.upload(part, email, password);
+
+                            call.enqueue(new Callback<ResponseBody>() {
+                                @Override
+                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                    if (response.isSuccessful()) {
+                                        Toast.makeText(UploadActivity.this, "Image uploaded success", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                    Toast.makeText(UploadActivity.this, "ERROR " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }
+                });
 
 
             }
         });
-
-
 
 
     }
@@ -386,7 +405,6 @@ public class UploadActivity extends Activity implements View.OnTouchListener {
         }
 
 
-
         if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Uri imageUri = CropImage.getPickImageResultUri(this, data);
             if (CropImage.isReadExternalStoragePermissionsRequired(this, imageUri)) {
@@ -473,7 +491,7 @@ public class UploadActivity extends Activity implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if (flag==0){
+        if (flag == 0) {
             matrix = new Matrix();
             savedMatrix = new Matrix();
         }
@@ -483,7 +501,7 @@ public class UploadActivity extends Activity implements View.OnTouchListener {
         view.setScaleType(ImageView.ScaleType.MATRIX);
         float scale;
         flag++;
-        System.out.println("flag: "+flag);
+        System.out.println("flag: " + flag);
         dumpEvent(event);
         // Handle touch events here...
 

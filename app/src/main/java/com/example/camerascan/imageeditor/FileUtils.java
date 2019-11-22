@@ -11,7 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class FileUtils {
-    public static final String FOLDER_NAME = "pdf_scanner";
+    public static final String FOLDER_NAME = "aio_scanner";
 
 
     public static File createFolders() {
@@ -34,11 +34,6 @@ public class FileUtils {
         return Environment.getExternalStorageDirectory();
     }
 
-    public static File genEditFile() {
-        return FileUtils.getEmptyFile("nkh-"
-                + System.currentTimeMillis() + ".jpg");
-    }
-
     public static File getEmptyFile(String name) {
         File folder = FileUtils.createFolders();
         if (folder != null) {
@@ -48,6 +43,11 @@ public class FileUtils {
             }
         }
         return null;
+    }
+
+    public static File genEditFile() {
+        return FileUtils.getEmptyFile("edited-"
+                + System.currentTimeMillis() + ".jpg");
     }
 
     public static boolean deleteFileNoThrow(String path) {

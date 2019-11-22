@@ -40,6 +40,7 @@
         <activity android:name=".pdfconverter.PDFConverter" />
         <activity android:name=".TXTmanager" />
         <activity android:name=".UploadActivity" />
+        <activity android:name=".PickPhotoToEditActivity" />
         <activity android:name=".imageeditor.EditImageActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"

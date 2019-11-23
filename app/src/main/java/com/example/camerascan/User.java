@@ -12,6 +12,12 @@ public class User {
     @Expose
     private String email;
 
+
+    @SerializedName("name")
+    @Expose
+    private String name;
+
+
     @SerializedName("password")
     @Expose
     private String password;
@@ -19,9 +25,17 @@ public class User {
     public User() {
     }
 
-    public User(int id, String email, String password) {
+    public User(int id, String email, String name, String password) {
         this.id = id;
         this.email = email;
+        this.name=name;
+        this.password = password;
+    }
+
+    public User(String email, String name, String password) {
+
+        this.email = email;
+        this.name=name;
         this.password = password;
     }
 
@@ -49,11 +63,20 @@ public class User {
         this.password = password;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
                 ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }

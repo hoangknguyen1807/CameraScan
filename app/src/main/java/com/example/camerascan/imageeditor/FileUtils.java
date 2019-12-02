@@ -14,10 +14,10 @@ import java.io.IOException;
 public class FileUtils {
     public static final String FOLDER_NAME = "aio_scanner";
 
-    public static File createFolders(String path) {
+    public static File createFolders(String chosenPath) {
         File baseDir;
         File aviaryFolder;
-        if (path == null) {
+        if (chosenPath == null) {
             if (android.os.Build.VERSION.SDK_INT < 8) {
                 baseDir = Environment.getExternalStorageDirectory();
             } else {
@@ -28,7 +28,7 @@ public class FileUtils {
                 return Environment.getExternalStorageDirectory();
             aviaryFolder = new File(baseDir, FOLDER_NAME);
         } else {
-            aviaryFolder = new File(path);
+            aviaryFolder = new File(chosenPath);
         }
 
         if (aviaryFolder.exists())
@@ -40,8 +40,8 @@ public class FileUtils {
         return Environment.getExternalStorageDirectory();
     }
 
-    public static File getEmptyFile(String path, String name) {
-        File folder = FileUtils.createFolders(path);
+    public static File getEmptyFile(String chosenPath, String name) {
+        File folder = FileUtils.createFolders(chosenPath);
         if (folder != null) {
             if (folder.exists()) {
                 File file = new File(folder, name);

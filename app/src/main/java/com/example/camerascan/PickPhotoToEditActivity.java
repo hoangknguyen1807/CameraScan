@@ -33,7 +33,6 @@ import lib.folderpicker.FolderPicker;
 
 public class PickPhotoToEditActivity extends Activity implements View.OnClickListener {
 
-    public static final String defaultPath = "/aio_scanner/";
 
     private static final int REQUEST_PERMISSION_WRITE = 31;
     private static final int OPEN_IMAGE_CODE = 32;
@@ -53,7 +52,7 @@ public class PickPhotoToEditActivity extends Activity implements View.OnClickLis
         txtViewSavePath = findViewById(R.id.textViewSavePath);
         txtViewSavePath.setText("Save at:\n" +
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath()
-                + defaultPath);
+                + "/" + FileUtils.FOLDER_NAME + "/");
         imgView = findViewById(R.id.imageViewEdit);
 
         Button btnPickPhoto = findViewById(R.id.btnPickPhoto);

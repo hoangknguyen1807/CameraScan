@@ -12,6 +12,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +51,7 @@ public class TakePhotoCamera extends Activity {
 
         Button btnChangePath = findViewById(R.id.buttonChangePath);
         Button btnCamera = findViewById(R.id.buttonCamera);
+        ImageView imgV = findViewById(R.id.imageView5);
         txtViewShowPath = findViewById(R.id.txtViewShowPath);
 
         txtViewShowPath.setText("Save at:\n" +

@@ -13,9 +13,21 @@
         android:layout_height="wrap_content"
         android:layout_margin="0dp"
         android:background="#F8F5EA"
+        android:text="Save at:"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/accounticon" />
 
     <Button
         android:id="@+id/buttonChangePath"
@@ -29,8 +41,7 @@
         android:textSize="20sp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/buttonCamera" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/buttonCamera"
@@ -42,34 +53,9 @@
         android:layout_marginRight="30dp"
         android:layout_marginBottom="10dp"
         android:textSize="20sp"
-        android:translationZ="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/buttonChangePath"
-        app:layout_constraintTop_toBottomOf="@id/guideline" />
+        app:layout_constraintStart_toEndOf="@+id/buttonChangePath" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_end="95dp" />
-
-    <ImageView
-        android:id="@+id/iconCamera"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="6dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginBottom="6dp"
-        android:translationZ="5dp"
-        app:layout_constraintBottom_toBottomOf="@id/buttonCamera"
-        app:layout_constraintEnd_toEndOf="@id/buttonCamera"
-        app:layout_constraintStart_toStartOf="@id/buttonCamera"
-        app:layout_constraintTop_toTopOf="@+id/buttonCamera"
-        app:srcCompat="@drawable/camera_black" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

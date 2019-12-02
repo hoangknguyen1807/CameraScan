@@ -7,13 +7,10 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Surface;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,7 +25,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 
-import com.example.camerascan.UriUtil;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.jetbrains.annotations.NotNull;
@@ -57,8 +53,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-
-import static com.example.camerascan.TakePhotoCamera.storedPath;
 
 public class EditImageActivity extends BaseActivity implements OnLoadingDialogListener {
     public static final String IS_IMAGE_EDITED = "is_image_edited";

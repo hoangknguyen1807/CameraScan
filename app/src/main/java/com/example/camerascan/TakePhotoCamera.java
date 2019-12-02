@@ -10,6 +10,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,35 +25,63 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import lib.folderpicker.FolderPicker;
+
 public class TakePhotoCamera extends Activity {
-    public static final String storedPath = "/CameraScan/";
+    public static final String defaultPath = "/CameraScan/";
     // private static final int REQUEST_PERMISSION_CAMERA = 15;
     // private static final int REQUEST_PERMISSION_WRITE = 16;
     public static final int REQUEST_PERMISSIONS_CODE = 11;
     public static final int TAKE_PHOTO_CODE = 12;
+    private static final int FOLDERPICKER_CODE = 10;
     private final String[] requiredPermissions = new String[]{
             Manifest.permission.CAMERA,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
+    String chosenPath = null;
     String imgPath = null;
     private static File imageFile;
+    TextView txtViewShowPath;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        takePhotoFromCamera();
+        setContentView(R.layout.takephoto_layout);
 
+        Button btnChangePath = findViewById(R.id.buttonChangePath);
+        Button btnCamera = findViewById(R.id.buttonCamera);
+        txtViewShowPath = findViewById(R.id.txtViewShowPath);
+
+        txtViewShowPath.setText("Save at:\n" +
+                Environment.getExternalStorageDirectory().getAbsolutePath() + defaultPath);
+        btnChangePath.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TakePhotoCamera.this, FolderPicker.class);
+                intent.putExtra("title", "Chọn đường dẫn");
+                startActivityForResult(intent, FOLDERPICKER_CODE);
+            }
+        });
+
+        btnCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                takePhoto();
+            }
+        });
+
+        requestPermissionCheck();
     }
 
     private void takePhotoFromCamera() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+/*        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             takePhotoWithPermissionCheck();
         } else {
             takePhoto();
-        }
+        }*/
     }
 
-    private void takePhotoWithPermissionCheck() {
+    private void requestPermissionCheck() {
         /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
@@ -75,7 +106,7 @@ public class TakePhotoCamera extends Activity {
                     REQUEST_PERMISSIONS_CODE);
             return;
         }
-        takePhoto();
+
     }
 
 
@@ -85,7 +116,7 @@ public class TakePhotoCamera extends Activity {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED
                     && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                takePhoto();
+                //takePhoto();
             } else {
                 Toast.makeText(this,
                         "Camera Permission or Write Permission DENIED",
@@ -123,12 +154,15 @@ public class TakePhotoCamera extends Activity {
     }
 
     private File createImageFile() throws IOException {
-
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + storedPath;
+        String path = chosenPath;
+        if (path == null) {
+            path = Environment.getExternalStorageDirectory().getAbsolutePath() + defaultPath;
+        }
         //File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
         File storageDir = new File(path);
         if (!storageDir.exists()) {
             storageDir.mkdir();
@@ -155,8 +189,14 @@ public class TakePhotoCamera extends Activity {
 
                     takePhoto();
                     break;
+                case FOLDERPICKER_CODE:
+                    //trường hợp intent chọn đường dẫn lưu file trả kết quả
+                    chosenPath = data.getExtras().getString("data") + "/"; // gán kết quả cho path
+                    txtViewShowPath.setText("Save at: " + chosenPath); // set textview thành đường dẫn hiện hành
+                    break;
             }
-        } else {
+        } // not RESULT_OK
+        else {
             if (resultCode == RESULT_CANCELED) {
                 switch (requestCode) {
                     case TAKE_PHOTO_CODE:
@@ -166,9 +206,14 @@ public class TakePhotoCamera extends Activity {
                                     Toast.LENGTH_SHORT);
                         }
                         break;
+                    case FOLDERPICKER_CODE:
+                        Toast.makeText(this,
+                                "Cannot choose folder to save",
+                                Toast.LENGTH_LONG);
+                        break;
                 }
+                //finish();
             }
-            finish();
         }
     }
 }

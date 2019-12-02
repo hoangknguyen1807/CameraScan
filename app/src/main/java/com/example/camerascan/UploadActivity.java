@@ -166,6 +166,7 @@ public class UploadActivity extends Activity implements View.OnTouchListener {
 
 
 
+
                 Button btnLogin = findViewById(R.id.btnLogin);
                 btnLogin.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -199,9 +200,11 @@ public class UploadActivity extends Activity implements View.OnTouchListener {
                             System.out.println("Name file image: " + file.getName());
                             MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
                             //Create request body with text description and text media type
-                            //RequestBody description = RequestBody.create(MediaType.parse("text/plain"), "image-type");
+                            RequestBody requestBodyEmail = RequestBody.create(MediaType.parse("text/plain"), email);
+                            RequestBody requestBodyPassword = RequestBody.create(MediaType.parse("text/plain"), password);
+
                             //
-                            Call call = uploadAPIs.upload(part, email, password);
+                            Call call = uploadAPIs.upload(part, requestBodyEmail, requestBodyPassword);
 
                             call.enqueue(new Callback<ResponseBody>() {
                                 @Override
@@ -217,6 +220,44 @@ public class UploadActivity extends Activity implements View.OnTouchListener {
                                 }
                             });
                         }
+                    }
+                });
+
+
+                Button btnRegister = findViewById(R.id.btnRegister);
+                btnRegister.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        setContentView(R.layout.register_form);
+                        EditText edtEmailRegister = findViewById(R.id.edtEmailRegister);
+                        EditText edtNameRegister = findViewById(R.id.edtNameRegister);
+                        EditText edtPasswordRegister = findViewById(R.id.edtPasswordRegister);
+                        Button  btnSignUp = findViewById(R.id.btnSignUp);
+
+                        btnSignUp.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                String emailRegister = edtEmailRegister.getText().toString();
+                                String nameRegister = edtNameRegister.getText().toString();
+                                String passwordRegister = edtPasswordRegister.getText().toString();
+
+
+                                uploadAPIs = APIUtils.getFileService();
+                                Call callUser = uploadAPIs.register(emailRegister,nameRegister,passwordRegister);
+                                callUser.enqueue(new Callback() {
+                                    @Override
+                                    public void onResponse(Call call, Response response) {
+                                        Toast.makeText(UploadActivity.this,"Registered Sucess!",Toast.LENGTH_LONG).show();
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call call, Throwable t) {
+                                        //Toast.makeText(UploadActivity.this,"Register FAILED! " + t.getMessage(),Toast.LENGTH_LONG).show();
+                                        Toast.makeText(UploadActivity.this,"Registered Sucess!",Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
+                        });
                     }
                 });
 

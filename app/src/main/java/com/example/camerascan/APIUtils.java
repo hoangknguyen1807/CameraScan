@@ -4,7 +4,7 @@ public class APIUtils{
     public APIUtils() {
     }
 
-    private static final String API_URL = "http://192.168.1.11:8080/api/file/";
+    private static final String API_URL = "http://172.16.4.79:8080/api/";
     public static UploadAPIs getFileService(){
         return NetworkClient.getRetrofitClient(API_URL).create(UploadAPIs.class);
 

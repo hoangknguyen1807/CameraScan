@@ -19,12 +19,14 @@ public class MainMenuFragment extends BaseEditFragment implements View.OnClickLi
     private View mainView;
 
     private View stickerBtn;
-
+    private View filterButton;
     private View cropBtn;
     private View rotateBtn;
     private View mTextBtn;
     private View mPaintBtn;
-
+    private View mBeautyBtn;
+    private View mBrightnessBtn;
+    private View mSaturationBtn;
     private Bundle intentBundle;
 
     public static MainMenuFragment newInstance() {
@@ -50,12 +52,14 @@ public class MainMenuFragment extends BaseEditFragment implements View.OnClickLi
         super.onActivityCreated(savedInstanceState);
 
         stickerBtn = mainView.findViewById(R.id.btn_stickers);
-
+        filterButton = mainView.findViewById(R.id.btn_filter);
         cropBtn = mainView.findViewById(R.id.btn_crop);
         rotateBtn = mainView.findViewById(R.id.btn_rotate);
         mTextBtn = mainView.findViewById(R.id.btn_text);
         mPaintBtn = mainView.findViewById(R.id.btn_paint);
-
+        mBeautyBtn = mainView.findViewById(R.id.btn_beauty);
+        mBrightnessBtn = mainView.findViewById(R.id.btn_brightness);
+        mSaturationBtn = mainView.findViewById(R.id.btn_contrast);
 
         if (intentBundle.getBoolean(ImageEditorIntentBuilder.STICKER_FEATURE, false)) {
             stickerBtn.setVisibility(View.VISIBLE);
@@ -63,7 +67,8 @@ public class MainMenuFragment extends BaseEditFragment implements View.OnClickLi
         }
 
         if (intentBundle.getBoolean(ImageEditorIntentBuilder.FILTER_FEATURE, false)) {
-
+            filterButton.setVisibility(View.VISIBLE);
+            filterButton.setOnClickListener(this);
         }
 
         if (intentBundle.getBoolean(ImageEditorIntentBuilder.CROP_FEATURE, false)) {
@@ -87,15 +92,18 @@ public class MainMenuFragment extends BaseEditFragment implements View.OnClickLi
         }
 
         if (intentBundle.getBoolean(ImageEditorIntentBuilder.BEAUTY_FEATURE, false)) {
-
+            mBeautyBtn.setVisibility(View.VISIBLE);
+            mBeautyBtn.setOnClickListener(this);
         }
 
         if (intentBundle.getBoolean(ImageEditorIntentBuilder.BRIGHTNESS_FEATURE, false)) {
-
+            mBrightnessBtn.setVisibility(View.VISIBLE);
+            mBrightnessBtn.setOnClickListener(this);
         }
 
         if (intentBundle.getBoolean(ImageEditorIntentBuilder.SATURATION_FEATURE, false)) {
-
+            mSaturationBtn.setVisibility(View.VISIBLE);
+            mSaturationBtn.setOnClickListener(this);
         }
     }
 
@@ -113,6 +121,8 @@ public class MainMenuFragment extends BaseEditFragment implements View.OnClickLi
     public void onClick(View v) {
         if (v == stickerBtn) {
             onStickClick();
+        } else if (v == filterButton) {
+            onFilterClick();
         } else if (v == cropBtn) {
             onCropClick();
         } else if (v == rotateBtn) {
@@ -121,6 +131,12 @@ public class MainMenuFragment extends BaseEditFragment implements View.OnClickLi
             onAddTextClick();
         } else if (v == mPaintBtn) {
             onPaintClick();
+        } else if (v == mBeautyBtn) {
+            onBeautyClick();
+        } else if (v == mBrightnessBtn) {
+            onBrightnessClick();
+        } else if (v == mSaturationBtn) {
+            onContrastClick();
         }
     }
 
@@ -129,6 +145,10 @@ public class MainMenuFragment extends BaseEditFragment implements View.OnClickLi
         activity.stickerFragment.onShow();
     }
 
+    private void onFilterClick() {
+        activity.bottomGallery.setCurrentItem(FilterListFragment.INDEX);
+        activity.filterListFragment.onShow();
+    }
 
     private void onCropClick() {
         activity.bottomGallery.setCurrentItem(CropFragment.INDEX);
@@ -151,5 +171,18 @@ public class MainMenuFragment extends BaseEditFragment implements View.OnClickLi
         activity.paintFragment.onShow();
     }
 
+    private void onBeautyClick() {
+        activity.bottomGallery.setCurrentItem(BeautyFragment.INDEX);
+        activity.beautyFragment.onShow();
+    }
 
+    private void onBrightnessClick() {
+        activity.bottomGallery.setCurrentItem(BrightnessFragment.INDEX);
+        activity.brightnessFragment.onShow();
+    }
+
+    private void onContrastClick() {
+        activity.bottomGallery.setCurrentItem(SaturationFragment.INDEX);
+        activity.saturationFragment.onShow();
+    }
 }

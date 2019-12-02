@@ -29,7 +29,7 @@ import java.util.Date;
 import lib.folderpicker.FolderPicker;
 
 public class TakePhotoCamera extends Activity {
-    public static final String defaultPath = "/CameraScan/";
+    public static final String defaultPath = "/aio_scanner/";
     // private static final int REQUEST_PERMISSION_CAMERA = 15;
     // private static final int REQUEST_PERMISSION_WRITE = 16;
     public static final int REQUEST_PERMISSIONS_CODE = 11;
@@ -54,7 +54,8 @@ public class TakePhotoCamera extends Activity {
         txtViewShowPath = findViewById(R.id.txtViewShowPath);
 
         txtViewShowPath.setText("Save at:\n" +
-                Environment.getExternalStorageDirectory().getAbsolutePath() + defaultPath);
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath()
+                + defaultPath);
         btnChangePath.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,13 +75,6 @@ public class TakePhotoCamera extends Activity {
         requestPermissionCheck();
     }
 
-    private void takePhotoFromCamera() {
-/*        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            takePhotoWithPermissionCheck();
-        } else {
-            takePhoto();
-        }*/
-    }
 
     private void requestPermissionCheck() {
         /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -160,7 +154,8 @@ public class TakePhotoCamera extends Activity {
         String imageFileName = "JPEG_" + timeStamp + "_";
         String path = chosenPath;
         if (path == null) {
-            path = Environment.getExternalStorageDirectory().getAbsolutePath() + defaultPath;
+            path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath()
+                    + defaultPath;
         }
         //File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 
@@ -185,10 +180,10 @@ public class TakePhotoCamera extends Activity {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case TAKE_PHOTO_CODE:
-                    Toast.makeText(this, imageFile.getAbsolutePath(),
+                    Toast.makeText(getApplicationContext(), imageFile.getAbsolutePath(),
                             Toast.LENGTH_SHORT);
 
-                    takePhoto();
+                    //takePhoto();
                     break;
                 case FOLDERPICKER_CODE:
                     //trường hợp intent chọn đường dẫn lưu file trả kết quả

@@ -39,6 +39,29 @@
                     tool:text="Text" />
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/btn_filter"
+                style="@style/option_style"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    style="@style/icon_style"
+                    android:layout_gravity="center"
+                    android:src="@drawable/filter" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="Filter"
+                    android:textColor="@color/text_color"
+                    android:textSize="@dimen/image_edit_text_size"
+                    tool:text="Text" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/btn_crop"
@@ -136,7 +159,80 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/btn_brightness"
+                style="@style/option_style"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    style="@style/icon_style"
+                    android:layout_gravity="center"
+                    android:src="@drawable/brightness" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="Brightness"
+                    android:textColor="@color/text_color"
+                    android:textSize="@dimen/image_edit_text_size"
+                    tool:text="Text" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btn_contrast"
+                style="@style/option_style"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    style="@style/icon_style"
+                    android:layout_gravity="center"
+                    android:src="@drawable/dropper" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="Saturation"
+                    android:textColor="@color/text_color"
+                    android:textSize="@dimen/image_edit_text_size"
+                    tool:text="Text" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btn_beauty"
+                style="@style/option_style"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    style="@style/icon_style"
+                    android:layout_gravity="center"
+                    android:src="@drawable/beauty" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="Beauty"
+                    android:textColor="@color/text_color"
+                    android:textSize="@dimen/image_edit_text_size"
+                    tool:text="Text" />
+
+            </LinearLayout>
+
         </LinearLayout>
     </HorizontalScrollView>
+
 </RelativeLayout>
 

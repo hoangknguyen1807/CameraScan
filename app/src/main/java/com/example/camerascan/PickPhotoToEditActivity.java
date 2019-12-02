@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 
@@ -28,7 +29,7 @@ import java.io.IOException;
 
 public class PickPhotoToEditActivity extends Activity implements View.OnClickListener {
 
-    private static final int REQUEST_PERMISSION_READ = 31;
+    private static final int REQUEST_PERMISSION_WRITE = 31;
     private static final int OPEN_IMAGE_CODE = 32;
     private static final int EDIT_IMAGE_CODE = 23;
 
@@ -71,18 +72,31 @@ public class PickPhotoToEditActivity extends Activity implements View.OnClickLis
     }
 
     private void openImageWithPermissionsCheck() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    REQUEST_PERMISSION_READ);
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_PERMISSION_WRITE);
             return;
         }
         openImage();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_PERMISSION_WRITE:
+                if (grantResults.length > 0
+                        &&
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    openImage();
+                }
+                break;
+        }
+    }
+
     private void openImage() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.setType("image/*");
         String[] mimeTypes = {"image/jpeg", "image/png"};
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
@@ -98,8 +112,8 @@ public class PickPhotoToEditActivity extends Activity implements View.OnClickLis
                     /*.withFilterFeature()*/
                     .withRotateFeature()
                     .withCropFeature()
-                    /*.withBrightnessFeature()
-                    .withSaturationFeature()*/
+                    .withBrightnessFeature()
+                    .withSaturationFeature()
                     .withStickerFeature()
                     /*.withBeautyFeature()*/
                     .forcePortrait(true)

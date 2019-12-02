@@ -51,7 +51,6 @@ public class TakePhotoCamera extends Activity {
 
         Button btnChangePath = findViewById(R.id.buttonChangePath);
         Button btnCamera = findViewById(R.id.buttonCamera);
-        ImageView imgV = findViewById(R.id.imageView5);
         txtViewShowPath = findViewById(R.id.txtViewShowPath);
 
         txtViewShowPath.setText("Save at:\n" +

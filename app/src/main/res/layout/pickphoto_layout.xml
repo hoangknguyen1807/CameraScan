@@ -9,20 +9,19 @@
 
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/textViewSavePath"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="6dp"
         android:layout_marginBottom="6dp"
         android:background="#FFFFFF"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="@id/changePath"
-        app:layout_constraintEnd_toStartOf="@id/changePath"
+        app:layout_constraintBottom_toBottomOf="@id/editChangePath"
+        app:layout_constraintEnd_toStartOf="@id/editChangePath"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/changePath" />
+        app:layout_constraintTop_toTopOf="@id/editChangePath" />
 
     <Button
-        android:id="@+id/changePath"
+        android:id="@+id/editChangePath"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Change"
@@ -43,7 +42,7 @@
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/changePath" />
+        app:layout_constraintTop_toBottomOf="@id/editChangePath" />
 
 
     <LinearLayout

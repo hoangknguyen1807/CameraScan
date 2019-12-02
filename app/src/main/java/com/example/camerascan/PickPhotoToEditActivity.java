@@ -8,11 +8,13 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,20 +29,31 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import lib.folderpicker.FolderPicker;
+
 public class PickPhotoToEditActivity extends Activity implements View.OnClickListener {
+
+    public static final String defaultPath = "/aio_scanner/";
 
     private static final int REQUEST_PERMISSION_WRITE = 31;
     private static final int OPEN_IMAGE_CODE = 32;
     private static final int EDIT_IMAGE_CODE = 23;
+    private static final int FOLDERPICKER_CODE = 14;
 
     private String imgPath = null;
+    private String chosenPath = null;
     private ImageView imgView;
+    private TextView txtViewSavePath;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pickphoto_layout);
 
+        txtViewSavePath = findViewById(R.id.textViewSavePath);
+        txtViewSavePath.setText("Save at:\n" +
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath()
+                + defaultPath);
         imgView = findViewById(R.id.imageViewEdit);
 
         Button btnPickPhoto = findViewById(R.id.btnPickPhoto);
@@ -48,8 +61,17 @@ public class PickPhotoToEditActivity extends Activity implements View.OnClickLis
 
         Button btnEdit = findViewById(R.id.btnEdit);
         btnEdit.setOnClickListener(this);
-    }
 
+        Button btnChange = findViewById(R.id.editChangePath);
+        btnChange.setOnClickListener(this);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_PERMISSION_WRITE);
+        }
+    }
 
     @Override
     public void onClick(View v) {
@@ -60,7 +82,18 @@ public class PickPhotoToEditActivity extends Activity implements View.OnClickLis
             case R.id.btnEdit:
                 editImageClick();
                 break;
+            case R.id.editChangePath:
+                changeEditedSavePath();
+                break;
         }
+    }
+
+    private void changeEditedSavePath() {
+
+        Intent intent = new Intent(PickPhotoToEditActivity.this,
+                FolderPicker.class);
+        intent.putExtra("title", "Chọn đường dẫn");
+        startActivityForResult(intent, FOLDERPICKER_CODE);
     }
 
     private void openImageFromStorage() {
@@ -89,7 +122,12 @@ public class PickPhotoToEditActivity extends Activity implements View.OnClickLis
                 if (grantResults.length > 0
                         &&
                         grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    openImage();
+                    //openImage();
+                } else {
+                    Toast.makeText(this,
+                            "Read & Write Permission DENIED",
+                            Toast.LENGTH_SHORT).show();
+                    finish();
                 }
                 break;
         }
@@ -104,7 +142,7 @@ public class PickPhotoToEditActivity extends Activity implements View.OnClickLis
     }
 
     private void editImageClick() {
-        File outputFile = FileUtils.genEditFile();
+        File outputFile = FileUtils.genEditFile(chosenPath);
         try {
             Intent intentEdit = new ImageEditorIntentBuilder(this, imgPath, outputFile.getAbsolutePath())
                     .withAddText()
@@ -136,6 +174,11 @@ public class PickPhotoToEditActivity extends Activity implements View.OnClickLis
                     break;
                 case EDIT_IMAGE_CODE:
                     handleEditedImage(data);
+                    break;
+                case FOLDERPICKER_CODE:
+                    //trường hợp intent chọn đường dẫn lưu file trả kết quả
+                    chosenPath = data.getExtras().getString("data") + "/"; // gán kết quả cho path
+                    txtViewSavePath.setText("Save at: " + chosenPath); // set textview thành đường dẫn hiện hành
                     break;
             }
         }

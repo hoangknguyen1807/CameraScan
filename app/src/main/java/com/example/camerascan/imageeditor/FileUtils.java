@@ -14,18 +14,23 @@ import java.io.IOException;
 public class FileUtils {
     public static final String FOLDER_NAME = "aio_scanner";
 
-
-    public static File createFolders() {
+    public static File createFolders(String path) {
         File baseDir;
-        if (android.os.Build.VERSION.SDK_INT < 8) {
-            baseDir = Environment.getExternalStorageDirectory();
+        File aviaryFolder;
+        if (path == null) {
+            if (android.os.Build.VERSION.SDK_INT < 8) {
+                baseDir = Environment.getExternalStorageDirectory();
+            } else {
+                baseDir = Environment
+                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+            }
+            if (baseDir == null)
+                return Environment.getExternalStorageDirectory();
+            aviaryFolder = new File(baseDir, FOLDER_NAME);
         } else {
-            baseDir = Environment
-                    .getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+            aviaryFolder = new File(path);
         }
-        if (baseDir == null)
-            return Environment.getExternalStorageDirectory();
-        File aviaryFolder = new File(baseDir, FOLDER_NAME);
+
         if (aviaryFolder.exists())
             return aviaryFolder;
         if (aviaryFolder.isFile())
@@ -35,8 +40,8 @@ public class FileUtils {
         return Environment.getExternalStorageDirectory();
     }
 
-    public static File getEmptyFile(String name) {
-        File folder = FileUtils.createFolders();
+    public static File getEmptyFile(String path, String name) {
+        File folder = FileUtils.createFolders(path);
         if (folder != null) {
             if (folder.exists()) {
                 File file = new File(folder, name);
@@ -46,9 +51,9 @@ public class FileUtils {
         return null;
     }
 
-    public static File genEditFile() {
-        return FileUtils.getEmptyFile("edited-"
-                + System.currentTimeMillis() + ".jpg");
+    public static File genEditFile(String chosenPath) {
+        return FileUtils.getEmptyFile(chosenPath,
+                "edited-" + System.currentTimeMillis() + ".jpg");
     }
 
     public static boolean deleteFileNoThrow(String path) {
@@ -66,7 +71,7 @@ public class FileUtils {
     }
 
     public static String saveBitmap(String bitName, Bitmap mBitmap) {
-        File baseFolder = createFolders();
+        File baseFolder = createFolders(null);
         File f = new File(baseFolder.getAbsolutePath(), bitName);
         FileOutputStream fOut = null;
         try {

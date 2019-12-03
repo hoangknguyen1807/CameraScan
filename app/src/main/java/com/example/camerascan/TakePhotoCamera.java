@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -39,10 +40,10 @@ public class TakePhotoCamera extends Activity {
             Manifest.permission.CAMERA,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
-    String chosenPath = null;
-    String imgPath = null;
     private static File imageFile;
+    String chosenPath = null;
     TextView txtViewShowPath;
+    String pathDCIM = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,9 +54,11 @@ public class TakePhotoCamera extends Activity {
         Button btnCamera = findViewById(R.id.buttonCamera);
         txtViewShowPath = findViewById(R.id.txtViewShowPath);
 
+        pathDCIM = Environment.
+                getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).
+                getAbsolutePath();
         txtViewShowPath.setText("Save at:\n" +
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath()
-                + defaultPath);
+                pathDCIM + defaultPath);
         btnChangePath.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,7 +138,6 @@ public class TakePhotoCamera extends Activity {
             }
 
             if (imageFile != null) {
-                imgPath = imageFile.getAbsolutePath();
                 Uri takenPhotoUri = FileProvider.getUriForFile(
                         this, "com.example.android.fileprovider",
                         imageFile);
@@ -177,18 +179,19 @@ public class TakePhotoCamera extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        String message = null;
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case TAKE_PHOTO_CODE:
-                    Toast.makeText(getApplicationContext(), imageFile.getAbsolutePath(),
-                            Toast.LENGTH_SHORT);
-
-                    //takePhoto();
+//                    Toast.makeText(getApplicationContext(), imageFile.getAbsolutePath(),
+//                            Toast.LENGTH_LONG);
+                    toastMessage("Saved image path : " + imageFile.getAbsolutePath());
+                    takePhoto();
                     break;
                 case FOLDERPICKER_CODE:
                     //trường hợp intent chọn đường dẫn lưu file trả kết quả
                     chosenPath = data.getExtras().getString("data") + "/"; // gán kết quả cho path
-                    txtViewShowPath.setText("Save at: " + chosenPath); // set textview thành đường dẫn hiện hành
+                    txtViewShowPath.setText("Save at:\n" + chosenPath); // set textview thành đường dẫn hiện hành
                     break;
             }
         } // not RESULT_OK
@@ -197,19 +200,31 @@ public class TakePhotoCamera extends Activity {
                 switch (requestCode) {
                     case TAKE_PHOTO_CODE:
                         if (imageFile.delete() == false) {
-                            Toast.makeText(this,
-                                    "Cannot delete created temp file",
-                                    Toast.LENGTH_SHORT);
+//                            Toast.makeText(TakePhotoCamera.this,
+//                                    "Cannot delete created temp file",
+//                                    Toast.LENGTH_SHORT);
+                            message = "Cannot delete created temp file";
                         }
+
                         break;
                     case FOLDERPICKER_CODE:
-                        Toast.makeText(this,
-                                "Cannot choose folder to save",
-                                Toast.LENGTH_LONG);
+//                        Toast.makeText(this,
+//                                "Cannot choose folder to save",
+//                                Toast.LENGTH_LONG);
+                        message = "Cannot choose folder to save";
                         break;
                 }
-                //finish();
+                if (message != null)
+                    toastMessage(message);
             }
         }
+    }
+
+    private void toastMessage(String message) {
+        Toast toast = Toast.makeText(getApplicationContext(),
+                message,
+                Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.BOTTOM, 0, 520);
+        toast.show();
     }
 }

@@ -7,12 +7,14 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Environment;
 
+import com.example.camerascan.PickPhotoToEditActivity;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class FileUtils {
-    public static final String FOLDER_NAME = "aio_scanner";
+    //public static final String FOLDER_NAME = "aio_scanner";
 
     public static File createFolders(String chosenPath) {
         File baseDir;
@@ -26,7 +28,8 @@ public class FileUtils {
             }
             if (baseDir == null)
                 return Environment.getExternalStorageDirectory();
-            aviaryFolder = new File(baseDir, FOLDER_NAME);
+            aviaryFolder = new File(baseDir,
+                    PickPhotoToEditActivity.defaultPath);
         } else {
             aviaryFolder = new File(chosenPath);
         }

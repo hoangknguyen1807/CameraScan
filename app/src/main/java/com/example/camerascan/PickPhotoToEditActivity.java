@@ -32,7 +32,7 @@ import java.io.IOException;
 import lib.folderpicker.FolderPicker;
 
 public class PickPhotoToEditActivity extends Activity implements View.OnClickListener {
-
+    public static final String defaultPath = "aio_scanner";
 
     private static final int REQUEST_PERMISSION_WRITE = 31;
     private static final int OPEN_IMAGE_CODE = 32;
@@ -52,7 +52,7 @@ public class PickPhotoToEditActivity extends Activity implements View.OnClickLis
         txtViewSavePath = findViewById(R.id.textViewSavePath);
         txtViewSavePath.setText("Save at:\n" +
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath()
-                + "/" + FileUtils.FOLDER_NAME + "/");
+                + "/" + defaultPath + "/");
         imgView = findViewById(R.id.imageViewEdit);
 
         Button btnPickPhoto = findViewById(R.id.btnPickPhoto);
@@ -158,7 +158,7 @@ public class PickPhotoToEditActivity extends Activity implements View.OnClickLis
 
             EditImageActivity.start(this, intentEdit, EDIT_IMAGE_CODE);
         } catch (Exception e) {
-            Toast.makeText(this, "Please choose an image for edit", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.not_selected, Toast.LENGTH_SHORT).show();
             Log.e("Demo App", e.getMessage());
         }
     }

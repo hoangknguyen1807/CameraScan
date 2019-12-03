@@ -48,7 +48,8 @@ public class ScanCamera extends Activity {
         switch (requestCode) {
             case REQUEST_CAMERA: {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                            != PackageManager.PERMISSION_GRANTED) {
                         return;
                     }
                     try {
@@ -56,7 +57,11 @@ public class ScanCamera extends Activity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            "Camera Permission DENIED", Toast.LENGTH_SHORT)
+                            .show();
+                    finish();
                 }
             }
             break;
@@ -143,10 +148,11 @@ public class ScanCamera extends Activity {
                 public void surfaceCreated(SurfaceHolder surfaceHolder) {
 
                     try {
-                        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-
-                            ActivityCompat.requestPermissions(ScanCamera.this,new String[]{Manifest.permission.CAMERA},REQUEST_CAMERA);
-                            return;
+                        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA)
+                                != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(ScanCamera.this,
+                                    new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
+                            //return;
                         }
                         cameraSource.start(cameraView.getHolder());
                     } catch (IOException e) {

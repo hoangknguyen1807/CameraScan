@@ -45,6 +45,7 @@
                 android:textSize="10sp"
                 android:background="#fff"/>
         </ScrollView>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -58,7 +59,6 @@
             android:text="Copy"
             android:background="@drawable/custom_button_1"
             android:layout_marginHorizontal="5dp"/>
-
 
         <Button
             android:id="@+id/buttonSave"

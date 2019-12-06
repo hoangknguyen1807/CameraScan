@@ -78,11 +78,32 @@ public class ScanCamera extends Activity {
 
     private int getOrientation(){
 // the TOP of the device points to [0:North, 1:West, 2:South, 3:East]
-        Display display = ((WindowManager) getApplication()
-                .getSystemService(Context.WINDOW_SERVICE))
-                .getDefaultDisplay();
+        Display display = ((WindowManager) getApplication().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         display.getRotation();
         return display.getRotation();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.scan_camera_layout);
+
+        _tmpOrientation= getOrientation();
+
+        cameraView = findViewById(R.id.cameraView);
+        textViewResult = findViewById(R.id.textViewResult);
+        buttonToTxtView=findViewById(R.id.buttonToTxtView);
+
+        buttonToTxtView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentSendTextToTxtView = new Intent(ScanCamera.this, PreviewData.class); //create intent to send data to another screen
+                intentSendTextToTxtView.putExtra("data",textViewResult.getText().toString()); //put data to intent
+                startActivityForResult(intentSendTextToTxtView,REQUEST_SENDTOTXT);  //call intent to move to another screen and wait for result
+            }
+        });
+
+        DoProcess();
     }
 
     @Override
@@ -97,36 +118,6 @@ public class ScanCamera extends Activity {
         {
             //Do nothing
         }
-    }
-
-    @Override
-    protected void onStart() {
-        //reset camera source
-        if (cameraSource!=null)
-            cameraSource.release();
-        super.onStart();
-    }
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.scan_camera_layout);
-
-        _tmpOrientation = getOrientation();
-
-        cameraView = findViewById(R.id.cameraView);
-        textViewResult = findViewById(R.id.textViewResult);
-        buttonToTxtView = findViewById(R.id.buttonToTxtView);
-
-        buttonToTxtView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentSendTextToTxtView = new Intent(ScanCamera.this, PreviewData.class); //create intent to send data to another screen
-                intentSendTextToTxtView.putExtra("data", textViewResult.getText().toString()); //put data to intent
-                startActivityForResult(intentSendTextToTxtView, REQUEST_SENDTOTXT);  //call intent to move to another screen and wait for result
-            }
-        });
-
-        DoProcess();
     }
 
     protected void DoProcess()
@@ -205,6 +196,15 @@ public class ScanCamera extends Activity {
                 }
             });
         }
+    }
+
+    @Override
+    protected void onStart() {
+        //reset camera source
+        if (cameraSource!=null)
+            cameraSource.release();
+        super.onStart();
+
     }
 
     @Override

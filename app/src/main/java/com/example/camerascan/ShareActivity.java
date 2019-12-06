@@ -114,8 +114,15 @@ public class ShareActivity extends Activity {
                         return;
                     }
                     break;
+
             }
-        } else if (resultCode == RESULT_CANCELED) {}
+        } else if (resultCode == RESULT_CANCELED) {
+//            switch (requestCode) {
+//                case TAKE_PHOTO_CODE:
+//                    // Canceled, so imgPath is set to blank
+//                    imgPath = "";
+//                    break;
+        }
     }
 
 }

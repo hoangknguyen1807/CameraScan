@@ -99,11 +99,12 @@ public class MainMenuActivity extends Activity {
     }
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        SharedPreferences.Editor editor = settings.edit();
+        // delete session
+        SharedPreferences.Editor editor = getSharedPreferences("DeviceToken",MODE_PRIVATE).edit();
         editor.remove("email");
         editor.remove("password");
-    }
+        editor.apply();
+        super.onDestroy();
 
+    }
 }

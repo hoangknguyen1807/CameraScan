@@ -681,13 +681,5 @@ public class UploadActivity extends Activity implements View.OnTouchListener {
     }
 
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // delete session
-        SharedPreferences.Editor editor = getSharedPreferences("DeviceToken",MODE_PRIVATE).edit();
-        editor.remove("email");
-        editor.remove("password");
-        editor.apply();
-    }
+    
 }

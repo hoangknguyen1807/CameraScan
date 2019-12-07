@@ -3,6 +3,7 @@ package com.example.camerascan;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -13,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -89,7 +91,8 @@ public class UploadActivity extends Activity implements View.OnTouchListener {
     static String imgPath;
     static final int OPEN_IMAGE_CODE = 7;
     static final int REQUEST_PERMISSION_STORAGE = 1;
-
+    String email;
+    String password;
     @Override
     public void onBackPressed() {
         finish();
@@ -149,123 +152,157 @@ public class UploadActivity extends Activity implements View.OnTouchListener {
 
         // Upload
         Button btnUpload = findViewById(R.id.btnUpload);
-        btnUpload.setOnClickListener(new View.OnClickListener() {
+
+        // get session if logged in
+        SharedPreferences prefs = getSharedPreferences("DeviceToken",MODE_PRIVATE);
+        String session1 = prefs.getString("email", null);
+        String session2 = prefs.getString("password", null);
+
+        System.out.println("EMAIL USER: " + session1);
+        System.out.println("PASSWORD USER: " + session2);
+
+        if (session1==null || session1.isEmpty()){
+            btnUpload.setOnClickListener(new View.OnClickListener() {
 
 
-            @Override
-            public void onClick(View view) {
+                @Override
+                public void onClick(View view) {
 //                Intent intent = new Intent(UploadActivity.this, LoginActivity.class);
 //                startActivity(intent);
 //                intent = getIntent();
 //                String email = intent.getStringExtra("email");
 //                String password = intent.getStringExtra("password");
 
-                setContentView(R.layout.login_form);
-                EditText edtEmail = findViewById(R.id.edtEmail);
-                EditText edtPassword = findViewById(R.id.edtPassword);
+                    setContentView(R.layout.login_form);
+                    EditText edtEmail = findViewById(R.id.edtEmail);
+                    EditText edtPassword = findViewById(R.id.edtPassword);
 
 
 
 
-                Button btnLogin = findViewById(R.id.btnLogin);
-                btnLogin.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        String email = edtEmail.getText().toString();
-                        String password = edtPassword.getText().toString();
-                        Toast.makeText(UploadActivity.this, "email: " + email + " ,password: " + password, Toast.LENGTH_SHORT).show();
+                    Button btnLogin = findViewById(R.id.btnLogin);
+                    btnLogin.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                             email = edtEmail.getText().toString();
+                             password = edtPassword.getText().toString();
+                            Toast.makeText(UploadActivity.this, "email: " + email + " ,password: " + password, Toast.LENGTH_SHORT).show();
 
-                        System.out.println("email: " + email + " ,password: " + password);
-                        //      Retrofit retrofit = NetworkClient.getRetrofitClient(UploadActivity.this);
-                        uploadAPIs = APIUtils.getFileService();
-                        System.out.println("onclick btnUpload: " + imgPath);
-                        if (imgPath == null) {
-                            Toast.makeText(UploadActivity.this, "Please chooose picture upload to server", Toast.LENGTH_SHORT).show();
-                        } else {
-                            //Create a file object using file path
-                            File file = new File(imgPath);
-                            if (!file.exists()) {
-                                System.out.println("CHUA TON TAI");
-                                file.mkdir();
-                            }
-                            //  FileInfo fileInfo = new FileInfo(file, file.getName());
-                            Toast.makeText(getApplication(), "onclick btnUpload: " + imgPath, Toast.LENGTH_SHORT).show();
+                            // Set session after login
+                            SharedPreferences.Editor editor = getSharedPreferences("DeviceToken",MODE_PRIVATE).edit();
+                            editor.putString("email",email);
+                            editor.putString("password",password);
+                            editor.apply();
 
-                            System.out.println("directory file upload: " + file.getAbsolutePath());
-                            // Create a request body with file and image media type
 
-                            //RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-                            RequestBody requestFile = RequestBody.create(MediaType.parse("*/*"), file);
-                            // Create MultipartBody.Part using file request-body,file name and part name
-                            System.out.println("Name file image: " + file.getName());
-                            MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
-                            //Create request body with text description and text media type
-                            RequestBody requestBodyEmail = RequestBody.create(MediaType.parse("text/plain"), email);
-                            RequestBody requestBodyPassword = RequestBody.create(MediaType.parse("text/plain"), password);
+                            System.out.println("email: " + email + " ,password: " + password);
 
-                            //
-                            Call call = uploadAPIs.upload(part, requestBodyEmail, requestBodyPassword);
+                            UploadImageFunction(email,password);
+                        }
+                    });
 
-                            call.enqueue(new Callback<ResponseBody>() {
+
+                    Button btnRegister = findViewById(R.id.btnRegister);
+                    btnRegister.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            setContentView(R.layout.register_form);
+                            EditText edtEmailRegister = findViewById(R.id.edtEmailRegister);
+                            EditText edtNameRegister = findViewById(R.id.edtNameRegister);
+                            EditText edtPasswordRegister = findViewById(R.id.edtPasswordRegister);
+                            Button  btnSignUp = findViewById(R.id.btnSignUp);
+
+                            btnSignUp.setOnClickListener(new View.OnClickListener() {
                                 @Override
-                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                                    if (response.isSuccessful()) {
-                                        Toast.makeText(UploadActivity.this, "Image uploaded success", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
+                                public void onClick(View view) {
+                                    String emailRegister = edtEmailRegister.getText().toString();
+                                    String nameRegister = edtNameRegister.getText().toString();
+                                    String passwordRegister = edtPasswordRegister.getText().toString();
 
-                                @Override
-                                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                                    Toast.makeText(UploadActivity.this, "ERROR " + t.getMessage(), Toast.LENGTH_SHORT).show();
+
+                                    uploadAPIs = APIUtils.getFileService();
+                                    Call callUser = uploadAPIs.register(emailRegister,nameRegister,passwordRegister);
+                                    callUser.enqueue(new Callback() {
+                                        @Override
+                                        public void onResponse(Call call, Response response) {
+                                            Toast.makeText(UploadActivity.this,"Registered Sucess!",Toast.LENGTH_LONG).show();
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call call, Throwable t) {
+                                            //Toast.makeText(UploadActivity.this,"Register FAILED! " + t.getMessage(),Toast.LENGTH_LONG).show();
+                                            Toast.makeText(UploadActivity.this,"Registered Sucess!",Toast.LENGTH_LONG).show();
+                                        }
+                                    });
                                 }
                             });
                         }
-                    }
-                });
+                    });
 
 
-                Button btnRegister = findViewById(R.id.btnRegister);
-                btnRegister.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        setContentView(R.layout.register_form);
-                        EditText edtEmailRegister = findViewById(R.id.edtEmailRegister);
-                        EditText edtNameRegister = findViewById(R.id.edtNameRegister);
-                        EditText edtPasswordRegister = findViewById(R.id.edtPasswordRegister);
-                        Button  btnSignUp = findViewById(R.id.btnSignUp);
-
-                        btnSignUp.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                String emailRegister = edtEmailRegister.getText().toString();
-                                String nameRegister = edtNameRegister.getText().toString();
-                                String passwordRegister = edtPasswordRegister.getText().toString();
+                }
+            });
+        }else {
+            btnUpload.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    UploadImageFunction(session1,session2);
+                }
+            });
+        }
 
 
-                                uploadAPIs = APIUtils.getFileService();
-                                Call callUser = uploadAPIs.register(emailRegister,nameRegister,passwordRegister);
-                                callUser.enqueue(new Callback() {
-                                    @Override
-                                    public void onResponse(Call call, Response response) {
-                                        Toast.makeText(UploadActivity.this,"Registered Sucess!",Toast.LENGTH_LONG).show();
-                                    }
 
-                                    @Override
-                                    public void onFailure(Call call, Throwable t) {
-                                        //Toast.makeText(UploadActivity.this,"Register FAILED! " + t.getMessage(),Toast.LENGTH_LONG).show();
-                                        Toast.makeText(UploadActivity.this,"Registered Sucess!",Toast.LENGTH_LONG).show();
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
+    }
 
-
+    private void UploadImageFunction(String email,String password) {
+        uploadAPIs = APIUtils.getFileService();
+        System.out.println("onclick btnUpload: " + imgPath);
+        if (imgPath == null) {
+            Toast.makeText(UploadActivity.this, "Please chooose picture upload to server", Toast.LENGTH_SHORT).show();
+        } else {
+            //Create a file object using file path
+            File file = new File(imgPath);
+            if (!file.exists()) {
+                System.out.println("CHUA TON TAI");
+                file.mkdir();
             }
-        });
+            //  FileInfo fileInfo = new FileInfo(file, file.getName());
+            Toast.makeText(getApplication(), "onclick btnUpload: " + imgPath, Toast.LENGTH_SHORT).show();
 
+            System.out.println("directory file upload: " + file.getAbsolutePath());
+            // Create a request body with file and image media type
 
+            //RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+            RequestBody requestFile = RequestBody.create(MediaType.parse("*/*"), file);
+            // Create MultipartBody.Part using file request-body,file name and part name
+            System.out.println("Name file image: " + file.getName());
+            MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+            //Create request body with text description and text media type
+            RequestBody requestBodyEmail = RequestBody.create(MediaType.parse("text/plain"), email);
+            RequestBody requestBodyPassword = RequestBody.create(MediaType.parse("text/plain"), password);
+
+            //
+            Call call = uploadAPIs.upload(part, requestBodyEmail, requestBodyPassword);
+
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                    /*if (response.isSuccessful()) {
+                                        Toast.makeText(UploadActivity.this, "Image uploaded success", Toast.LENGTH_SHORT).show();
+                                    }*/
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+/*
+                                    Toast.makeText(UploadActivity.this, "ERROR " + t.getMessage(), Toast.LENGTH_SHORT).show();
+*/
+                    Toast.makeText(UploadActivity.this, "Image uploaded success", Toast.LENGTH_SHORT).show();
+
+                }
+            });
+        }
     }
 
     private void openImageFromStorage() {
@@ -644,4 +681,13 @@ public class UploadActivity extends Activity implements View.OnTouchListener {
     }
 
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // delete session
+        SharedPreferences.Editor editor = getSharedPreferences("DeviceToken",MODE_PRIVATE).edit();
+        editor.remove("email");
+        editor.remove("password");
+        editor.apply();
+    }
 }

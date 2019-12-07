@@ -2,7 +2,9 @@ package com.example.camerascan;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 
@@ -94,6 +96,14 @@ public class MainMenuActivity extends Activity {
 //
 //            }
         });
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = settings.edit();
+        editor.remove("email");
+        editor.remove("password");
     }
 
 }

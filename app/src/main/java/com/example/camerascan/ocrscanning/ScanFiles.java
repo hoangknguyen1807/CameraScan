@@ -92,7 +92,7 @@ public class ScanFiles extends ImageLoader {
             @Override
             public void onClick(View v) {
                 //pick files
-                Intent intent = new Intent(Intent.ACTION_PICK);
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/*");
                 String[] mimeTypes = {"image/jpeg", "image/png"};
                 intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);

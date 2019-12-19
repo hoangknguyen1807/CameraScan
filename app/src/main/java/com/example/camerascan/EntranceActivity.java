@@ -2,6 +2,7 @@ package com.example.camerascan;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -44,5 +45,25 @@ public class EntranceActivity extends Activity {
                 // nothing to do :))
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        // delete session
+        SharedPreferences.Editor editor = getSharedPreferences("DeviceToken",MODE_PRIVATE).edit();
+        editor.remove("email");
+        editor.remove("password");
+        editor.apply();
+        super.onDestroy();
+
+    }
+
+    @Override
+    protected void onStop() {
+        SharedPreferences.Editor editor = getSharedPreferences("DeviceToken",MODE_PRIVATE).edit();
+        editor.remove("email");
+        editor.remove("password");
+        editor.apply();
+        super.onStop();
     }
 }

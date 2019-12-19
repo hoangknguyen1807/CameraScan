@@ -272,7 +272,6 @@ public class UploadActivity extends Activity implements View.OnTouchListener {
 
             System.out.println("directory file upload: " + file.getAbsolutePath());
             // Create a request body with file and image media type
-
             //RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
             RequestBody requestFile = RequestBody.create(MediaType.parse("*/*"), file);
             // Create MultipartBody.Part using file request-body,file name and part name
@@ -288,17 +287,16 @@ public class UploadActivity extends Activity implements View.OnTouchListener {
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                                    /*if (response.isSuccessful()) {
-                                        Toast.makeText(UploadActivity.this, "Image uploaded success", Toast.LENGTH_SHORT).show();
-                                    }*/
+                    Toast.makeText(UploadActivity.this, "Image uploaded success", Toast.LENGTH_SHORT).show();
+                    System.out.println(response.headers());
                 }
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-/*
-                                    Toast.makeText(UploadActivity.this, "ERROR " + t.getMessage(), Toast.LENGTH_SHORT).show();
-*/
-                    Toast.makeText(UploadActivity.this, "Image uploaded success", Toast.LENGTH_SHORT).show();
+
+                    Toast.makeText(UploadActivity.this, "error " + t.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    System.out.println("error " + t.getMessage());
 
                 }
             });

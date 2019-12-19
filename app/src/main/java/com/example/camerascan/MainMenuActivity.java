@@ -86,7 +86,8 @@ public class MainMenuActivity extends Activity {
         buttonToDownloadScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intentChangeToDownloadScreen = new Intent(MainMenuActivity.this, DownloadActivity.class);
+                startActivity(intentChangeToDownloadScreen);
             }
 
 
@@ -106,5 +107,14 @@ public class MainMenuActivity extends Activity {
         editor.apply();
         super.onDestroy();
 
+    }
+
+    @Override
+    protected void onStop() {
+        SharedPreferences.Editor editor = getSharedPreferences("DeviceToken",MODE_PRIVATE).edit();
+        editor.remove("email");
+        editor.remove("password");
+        editor.apply();
+        super.onStop();
     }
 }

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -16,7 +17,7 @@ public class MainMenuActivity extends Activity {
 
 
     Button buttonToTakePhotoScreen, buttonToScanScreen, buttonToEditScreen, buttonToConvertScreen,
-    buttonToShareScreen, buttonToUploadScreen, buttonToDownloadScreen, buttonToLogoutScreen;
+    buttonToShareScreen, buttonToUploadScreen, buttonToDownloadScreen, buttonToLoginScreen,buttonToLogoutScreen;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,7 +31,8 @@ public class MainMenuActivity extends Activity {
         buttonToShareScreen = findViewById(R.id.buttonShare);
         buttonToUploadScreen = findViewById(R.id.buttonUpload);
         buttonToDownloadScreen = findViewById(R.id.buttonDownload);
-        //buttonToLogoutScreen=findViewById(R.id.buttonLogout);
+        buttonToLoginScreen=findViewById(R.id.buttonLogin);
+        buttonToLogoutScreen=findViewById(R.id.buttonLogout);
 
         buttonToTakePhotoScreen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,12 +93,27 @@ public class MainMenuActivity extends Activity {
             }
 
 
-//        buttonToLogoutScreen.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//            }
         });
+
+
+
+        buttonToLoginScreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentChangeToDownloadScreen = new Intent(MainMenuActivity.this, LoginActivity.class);
+                startActivity(intentChangeToDownloadScreen);
+            }
+    });
+
+        buttonToLogoutScreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+             onDestroy();
+
+
+            }
+        });
+
     }
     @Override
     protected void onDestroy() {
@@ -105,16 +122,9 @@ public class MainMenuActivity extends Activity {
         editor.remove("email");
         editor.remove("password");
         editor.apply();
+        Toast.makeText(this, "Logout success", Toast.LENGTH_SHORT).show();
         super.onDestroy();
 
     }
 
-    @Override
-    protected void onStop() {
-        SharedPreferences.Editor editor = getSharedPreferences("DeviceToken",MODE_PRIVATE).edit();
-        editor.remove("email");
-        editor.remove("password");
-        editor.apply();
-        super.onStop();
-    }
 }

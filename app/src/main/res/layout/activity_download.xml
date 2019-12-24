@@ -6,22 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".DownloadActivity">
 
-    <LinearLayout
+    <GridView
+        android:numColumns="2"
+        android:id="@+id/gridView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-
-        <ListView
-            android:id = "@+id/list"
-            android:layout_width = "wrap_content"
-            android:layout_height = "match_parent"
-            android:divider = "#000"
-            android:dividerHeight = "1dp"
-            android:footerDividersEnabled = "false"
-            android:headerDividersEnabled = "false"
-            />
-
-
-    </LinearLayout>
+        android:layout_height="match_parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

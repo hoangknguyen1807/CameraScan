@@ -58,12 +58,4 @@ public class EntranceActivity extends Activity {
 
     }
 
-    @Override
-    protected void onStop() {
-        SharedPreferences.Editor editor = getSharedPreferences("DeviceToken",MODE_PRIVATE).edit();
-        editor.remove("email");
-        editor.remove("password");
-        editor.apply();
-        super.onStop();
-    }
 }

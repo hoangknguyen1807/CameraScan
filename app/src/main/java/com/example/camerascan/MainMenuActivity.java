@@ -17,7 +17,7 @@ public class MainMenuActivity extends Activity {
 
 
     Button buttonToTakePhotoScreen, buttonToScanScreen, buttonToEditScreen, buttonToConvertScreen,
-    buttonToShareScreen, buttonToUploadScreen, buttonToDownloadScreen, buttonToLoginScreen,buttonToLogoutScreen;
+    buttonToShareScreen, buttonToUploadScreen, buttonToDownloadScreen, buttonToLoginScreen,buttonToLogoutScreen,buttonSignUpScreen;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,6 +33,7 @@ public class MainMenuActivity extends Activity {
         buttonToDownloadScreen = findViewById(R.id.buttonDownload);
         buttonToLoginScreen=findViewById(R.id.buttonLogin);
         buttonToLogoutScreen=findViewById(R.id.buttonLogout);
+        buttonSignUpScreen=findViewById(R.id.buttonSignUp);
 
         buttonToTakePhotoScreen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,11 +101,19 @@ public class MainMenuActivity extends Activity {
         buttonToLoginScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentChangeToDownloadScreen = new Intent(MainMenuActivity.this, LoginActivity.class);
-                startActivity(intentChangeToDownloadScreen);
+                Intent intentChangeToLoginScreen = new Intent(MainMenuActivity.this, LoginActivity.class);
+                startActivity(intentChangeToLoginScreen);
             }
     });
+        buttonSignUpScreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentChangeToSignUpScreen = new Intent(MainMenuActivity.this, SignUpActivity.class);
+                startActivity(intentChangeToSignUpScreen);
 
+
+            }
+        });
         buttonToLogoutScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

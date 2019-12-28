@@ -74,21 +74,11 @@ public class ShareActivity extends Activity {
                     Toast.makeText(ShareActivity.this, "Please choose file first!",Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    //File fileName = new File(_fileUri.getPath());
-                    //Uri forLolipop = FileProvider.getUriForFile(ShareActivity.this,
-                    //      "com.example.android.fileprovider",fileName);
-
                     Uri forLolipop = _fileUri;
-
-                    // Get the Uri from the external file and add it to the intent
-                    //Uri forLolipop = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), _fileUri.getPath()));
 
                     Intent intentToShareSheet = new Intent(Intent.ACTION_SEND,forLolipop);
                     intentToShareSheet.setType("image/*");
                     intentToShareSheet.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                   // intentToShareSheet.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-
-                    //intentToShareSheet.setData(forLolipop);
                     intentToShareSheet.putExtra(Intent.EXTRA_STREAM,forLolipop);
                     startActivity(Intent.createChooser(intentToShareSheet, "OCR Share File"));
                 }

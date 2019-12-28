@@ -184,58 +184,54 @@ public class UploadActivity extends Activity implements View.OnTouchListener {
                     btnLogin.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                             email = edtEmail.getText().toString();
-                             password = edtPassword.getText().toString();
+                            email = edtEmail.getText().toString();
+                            password = edtPassword.getText().toString();
                             Toast.makeText(UploadActivity.this, "email: " + email + " ,password: " + password, Toast.LENGTH_SHORT).show();
 
-                            // Set session after login
-                            SharedPreferences.Editor editor = getSharedPreferences("DeviceToken",MODE_PRIVATE).edit();
-                            editor.putString("email",email);
-                            editor.putString("password",password);
-                            editor.apply();
+                            uploadAPIs = APIUtils.getFileService();
+                            Call<LoginUserDto> loginUserDto = uploadAPIs.login(email);
+                            loginUserDto.enqueue(new Callback<LoginUserDto>() {
+                                @Override
+                                public void onResponse(Call <LoginUserDto> call, Response<LoginUserDto> response) {
+                                    System.out.println("information: " + response.body());
+                                    LoginUserDto result= response.body();
+                                    if (result!=null && result.getPassword().equals(password)){
+                                        // Set session after login
+                                        SharedPreferences.Editor editor = getSharedPreferences("DeviceToken",MODE_PRIVATE).edit();
+                                        editor.putString("email",email);
+                                        editor.putString("password",password);
+                                        editor.apply();
 
 
-                            System.out.println("email: " + email + " ,password: " + password);
+                                        System.out.println("email: " + email + " ,password: " + password);
+                                        UploadImageFunction(email,password);
+                                    }else {
+                                        Toast.makeText(UploadActivity.this,"Sai thông tin đăng nhập",Toast.LENGTH_SHORT).show();
+                                    }
 
-                            UploadImageFunction(email,password);
+
+                                }
+
+                                @Override
+                                public void onFailure(Call <LoginUserDto> call, Throwable t) {
+                                    //Toast.makeText(UploadActivity.this,"Register FAILED! " + t.getMessage(),Toast.LENGTH_LONG).show();
+                                    Toast.makeText(UploadActivity.this,"Error",Toast.LENGTH_LONG).show();
+                                }
+                            });
+
+
                         }
                     });
 
 
-                    Button btnRegister = findViewById(R.id.btnSignUp);
-                    btnRegister.setOnClickListener(new View.OnClickListener() {
+                    Button buttonSignUpScreen = findViewById(R.id.btnSignUp);
+                    buttonSignUpScreen.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void onClick(View view) {
-                            setContentView(R.layout.register_form);
-                            EditText edtEmailRegister = findViewById(R.id.edtEmailRegister);
-                            EditText edtNameRegister = findViewById(R.id.edtNameRegister);
-                            EditText edtPasswordRegister = findViewById(R.id.edtPasswordRegister);
-                            Button  btnSignUp = findViewById(R.id.btnSignUp);
-
-                            btnSignUp.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    String emailRegister = edtEmailRegister.getText().toString();
-                                    String nameRegister = edtNameRegister.getText().toString();
-                                    String passwordRegister = edtPasswordRegister.getText().toString();
+                        public void onClick(View v) {
+                            Intent intentChangeToSignUpScreen = new Intent(UploadActivity.this, SignUpActivity.class);
+                            startActivity(intentChangeToSignUpScreen);
 
 
-                                    uploadAPIs = APIUtils.getFileService();
-                                    Call callUser = uploadAPIs.register(emailRegister,nameRegister,passwordRegister);
-                                    callUser.enqueue(new Callback() {
-                                        @Override
-                                        public void onResponse(Call call, Response response) {
-                                            Toast.makeText(UploadActivity.this,"Registered Sucess!",Toast.LENGTH_LONG).show();
-                                        }
-
-                                        @Override
-                                        public void onFailure(Call call, Throwable t) {
-                                            //Toast.makeText(UploadActivity.this,"Register FAILED! " + t.getMessage(),Toast.LENGTH_LONG).show();
-                                            Toast.makeText(UploadActivity.this,"Registered Sucess!",Toast.LENGTH_LONG).show();
-                                        }
-                                    });
-                                }
-                            });
                         }
                     });
 

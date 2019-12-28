@@ -167,7 +167,7 @@ public class ColorPicker extends Dialog implements SeekBar.OnSeekBarChangeListen
      *
      * @param seekBar  SeekBar that has changed
      * @param progress The new progress value
-     * @param fromUser If it coem from User
+     * @param fromUser If it coem from LoginUserDto
      */
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {

@@ -202,7 +202,7 @@ public class UploadActivity extends Activity implements View.OnTouchListener {
                     });
 
 
-                    Button btnRegister = findViewById(R.id.btnRegister);
+                    Button btnRegister = findViewById(R.id.btnSignUp);
                     btnRegister.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {

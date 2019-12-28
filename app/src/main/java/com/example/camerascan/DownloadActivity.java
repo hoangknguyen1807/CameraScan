@@ -32,34 +32,38 @@ public class DownloadActivity extends Activity {
         System.out.println("EMAIL USER: " + email);
         System.out.println("PASSWORD USER: " + password);
 
-        uploadAPIs = APIUtils.getFileService();
-        Call <ArrayList<PhotoDto>> listLinkPhoto = uploadAPIs.download(email,password);
-        listLinkPhoto.enqueue(new Callback<ArrayList<PhotoDto>>() {
-            @Override
-            public void onResponse(Call <ArrayList<PhotoDto>> call, Response <ArrayList<PhotoDto>> response) {
-                Toast.makeText(DownloadActivity.this,"Download Sucess!",Toast.LENGTH_LONG).show();
-                photos = response.body();
-                for (PhotoDto photoDto : photos){
-                    System.out.println(photoDto.getUrl());
+        if (email!=null&&password!=null){
+            uploadAPIs = APIUtils.getFileService();
+            Call <ArrayList<PhotoDto>> listLinkPhoto = uploadAPIs.download(email,password);
+            listLinkPhoto.enqueue(new Callback<ArrayList<PhotoDto>>() {
+                @Override
+                public void onResponse(Call <ArrayList<PhotoDto>> call, Response <ArrayList<PhotoDto>> response) {
+                    Toast.makeText(DownloadActivity.this,"Download Sucess!",Toast.LENGTH_LONG).show();
+                    photos = response.body();
+                    for (PhotoDto photoDto : photos){
+                        System.out.println(photoDto.getUrl());
+                    }
+
+                    gridView=findViewById(R.id.gridView);
+
+                    // prepareData();
+                    dataAdapter = new DataAdapter(photos,getApplicationContext());
+                    gridView.setAdapter(dataAdapter);
+
+
+
+
                 }
 
-                gridView=findViewById(R.id.gridView);
-
-               // prepareData();
-                dataAdapter = new DataAdapter(photos,getApplicationContext());
-                gridView.setAdapter(dataAdapter);
-
-
-
-
-            }
-
-            @Override
-            public void onFailure(Call <ArrayList<PhotoDto>> call, Throwable t) {
-                //Toast.makeText(UploadActivity.this,"Register FAILED! " + t.getMessage(),Toast.LENGTH_LONG).show();
-                Toast.makeText(DownloadActivity.this,"Error",Toast.LENGTH_LONG).show();
-            }
-        });
+                @Override
+                public void onFailure(Call <ArrayList<PhotoDto>> call, Throwable t) {
+                    //Toast.makeText(UploadActivity.this,"Register FAILED! " + t.getMessage(),Toast.LENGTH_LONG).show();
+                    Toast.makeText(DownloadActivity.this,"Error",Toast.LENGTH_LONG).show();
+                }
+            });
+        }else {
+            Toast.makeText(DownloadActivity.this,"Vui lòng đăng nhập",Toast.LENGTH_SHORT).show();
+        }
     }
     private ArrayList prepareData() {
         photos.add(new PhotoDto("selfiecamera_2019-12-21-13-30-24-311.jpg","http://res.cloudinary.com/dy5yspoxj/image/upload/v1576909874/SRWRestImageBase/selfiecamera_2019-12-21-13-30-24-311.jpg.jpg"));

@@ -3,10 +3,8 @@ package com.example.camerascan;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class User {
-    @SerializedName("id")
-    @Expose
-    private int id;
+public class LoginUserDto {
+
 
     @SerializedName("email")
     @Expose
@@ -22,31 +20,24 @@ public class User {
     @Expose
     private String password;
 
-    public User() {
+    public LoginUserDto() {
     }
-    public User(String email,String password) {
+    public LoginUserDto(String email, String password) {
 
         this.email = email;
 
         this.password = password;
     }
-    public User(int id, String email, String name, String password) {
-        this.id = id;
-        this.email = email;
-        this.name=name;
-        this.password = password;
-    }
-
-    public User(String email, String name, String password) {
+    public LoginUserDto(String email, String name, String password) {
 
         this.email = email;
         this.name=name;
         this.password = password;
     }
 
-    public int getId() {
-        return id;
-    }
+
+
+
 
     public String getEmail() {
         return email;
@@ -56,9 +47,7 @@ public class User {
         return password;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+
 
     public void setEmail(String email) {
         this.email = email;
@@ -78,8 +67,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
+        return "LoginUserDto{" +
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +

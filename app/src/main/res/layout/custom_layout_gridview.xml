@@ -21,15 +21,16 @@
         android:textStyle="bold"
 
         />
-    <Button
+<!--    <TextView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/linkUrl"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:textSize="15sp"-->
+<!--        android:linksClickable="true"-->
+<!--        android:autoLink="web"-->
+<!--        android:textColor="@color/colorPrimary"-->
+<!--        android:textStyle="bold"-->
 
-        android:id="@+id/btnDownload"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="10sp"
-        android:background="@color/kelly_6"
-        android:text="Download file"
-        android:padding="5dp"
-        />
+<!--        />-->
 </LinearLayout>

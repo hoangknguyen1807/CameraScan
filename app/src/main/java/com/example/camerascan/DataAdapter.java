@@ -1,14 +1,14 @@
 package com.example.camerascan;
-import android.content.Context;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -41,11 +41,31 @@ public class DataAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(final int i, View view, ViewGroup viewGroup) {
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = inflater.inflate(R.layout.custom_layout_gridview,null);
         TextView txtName= view.findViewById(R.id.txtName);
         ImageView img = view.findViewById(R.id.image);
+
+
+//        TextView linkUrl = view.findViewById(R.id.linkUrl);
+//        linkUrl.setText(photos.get(i).getUrl());
+//        linkUrl.setMovementMethod(LinkMovementMethod.getInstance());
+
+
+
+        img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                intent.setData(Uri.parse(photos.get(i).getUrl()));
+                context.startActivity(intent);
+            }
+        });
+
+
         txtName.setText(photos.get(i).getNamePhoto());
         Glide.with(context).load(photos.get(i)
                 .getUrl())

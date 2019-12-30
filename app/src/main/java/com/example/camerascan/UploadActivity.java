@@ -186,7 +186,6 @@ public class UploadActivity extends Activity implements View.OnTouchListener {
                         public void onClick(View view) {
                             email = edtEmail.getText().toString();
                             password = edtPassword.getText().toString();
-                            Toast.makeText(UploadActivity.this, "email: " + email + " ,password: " + password, Toast.LENGTH_SHORT).show();
 
                             uploadAPIs = APIUtils.getFileService();
                             Call<LoginUserDto> loginUserDto = uploadAPIs.login(email);
@@ -202,6 +201,7 @@ public class UploadActivity extends Activity implements View.OnTouchListener {
                                         editor.putString("password",password);
                                         editor.apply();
 
+                                        Toast.makeText(UploadActivity.this, "Success login", Toast.LENGTH_SHORT).show();
 
                                         System.out.println("email: " + email + " ,password: " + password);
                                         UploadImageFunction(email,password);

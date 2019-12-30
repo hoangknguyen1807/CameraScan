@@ -46,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 email = edtEmail.getText().toString();
                 password = edtPassword.getText().toString();
-                Toast.makeText(LoginActivity.this, "email: " + email + " ,password: " + password, Toast.LENGTH_SHORT).show();
+
 
                 uploadAPIs = APIUtils.getFileService();
                 Call<LoginUserDto> loginUserDto = uploadAPIs.login(email);
@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
                             editor.putString("password",password);
                             editor.apply();
 
-
+                            Toast.makeText(LoginActivity.this, "Success login", Toast.LENGTH_SHORT).show();
                             System.out.println("email: " + email + " ,password: " + password);
                         }else {
                             Toast.makeText(LoginActivity.this,"Sai thông tin đăng nhập",Toast.LENGTH_SHORT).show();
